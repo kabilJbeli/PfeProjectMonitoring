@@ -26,6 +26,18 @@ public class Priority implements Serializable {
 
 	private Set<Task> tasks;
 
+	@Column(name = "PRIORITYTITLE")
+	private String priorityTitle;
+	
+	
+	public String getPriorityTitle() {
+		return priorityTitle;
+	}
+
+	public void setPriorityTitle(String priorityTitle) {
+		this.priorityTitle = priorityTitle;
+	}
+
 	@OneToMany
 	public Set<Task> getTasks() {
 		return tasks;

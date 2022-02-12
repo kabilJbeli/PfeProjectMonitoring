@@ -1,6 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -31,6 +32,65 @@ public class Sprint implements Serializable {
 	private Set<Task> task;
 
 	private SprintTypes sprintTypes;
+	
+	@Column(name = "SPRINTTITLE")
+	private String sprintTitle;
+	
+	@Column(name = "SPRINTPERIOD")
+	private String sprintPeriod;
+	
+	@Column(name = "SPRINTSTARTDATE")
+	private LocalDateTime sprintStartDate;
+	
+	
+	@Column(name = "SPRINTENDDATE")
+	private LocalDateTime sprintEndDate;
+	
+	
+	private SprintStatus status;
+	
+	
+
+	public String getSprintTitle() {
+		return sprintTitle;
+	}
+
+	public void setSprintTitle(String sprintTitle) {
+		this.sprintTitle = sprintTitle;
+	}
+
+	public String getSprintPeriod() {
+		return sprintPeriod;
+	}
+
+	public void setSprintPeriod(String sprintPeriod) {
+		this.sprintPeriod = sprintPeriod;
+	}
+
+	public LocalDateTime getSprintStartDate() {
+		return sprintStartDate;
+	}
+
+	public void setSprintStartDate(LocalDateTime sprintStartDate) {
+		this.sprintStartDate = sprintStartDate;
+	}
+
+	public LocalDateTime getSprintEndDate() {
+		return sprintEndDate;
+	}
+
+	public void setSprintEndDate(LocalDateTime sprintEndDate) {
+		this.sprintEndDate = sprintEndDate;
+	}
+
+	@OneToOne
+	public SprintStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(SprintStatus status) {
+		this.status = status;
+	}
 
 	public SprintTypes getSprintTypes() {
 		return sprintTypes;

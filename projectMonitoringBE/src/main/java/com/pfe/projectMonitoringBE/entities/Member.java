@@ -22,7 +22,6 @@ public class Member implements Serializable {
 	 */
 	private static final long serialVersionUID = -7781235773520852122L;
 
-	@Column(name = "MEMBERID")
 	private Integer memberID;
 
 	private Set<Task> tasks;
@@ -30,6 +29,62 @@ public class Member implements Serializable {
 	private Set<Project> Projects;
 
 	private Roles role;
+
+	private String name;
+	
+	private String lastName;
+	
+	private String email;
+	
+	private Integer Telephone;
+	
+	private String Address;	
+	
+	@Column(name = "NAME")
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Column(name = "LASTNAME")
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	@Column(name = "EMAIL")
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "TELEPHONE")
+	public Integer getTelephone() {
+		return Telephone;
+	}
+
+	public void setTelephone(Integer telephone) {
+		Telephone = telephone;
+	}
+	
+	@Column(name = "ADDRESS")
+	public String getAddress() {
+		return Address;
+	}
+
+	
+	public void setAddress(String address) {
+		Address = address;
+	}
 
 	public Roles getRole() {
 		return role;
@@ -58,6 +113,7 @@ public class Member implements Serializable {
 	}
 
 	@Id
+	@Column(name = "MEMBERID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getMemberID() {
 		return memberID;

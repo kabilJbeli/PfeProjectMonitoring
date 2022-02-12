@@ -25,6 +25,17 @@ public class ProjectStatus implements Serializable {
 	private Integer projectStatusID;
 
 	private Set<Project> projects;
+	
+	@Column(name = "PROJECTSTATUSTITLE")
+	private String projectStatusTitle;
+	
+	public String getProjectStatusTitle() {
+		return projectStatusTitle;
+	}
+
+	public void setProjectStatusTitle(String projectStatusTitle) {
+		this.projectStatusTitle = projectStatusTitle;
+	}
 
 	@OneToMany
 	public Set<Project> getProjects() {

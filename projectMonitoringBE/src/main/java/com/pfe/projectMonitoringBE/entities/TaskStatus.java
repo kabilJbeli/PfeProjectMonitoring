@@ -25,6 +25,19 @@ public class TaskStatus implements Serializable {
 	private Integer taskStatusID;
 
 	private Set<Task> tasks;
+	
+	@Column(name = "TASKSTATUSTITLE")
+	private String taskStatusTitle;
+	
+	
+
+	public String getTaskStatusTitle() {
+		return taskStatusTitle;
+	}
+
+	public void setTaskStatusTitle(String taskStatusTitle) {
+		this.taskStatusTitle = taskStatusTitle;
+	}
 
 	@OneToMany
 	public Set<Task> getTasks() {

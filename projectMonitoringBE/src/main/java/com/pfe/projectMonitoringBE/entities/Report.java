@@ -1,6 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,28 @@ public class Report implements Serializable {
 	private Integer reportID;
 
 	private Project project;
+	
+	@Column(name = "REPORTTITLE")
+	private String reportTtile;
+	
+	@Column(name = "CREATIONDATE")
+	private LocalDateTime CreationDate;
+	
+	public String getReportTtile() {
+		return reportTtile;
+	}
+
+	public void setReportTtile(String reportTtile) {
+		this.reportTtile = reportTtile;
+	}
+
+	public LocalDateTime getCreationDate() {
+		return CreationDate;
+	}
+
+	public void setCreationDate(LocalDateTime creationDate) {
+		CreationDate = creationDate;
+	}
 
 	@ManyToOne
 	public Project getProject() {

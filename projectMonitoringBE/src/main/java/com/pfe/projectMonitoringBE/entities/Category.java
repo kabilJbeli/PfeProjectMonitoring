@@ -21,10 +21,21 @@ public class Category implements Serializable {
 	 */
 	private static final long serialVersionUID = 2834950868118018638L;
 
-	@Column(name = "CATEGORYID")
 	private Integer categoryID;
 
 	private Set<Task> tasks;
+	
+	private String categoryTitle;
+	
+	
+	@Column(name = "CATEGORYTITLE")
+	public String getCategoryTitle() {
+		return categoryTitle;
+	}
+
+	public void setCategoryTitle(String categoryTitle) {
+		this.categoryTitle = categoryTitle;
+	}
 
 	@OneToMany
 	public Set<Task> getTasks() {
@@ -36,6 +47,7 @@ public class Category implements Serializable {
 	}
 
 	@Id
+	@Column(name = "CATEGORYID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getCategoryID() {
 		return categoryID;

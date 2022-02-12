@@ -1,6 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -34,6 +35,51 @@ public class Project implements Serializable {
 	private ProjectStatus projectStatus;
 
 	private Set<Member> members;
+
+	@Column(name = "PROJECTTITLE")
+	private String projectTitle;
+	
+	@Column(name = "PROJECTDESCRIPTION")
+	private String projectDescription;
+	
+	@Column(name = "STARTDATE")
+	private LocalDateTime startDate;
+	
+	@Column(name = "ENDDATE")
+	private LocalDateTime endDate;
+
+	
+	public String getProjectTitle() {
+		return projectTitle;
+	}
+
+	public void setProjectTitle(String projectTitle) {
+		this.projectTitle = projectTitle;
+	}
+
+	public String getProjectDescription() {
+		return projectDescription;
+	}
+
+	public void setProjectDescription(String projectDescription) {
+		this.projectDescription = projectDescription;
+	}
+
+	public LocalDateTime getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDateTime startDate) {
+		this.startDate = startDate;
+	}
+
+	public LocalDateTime getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDateTime endDate) {
+		this.endDate = endDate;
+	}
 
 	@OneToMany
 	public Set<Member> getMembers() {
