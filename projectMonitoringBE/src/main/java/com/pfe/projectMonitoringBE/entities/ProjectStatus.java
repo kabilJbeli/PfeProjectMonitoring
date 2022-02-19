@@ -36,8 +36,8 @@ public class ProjectStatus implements Serializable {
 	public void setProjectStatusTitle(String projectStatusTitle) {
 		this.projectStatusTitle = projectStatusTitle;
 	}
-
-	@OneToMany
+	
+	@OneToMany(mappedBy="projectStatus")
 	public Set<Project> getProjects() {
 		return projects;
 	}

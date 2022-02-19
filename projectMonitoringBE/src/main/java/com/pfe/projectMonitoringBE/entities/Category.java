@@ -36,8 +36,8 @@ public class Category implements Serializable {
 	public void setCategoryTitle(String categoryTitle) {
 		this.categoryTitle = categoryTitle;
 	}
-
-	@OneToMany
+	
+	@OneToMany(mappedBy="category")
 	public Set<Task> getTasks() {
 		return tasks;
 	}

@@ -100,7 +100,7 @@ public class Sprint implements Serializable {
 		this.sprintTypes = sprintTypes;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy = "sprint")
 	public Set<Task> getTask() {
 		return task;
 	}

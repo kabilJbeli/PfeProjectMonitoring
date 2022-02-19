@@ -39,7 +39,7 @@ public class TaskStatus implements Serializable {
 		this.taskStatusTitle = taskStatusTitle;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy = "taskStatus")
 	public Set<Task> getTasks() {
 		return tasks;
 	}

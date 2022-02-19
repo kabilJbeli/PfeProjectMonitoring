@@ -37,8 +37,8 @@ public class Priority implements Serializable {
 	public void setPriorityTitle(String priorityTitle) {
 		this.priorityTitle = priorityTitle;
 	}
-
-	@OneToMany
+	
+	@OneToMany(mappedBy="priority")
 	public Set<Task> getTasks() {
 		return tasks;
 	}

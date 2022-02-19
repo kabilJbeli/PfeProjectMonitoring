@@ -99,16 +99,16 @@ public class Project implements Serializable {
 		this.projectStatus = projectStatus;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy="project")
 	public Set<Task> getTasks() {
 		return tasks;
 	}
-
+	
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy="project")
 	public Set<Report> getReport() {
 		return report;
 	}
@@ -117,7 +117,7 @@ public class Project implements Serializable {
 		this.report = report;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy="project")
 	public Set<Sprint> getSprint() {
 		return sprint;
 	}

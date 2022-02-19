@@ -103,7 +103,7 @@ public class Member implements Serializable {
 		Projects = projects;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy="member")
 	public Set<Task> getTasks() {
 		return tasks;
 	}
