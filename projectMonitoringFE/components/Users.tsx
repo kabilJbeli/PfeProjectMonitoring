@@ -1,11 +1,13 @@
 import * as React from 'react';
-import {Text, View} from "react-native";
+import {SafeAreaView, Text, View} from "react-native";
+import {StatusBar} from 'expo-status-bar';
 
 const User =() => {
     return (
-        <View>
+        <SafeAreaView>
+            <StatusBar/>
             <Text>Hello World</Text>
-        </View>
+        </SafeAreaView>
     );
 }
 export default User;

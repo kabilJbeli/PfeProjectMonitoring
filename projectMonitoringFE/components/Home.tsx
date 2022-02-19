@@ -1,11 +1,14 @@
 import * as React from 'react';
-import {Text, View} from "react-native";
+import {SafeAreaView, Text, View} from "react-native";
+import {StatusBar} from 'expo-status-bar';
 
 const Home =() => {
     return (
-        <View>
-        <Text>Hello World</Text>
-        </View>
+        <SafeAreaView>
+            <StatusBar/>
+
+            <Text>Hello World</Text>
+        </SafeAreaView>
     );
 }
 export default Home;

@@ -1,17 +1,20 @@
 import * as React from 'react';
-import {Button, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {Button, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View} from "react-native";
+import {StatusBar} from 'expo-status-bar';
 
 const signIn = (event:any)=>{
     event.preventDefault();
 }
 const Login =() => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <StatusBar/>
+
             <TextInput style={styles.input} placeholder={"Username"}/>
             <TextInput style={styles.input}  placeholder={"Password"}/>
             <Pressable  style={styles.button}   onPress={signIn} >
                 <Text>Sign In</Text></Pressable>
-        </View>
+        </SafeAreaView>
     );
 }
 export default Login;
