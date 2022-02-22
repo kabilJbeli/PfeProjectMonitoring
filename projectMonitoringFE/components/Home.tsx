@@ -5,9 +5,7 @@ import {StatusBar} from 'expo-status-bar';
 const Home =() => {
     return (
         <SafeAreaView>
-            <StatusBar/>
-
-            <Text>Hello World</Text>
+            <Text>Home Screen</Text>
         </SafeAreaView>
     );
 }

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList} from '@react-navigation/drawer';
 import Home from "./Home";
-import Login from "./Login";
 import Category from "./Category";
 import Dashboard from "./Dashboard";
 import Project from "./Project";
@@ -25,13 +24,13 @@ const CustomDrawerContent = (props: any) => {
 const Drawer = createDrawerNavigator();
 const Navigation = () => {
     return (
-        <Drawer.Navigator
+            <Drawer.Navigator
             screenOptions={{
                 drawerStyle: {
                     width: 200,
                 },
                 drawerPosition: "left",
-                drawerType: "front"
+                drawerType: "slide"
             }}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
@@ -113,6 +112,7 @@ const Navigation = () => {
                            }}
             />
         </Drawer.Navigator>
+
     );
 }
 export default Navigation;
