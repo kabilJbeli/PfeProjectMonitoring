@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Priority;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.repositories.ProjectRepository;
@@ -30,5 +31,9 @@ public class ProjectService {
 
 	public void deleteProject(Project project) {
 		repository.delete(project);
+	}
+	
+	public  List<Project> getManagerProjects(Member member) {
+		return repository.findByProjectManagerId(member.getMemberID());
 	}
 }

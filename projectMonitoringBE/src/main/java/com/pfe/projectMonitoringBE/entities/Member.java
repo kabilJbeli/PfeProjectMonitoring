@@ -40,6 +40,19 @@ public class Member implements Serializable {
 	
 	private String Address;	
 	
+	private String Password;	
+
+	
+	
+	@Column(name = "PASSWORD")
+	public String getPassword() {
+		return Password;
+	}
+
+	public void setPassword(String password) {
+		Password = password;
+	}
+
 	@Column(name = "NAME")
 	public String getName() {
 		return name;

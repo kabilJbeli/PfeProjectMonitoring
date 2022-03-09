@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.services.ProjectService;
 
@@ -41,6 +42,13 @@ public class ProjectController {
 			return new ResponseEntity<Project>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	
+	@PostMapping("/getProjectsByProjectManager")
+	public List<Project> getProjectById(@RequestBody Member projectManager) {		
+		return service.getManagerProjects(projectManager);	
+	}
+	
 
 	@PostMapping("/add")
 	public void addProject(@RequestBody Project project) {

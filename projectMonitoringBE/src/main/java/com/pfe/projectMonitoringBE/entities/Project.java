@@ -35,6 +35,11 @@ public class Project implements Serializable {
 	private ProjectStatus projectStatus;
 
 	private Set<Member> members;
+	
+	@Column(name = "PROJECTMANAGER")
+	private Member projectManager;
+	
+	
 
 	@Column(name = "PROJECTTITLE")
 	private String projectTitle;
@@ -49,6 +54,17 @@ public class Project implements Serializable {
 	private LocalDateTime endDate;
 
 	
+	
+	
+	
+	public Member getProjectManager() {
+		return projectManager;
+	}
+
+	public void setProjectManager(Member projectManager) {
+		this.projectManager = projectManager;
+	}
+
 	public String getProjectTitle() {
 		return projectTitle;
 	}
