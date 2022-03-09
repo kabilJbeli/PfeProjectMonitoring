@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -11,16 +12,16 @@ import axios from 'axios';
 import Moment from 'moment';
 import Environment from '../Environment';
 import {Project} from '../models/Project';
-import {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconM from 'react-native-vector-icons/MaterialIcons';
-import {Actions} from 'react-native-router-flux';
 
 import {Input} from 'react-native-elements';
-const ProjectsList = forwardRef((props, ref) => {
+const ProjectsList = props => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [searchedProject, setSearchedProject] = useState<Project[]>([]);
   const [searchedProjectName, setSearchedProjectName] = useState<String>('');
+  const {navigation} = props;
 
   const [loading, setLoading] = useState(true);
   const getProjects = () => {
@@ -40,16 +41,12 @@ const ProjectsList = forwardRef((props, ref) => {
             setProjects(response.data);
             setSearchedProject(response.data);
           })
-          .catch(err => {});
+          .catch((err: any) => {});
         setTimeout(() => setLoading(false), 1000);
       }
     }, [loading]);
   };
-  useImperativeHandle(ref, () => ({
-    getProject() {
-      getProjects();
-    },
-  }));
+
   getProjects();
   const removeItem = (projectID: Number) => {
     axios({
@@ -61,14 +58,14 @@ const ProjectsList = forwardRef((props, ref) => {
       },
       params: {},
     })
-      .then(response => {
+      .then((response: any) => {
         setLoading(true);
         getProjects();
       })
-      .catch(err => {});
+      .catch((err: any) => {});
   };
   const updateItem = (projectID: Number) => {
-    Actions.updateProject();
+    navigation.navigate('Home', {id: projectID});
   };
 
   const getLatestProjectInfo = () => {
@@ -103,83 +100,90 @@ const ProjectsList = forwardRef((props, ref) => {
               autoCompleteType={false}
             />
           </View>
-          <FlatList
-            keyExtractor={(item, index) => index.toString()}
-            data={projects}
-            renderItem={({item}) => (
-              <View style={styles.project}>
-                <Text style={styles.title}>
-                  Project Title: {item.projectTitle}
-                </Text>
-                <Text style={styles.text}>
-                  Project Description: {item.projectDescription}
-                </Text>
-                <Text style={styles.text}>
-                  Total Members: {item.members.length}
-                </Text>
-                <View style={styles.footer}>
-                  <Text style={styles.text}>
-                    <Icon name="calendar" size={18} color={'#000'} /> Start
-                    Date: {Moment(item.startDate).format('d-MM-YYYY')}
+          <ScrollView>
+            <FlatList
+              keyExtractor={(item, index) => index.toString()}
+              data={projects.reverse()}
+              initialNumToRender={projects.length}
+              renderItem={({item}) => (
+                <View style={styles.project}>
+                  <Text style={styles.title}>
+                    Project Title: {item.projectTitle}
                   </Text>
                   <Text style={styles.text}>
-                    <Icon name="calendar" size={18} color={'#000'} /> End Date:{' '}
-                    {Moment(item.endDate).format('d-MM-YYYY')}
+                    Project Description: {item.projectDescription}
                   </Text>
+                  <Text style={styles.text}>
+                    Total Members: {item.members.length}
+                  </Text>
+                  <View style={styles.footer}>
+                    <Text style={styles.text}>
+                      <Icon name="calendar" size={18} color={'#000'} /> Start
+                      Date: {Moment(item.startDate).format('d-MM-YYYY')}
+                    </Text>
+                    <Text style={styles.text}>
+                      <Icon name="calendar" size={18} color={'#000'} /> End
+                      Date: {Moment(item.endDate).format('d-MM-YYYY')}
+                    </Text>
+                  </View>
+                  <View style={styles.buttonWrapper}>
+                    <Pressable
+                      style={[styles.button, styles.delete]}
+                      onPress={() => {
+                        removeItem(item.projectID);
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          color: '#fff',
+                          fontWeight: '500',
+                        }}>
+                        Remove
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button, styles.borderButton, styles.view]}
+                      onPress={() => {
+                        updateItem(item.projectID);
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          color: '#fff',
+                          fontWeight: '500',
+                        }}>
+                        View
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      style={[
+                        styles.button,
+                        styles.borderButton,
+                        styles.update,
+                      ]}
+                      onPress={() => {
+                        updateItem(item.projectID);
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          color: '#fff',
+                          fontWeight: '500',
+                        }}>
+                        Update
+                      </Text>
+                    </Pressable>
+                  </View>
                 </View>
-                <View style={styles.buttonWrapper}>
-                  <Pressable
-                    style={[styles.button, styles.delete]}
-                    onPress={() => {
-                      removeItem(item.projectID);
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        color: '#fff',
-                        fontWeight: '500',
-                      }}>
-                      Remove
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.borderButton, styles.view]}
-                    onPress={() => {
-                      updateItem(item.projectID);
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        color: '#fff',
-                        fontWeight: '500',
-                      }}>
-                      View
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.borderButton, styles.update]}
-                    onPress={() => {
-                      updateItem(item.projectID);
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        color: '#fff',
-                        fontWeight: '500',
-                      }}>
-                      Update
-                    </Text>
-                  </Pressable>
-                </View>
-              </View>
-            )}
-          />
+              )}
+            />
+          </ScrollView>
         </View>
       );
     }
   };
   return getLatestProjectInfo();
-});
+};
 export default ProjectsList;
 
 const styles = StyleSheet.create({

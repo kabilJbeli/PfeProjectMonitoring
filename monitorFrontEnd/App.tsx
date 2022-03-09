@@ -8,7 +8,7 @@
  * @format
  */
 
-import {StyleSheet, View, LogBox} from 'react-native';
+import {StyleSheet, View, LogBox, Platform} from 'react-native';
 import Navigation from './components/Navigation';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -28,14 +28,19 @@ const App = () => {
   const logoutUser = (logout: any) => {
     setLoggedIn(!logout);
   };
+
   const getInitialView = (): any => {
     let returnedValue: any;
     if (loggedIn == true) {
       returnedValue = (
         <Provider store={Store}>
           <NavigationContainer>
-            <StatusBar translucent={false} backgroundColor="#262626" />
-            <Routes />
+            <StatusBar
+              translucent={true}
+              backgroundColor="#262626"
+              hidden={true}
+              animated={true}
+            />
             <Navigation
               logout={(value: any) => {
                 logoutUser(value);

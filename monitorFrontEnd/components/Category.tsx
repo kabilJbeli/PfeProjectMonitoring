@@ -4,7 +4,7 @@ import {SafeAreaView, Text} from 'react-native';
 const Category = () => {
   return (
     <SafeAreaView>
-      <Text>Category Screen</Text>
+      <Text>Category Screen </Text>
     </SafeAreaView>
   );
 };

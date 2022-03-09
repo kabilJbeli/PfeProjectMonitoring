@@ -43,14 +43,15 @@ const AddProjectComponent = (props: any) => {
       });
   };
   return (
-    <SafeAreaView>
+    <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={props.visible}
         onRequestClose={() => {
           props.clickHandler(!props.visible);
-        }}>
+        }}
+        presentationStyle="overFullScreen">
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={[styles.modalText, styles.title]}>
@@ -130,7 +131,7 @@ const AddProjectComponent = (props: any) => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 export default AddProjectComponent;

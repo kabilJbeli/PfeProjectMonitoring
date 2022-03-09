@@ -1,13 +1,17 @@
 import * as React from 'react';
 import {Button, Pressable, StyleSheet, View, Text} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 
 import {useState} from 'react';
 
 import ProjectsList from './ProjectLists';
 import AddProjectComponent from './AddProjectComponent';
+import {SafeAreaInsetsContext} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-navigation';
 
 const ProjectComponent = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [projectListUpdated, setProjectListUpdated] = useState(true);
 
   const clickHandler = (value: any) => {
     setModalVisible(value);
@@ -15,9 +19,16 @@ const ProjectComponent = () => {
 
   const projectAdded = (event: any) => {
     console.log(event);
+    setProjectListUpdated(false);
+
+    setTimeout(() => {
+      setProjectListUpdated(true);
+    }, 100);
   };
+  const isFocused = useIsFocused();
+
   return (
-    <View>
+    <SafeAreaView>
       <Pressable
         onPress={() => setModalVisible(true)}
         style={styles.loginButton}>
@@ -29,9 +40,9 @@ const ProjectComponent = () => {
         projectAdded={projectAdded.bind(this)}
       />
       <View style={{paddingBottom: 100}}>
-        <ProjectsList />
+        {isFocused && projectListUpdated ? <ProjectsList /> : <Text>''</Text>}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 export default ProjectComponent;
