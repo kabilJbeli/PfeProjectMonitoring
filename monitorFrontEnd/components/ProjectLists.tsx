@@ -113,9 +113,11 @@ const ProjectsList = props => {
                   <Text style={styles.text}>
                     Project Description: {item.projectDescription}
                   </Text>
+                  {/**
                   <Text style={styles.text}>
                     Total Members: {item.members.length}
                   </Text>
+                     */}
                   <View style={styles.footer}>
                     <Text style={styles.text}>
                       <Icon name="calendar" size={18} color={'#000'} /> Start

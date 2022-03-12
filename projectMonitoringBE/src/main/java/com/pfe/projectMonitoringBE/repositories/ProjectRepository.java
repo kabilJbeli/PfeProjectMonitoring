@@ -13,6 +13,7 @@ import com.pfe.projectMonitoringBE.entities.Project;
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
 	
-    @Query(value ="SELECT * FROM Project p WHERE p.project_manager=:id", nativeQuery = true)
-    public List<Project> findByProjectManagerId(@Param("id") Integer id);
+    public List<Project> findByProjectManager(Member projectmanager);
+    public List<Project> findByMembers(Member member);
+    
 }

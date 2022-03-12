@@ -34,6 +34,10 @@ public class ProjectService {
 	}
 	
 	public  List<Project> getManagerProjects(Member member) {
-		return repository.findByProjectManagerId(member.getMemberID());
+		return repository.findByProjectManager(member);
+	}
+	
+	public  List<Project> getProjectsbyMember(Member member) {
+		return repository.findByMembers(member);
 	}
 }

@@ -12,6 +12,8 @@ import {
 import {authorize as auth} from 'react-native-app-auth';
 import {Text} from 'react-native-elements';
 import Images from '../assets/Images';
+import axios from 'axios';
+import Environment from '../Environment';
 
 const config = {
   issuer: 'http://localhost:8080/auth',
@@ -51,16 +53,20 @@ const Login = (props: any) => {
   const [error, setError] = useState(false);
 
   const onLoginPress = () => {
-    if (
-      user &&
-      user.user.username.valueOf() === 'kabil' &&
-      user.user.password.valueOf() === 'admin'
-    ) {
-      props.changeSignInStatus(true);
-    } else {
-      props.changeSignInStatus(false);
-      setError(true);
-    }
+    axios
+      .post(
+        `${Environment.API_URL}/api/member/login/${user.user.username}/${user.user.password}`,
+        {},
+      )
+      .then((res: any) => {
+        console.log(res);
+        if (res && res.memberID) {
+          props.changeSignInStatus(true);
+        } else {
+          props.changeSignInStatus(false);
+          setError(true);
+        }
+      });
   };
   const renderAuthResponse = () => {
     if (error) {

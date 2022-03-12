@@ -8,8 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pfe.projectMonitoringBE.Enums.Roles;
 
@@ -27,6 +30,8 @@ public class Member implements Serializable {
 	private Set<Task> tasks;
 
 	private Set<Project> Projects;
+	
+	private Project managedproject;
 
 	private Roles role;
 
@@ -107,7 +112,8 @@ public class Member implements Serializable {
 		this.role = role;
 	}
 
-	@OneToMany(mappedBy = "members")
+	@ManyToMany(mappedBy = "members")
+	@JsonIgnore
 	public Set<Project> getProjects() {
 		return Projects;
 	}
@@ -117,6 +123,7 @@ public class Member implements Serializable {
 	}
 
 	@OneToMany(mappedBy="member")
+	@JsonIgnore
 	public Set<Task> getTasks() {
 		return tasks;
 	}
@@ -135,5 +142,17 @@ public class Member implements Serializable {
 	public void setMemberID(Integer memberID) {
 		this.memberID = memberID;
 	}
+
+	@OneToOne(mappedBy = "projectManager")
+	@JsonIgnore
+	public Project getManagedproject() {
+		return managedproject;
+	}
+
+	public void setManagedproject(Project managedproject) {
+		this.managedproject = managedproject;
+	}
+	
+	
 
 }

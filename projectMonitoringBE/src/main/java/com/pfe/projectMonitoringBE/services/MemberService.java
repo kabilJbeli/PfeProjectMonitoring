@@ -30,4 +30,8 @@ public class MemberService {
 	public void deleteMember(Member member) {
 		repository.delete(member);
 	}
+	
+	public Member findMember(String password, String username) {
+		return repository.findByNameAndPassword(password, username);
+	}
 }

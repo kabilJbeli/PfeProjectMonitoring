@@ -23,7 +23,6 @@ const CustomDrawerContent = (props: any) => {
   const logOut = () => {
     props.logout(true);
   };
-  const navigation = useNavigation();
 
   return (
     <DrawerContentScrollView {...props}>
@@ -76,6 +75,7 @@ const Navigation = (props: any) => {
         <CustomDrawerContent
           logout={(value: any) => logOut(value)}
           {...props}
+          navigation={props.navigation}
         />
       )}>
       <Drawer.Screen

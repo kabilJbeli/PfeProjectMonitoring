@@ -9,9 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -33,10 +36,9 @@ public class Project implements Serializable {
 	private Set<Task> tasks;
 
 	private ProjectStatus projectStatus;
-
+	
 	private Set<Member> members;
 	
-	@Column(name = "PROJECTMANAGER")
 	private Member projectManager;
 	
 	
@@ -56,7 +58,8 @@ public class Project implements Serializable {
 	
 	
 	
-	
+	@OneToOne
+	@JoinColumn(name = "manager")
 	public Member getProjectManager() {
 		return projectManager;
 	}
@@ -97,7 +100,7 @@ public class Project implements Serializable {
 		this.endDate = endDate;
 	}
 
-	@OneToMany
+	@ManyToMany	
 	public Set<Member> getMembers() {
 		return members;
 	}

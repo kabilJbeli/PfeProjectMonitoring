@@ -44,9 +44,14 @@ public class ProjectController {
 	}
 	
 	
-	@PostMapping("/getProjectsByProjectManager")
+	@GetMapping("/getProjectsByProjectManager")
 	public List<Project> getProjectById(@RequestBody Member projectManager) {		
 		return service.getManagerProjects(projectManager);	
+	}
+	
+	@PostMapping("/getProjectsByMember")
+	public List<Project> getProjectbymember(@RequestBody Member member) {		
+		return service.getManagerProjects(member);	
 	}
 	
 
