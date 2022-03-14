@@ -1,46 +1,69 @@
 import * as React from 'react';
-import {Button, Pressable, StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 
 import {useState} from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ProjectsList from './ProjectLists';
 import AddProjectComponent from './AddProjectComponent';
-import {SafeAreaInsetsContext} from 'react-native-safe-area-context';
 import {SafeAreaView} from 'react-navigation';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
+
+export const TabNavigator = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="projects"
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {backgroundColor: '#262626', height: 25},
+        tabBarInactiveTintColor: '#fff',
+        tabBarActiveTintColor: 'yellow',
+      }}>
+      <Tab.Screen
+        name="projects"
+        component={ProjectComponent}
+        options={({route}) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: '#AD40AF',
+          },
+          tabBarLabel: 'Project List',
+          tabBarIcon: ({color, size}) => (
+            <Ionicons name="ios-medal-outline" color={color} size={size} />
+          ),
+        })}
+      />
+
+      <Tab.Screen
+        name="addProject"
+        component={AddProjectComponent}
+        options={({route}) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: '#AD40AF',
+          },
+          tabBarLabel: 'Add Project',
+          tabBarIcon: ({color, size}) => (
+            <Ionicons name="add" color={color} size={size} />
+          ),
+        })}
+      />
+    </Tab.Navigator>
+  );
+};
 
 const ProjectComponent = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [projectListUpdated, setProjectListUpdated] = useState(true);
-
-  const clickHandler = (value: any) => {
-    setModalVisible(value);
-  };
-
-  const projectAdded = (event: any) => {
-    console.log(event);
-    setProjectListUpdated(false);
-
-    setTimeout(() => {
-      setProjectListUpdated(true);
-    }, 100);
-  };
   const isFocused = useIsFocused();
 
   return (
     <SafeAreaView>
-      <Pressable
-        onPress={() => setModalVisible(true)}
-        style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Add New Project</Text>
-      </Pressable>
-      <AddProjectComponent
-        visible={modalVisible}
-        clickHandler={clickHandler.bind(this)}
-        projectAdded={projectAdded.bind(this)}
-      />
       <View style={{paddingBottom: 100}}>
-        {isFocused && projectListUpdated ? <ProjectsList /> : <Text>''</Text>}
+        {isFocused ? <ProjectsList /> : <Text>''</Text>}
       </View>
     </SafeAreaView>
   );
@@ -96,3 +119,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+const getTabBarVisibility = (route: any) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
+  // console.log(routeName);
+
+  if (routeName == 'GameDetails') {
+    return 'none';
+  }
+  return 'flex';
+};

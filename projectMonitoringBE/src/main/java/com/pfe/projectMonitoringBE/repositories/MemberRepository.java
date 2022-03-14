@@ -8,9 +8,9 @@ import com.pfe.projectMonitoringBE.entities.Member;
 
 @Repository
 public interface MemberRepository  extends JpaRepository<Member, Integer> {
-	public Member findByNameAndPassword(String username, String password);
+	public Member findByNameAndPassword(String password, String username);
 	
-	@Query("select m from Member m where Password = ?1 and Name = ?2")
+	@Query("select m from Member m where password = ?1 and name = ?2")
 	public Member findMember (String password, String username);
 
 }

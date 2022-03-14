@@ -9,15 +9,13 @@ import {
 import Home from './Home';
 import Category from './Category';
 import Dashboard from './Dashboard';
-import Project from './Project';
+import Project, {TabNavigator} from './Project';
 import Sprint from './Sprint';
 import Task from './Task';
 import User from './Users';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
-
-const ProjectStack = createStackNavigator();
 
 const CustomDrawerContent = (props: any) => {
   const logOut = () => {
@@ -32,31 +30,7 @@ const CustomDrawerContent = (props: any) => {
   );
 };
 
-const ProjectsStack = (props: any) => {
-  const navigation = useNavigation();
 
-  return (
-    <ProjectStack.Navigator
-      initialRouteName="Projects"
-      screenOptions={{
-        headerShown: false,
-      }}
-      {...props}>
-      <ProjectStack.Screen
-        {...props}
-        navigation={navigation}
-        name="Projects"
-        component={Project}
-      />
-      <ProjectStack.Screen
-        {...props}
-        navigation={navigation}
-        name="Home"
-        component={Home}
-      />
-    </ProjectStack.Navigator>
-  );
-};
 const Drawer = createDrawerNavigator();
 const Navigation = (props: any) => {
   const logOut = (val: any) => {
@@ -113,7 +87,7 @@ const Navigation = (props: any) => {
       />
       <Drawer.Screen
         name={'Project'}
-        component={ProjectsStack}
+        component={TabNavigator}
         options={{
           drawerLabel: 'Project',
           swipeEnabled: false,

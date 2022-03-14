@@ -32,6 +32,6 @@ public class MemberService {
 	}
 	
 	public Member findMember(String password, String username) {
-		return repository.findByNameAndPassword(password, username);
+		return repository.findMember(password, username);
 	}
 }

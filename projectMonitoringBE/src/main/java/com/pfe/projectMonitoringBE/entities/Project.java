@@ -1,6 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -50,10 +51,10 @@ public class Project implements Serializable {
 	private String projectDescription;
 	
 	@Column(name = "STARTDATE")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 	
 	@Column(name = "ENDDATE")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 
 	
 	
@@ -84,19 +85,19 @@ public class Project implements Serializable {
 		this.projectDescription = projectDescription;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

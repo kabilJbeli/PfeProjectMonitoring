@@ -6,33 +6,13 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
-  TouchableHighlight,
   View,
 } from 'react-native';
-import {authorize as auth} from 'react-native-app-auth';
 import {Text} from 'react-native-elements';
 import Images from '../assets/Images';
 import axios from 'axios';
 import Environment from '../Environment';
 
-const config = {
-  issuer: 'http://localhost:8080/auth',
-  clientId: 'monitoringFE',
-  realm: 'monitoring',
-  clientSecret: '06e85065-5a63-4aec-b65d-d6b480c4cc50',
-  redirectUrl: 'http://.0.2.2:8081',
-  scopes: ['email', 'offline_access'],
-};
-
-const keyckloaks = async (configInfo: any) => {
-  return await auth(configInfo)
-    .then(val => {
-      console.log(val);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
 const Login = (props: any) => {
   const [user, setUser] = useState({
     user: {
@@ -42,30 +22,31 @@ const Login = (props: any) => {
   });
   console.log(props);
 
-  /*  keyckloaks(config)
-    .then((val: any) => {
-      console.log(val);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-*/
   const [error, setError] = useState(false);
 
-  const onLoginPress = () => {
-    axios
-      .post(
-        `${Environment.API_URL}/api/member/login/${user.user.username}/${user.user.password}`,
-        {},
-      )
-      .then((res: any) => {
-        console.log(res);
-        if (res && res.memberID) {
+  const onLoginPress = async () => {
+    await axios({
+      method: 'GET',
+      url: `${Environment.API_URL}/api/member/login/${user.user.password}/${user.user.username}`,
+      headers: {
+        'Content-Type': 'application/json',
+        useQueryString: false,
+      },
+      params: {},
+    })
+      .then(response => {
+        if (response.data !== '') {
           props.changeSignInStatus(true);
         } else {
           props.changeSignInStatus(false);
           setError(true);
         }
+        console.log(response);
+      })
+      .catch(err => {
+        props.changeSignInStatus(false);
+        setError(true);
+        console.log(err);
       });
   };
   const renderAuthResponse = () => {

@@ -8,7 +8,7 @@
  * @format
  */
 
-import {StyleSheet, View, LogBox, Platform} from 'react-native';
+import {StyleSheet, LogBox} from 'react-native';
 import Navigation from './components/Navigation';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -19,8 +19,7 @@ import {Store} from './redux/Store';
 import {StatusBar} from 'react-native';
 
 import Login from './components/Login';
-import {SafeAreaView} from 'react-navigation';
-import Routes from './Routes';
+import SafeAreaView from 'react-native-safe-area-view';
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);

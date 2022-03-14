@@ -71,7 +71,7 @@ public class MemberController {
 		}
 	}
 	
-	@PostMapping("/login/{password}/{username}")
+	@GetMapping("/login/{password}/{username}")
 	public Member findMember(@PathVariable String password, @PathVariable String username) {
 		return service.findMember(password, username);
 	}

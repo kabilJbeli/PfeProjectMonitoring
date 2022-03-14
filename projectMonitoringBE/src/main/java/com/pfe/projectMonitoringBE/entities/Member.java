@@ -49,6 +49,34 @@ public class Member implements Serializable {
 
 	
 	
+	public Member() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Member [memberID=" + memberID + ", tasks=" + tasks + ", Projects=" + Projects + ", managedproject="
+				+ managedproject + ", role=" + role + ", name=" + name + ", lastName=" + lastName + ", email=" + email
+				+ ", Telephone=" + Telephone + ", Address=" + Address + ", Password=" + Password + "]";
+	}
+
+	public Member(Integer memberID, Set<Task> tasks, Set<Project> projects, Project managedproject, Roles role,
+			String name, String lastName, String email, Integer telephone, String address, String password) {
+		super();
+		this.memberID = memberID;
+		this.tasks = tasks;
+		Projects = projects;
+		this.managedproject = managedproject;
+		this.role = role;
+		this.name = name;
+		this.lastName = lastName;
+		this.email = email;
+		Telephone = telephone;
+		Address = address;
+		Password = password;
+	}
+
 	@Column(name = "PASSWORD")
 	public String getPassword() {
 		return Password;
