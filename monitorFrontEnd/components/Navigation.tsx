@@ -16,6 +16,7 @@ import User from './Users';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
+import {getActiveChildNavigationOptions} from 'react-navigation';
 
 const CustomDrawerContent = (props: any) => {
   const logOut = () => {
@@ -29,7 +30,6 @@ const CustomDrawerContent = (props: any) => {
     </DrawerContentScrollView>
   );
 };
-
 
 const Drawer = createDrawerNavigator();
 const Navigation = (props: any) => {

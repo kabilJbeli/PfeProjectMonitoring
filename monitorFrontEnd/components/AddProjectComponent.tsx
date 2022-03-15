@@ -23,7 +23,10 @@ const ProjectStatusData = [
 
 const AddProjectComponent = (props: any) => {
   const [date, setDate] = useState(new Date());
+  const [expectedEndDate, setExpectedEndDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [openEndDate, setOpenEndDate] = useState(false);
+
   const [state, setState] = useState({
     project: {
       projectTitle: '',
@@ -48,7 +51,6 @@ const AddProjectComponent = (props: any) => {
   return (
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
-        <Text style={[styles.modalText, styles.title]}>Add New Project</Text>
         <View style={{width: '100%'}}>
           <Text>Project Title</Text>
           <Input
@@ -109,11 +111,12 @@ const AddProjectComponent = (props: any) => {
               alignItems: 'center',
               width: '100%',
             }}>
-            <Text>Start Date: {Moment(date).format('dd MM YYYY')} </Text>
+            <Text>Start Date: {Moment(date).format('DD-MM-YYYY')} </Text>
             <Button title="Change" onPress={() => setOpen(true)} />
           </View>
           <DatePicker
             modal
+            mode={'date'}
             open={open}
             date={date}
             onConfirm={(startDate: any) => {
@@ -123,6 +126,13 @@ const AddProjectComponent = (props: any) => {
             onCancel={() => {
               setOpen(false);
             }}
+            onDateChange={chosenDate =>
+              setState(prevState => {
+                let project = Object.assign({}, prevState.project);
+                project.startDate = chosenDate;
+                return {project};
+              })
+            }
           />
         </View>
 
@@ -135,20 +145,30 @@ const AddProjectComponent = (props: any) => {
               alignItems: 'center',
               width: '100%',
             }}>
-            <Text>Expected End Date: {Moment(date).format('dd MM YYYY')}</Text>
-            <Button title="Change" onPress={() => setOpen(true)} />
+            <Text>
+              Expected End Date: {Moment(expectedEndDate).format('DD-MM-YYYY')}
+            </Text>
+            <Button title="Change" onPress={() => setOpenEndDate(true)} />
           </View>
           <DatePicker
             modal
-            open={open}
-            date={date}
+            mode={'date'}
+            open={openEndDate}
+            date={expectedEndDate}
             onConfirm={(endDate: any) => {
-              setOpen(false);
-              setDate(endDate);
+              setOpenEndDate(false);
+              setExpectedEndDate(endDate);
             }}
             onCancel={() => {
-              setOpen(false);
+              setOpenEndDate(false);
             }}
+            onDateChange={chosenEndDate =>
+              setState(prevState => {
+                let project = Object.assign({}, prevState.project);
+                project.endDate = chosenEndDate;
+                return {project};
+              })
+            }
           />
         </View>
 

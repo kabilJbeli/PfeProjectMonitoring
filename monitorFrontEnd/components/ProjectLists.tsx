@@ -68,6 +68,44 @@ const ProjectsList = props => {
     navigation.navigate('Home', {id: projectID});
   };
 
+  const getListHeader = () => {
+    return (
+      <View style={{width: '100%', backgroundColor: '#fff'}}>
+        <Input
+          leftIcon={<IconM name="search" size={20} color={'#000'} />}
+          placeholder={'Search by project title or description'}
+          style={styles.customMargin}
+          onChangeText={text => {
+            setSearchedProjectName(text);
+            if (text.trim() !== '') {
+              setProjects(
+                searchedProject.filter(
+                  (item: Project) =>
+                    item.projectTitle.toLowerCase().includes(text) ||
+                    item.projectDescription.toLowerCase().includes(text),
+                ),
+              );
+            } else {
+              setProjects(searchedProject);
+            }
+          }}
+          autoCompleteType={false}
+        />
+      </View>
+    );
+  };
+
+  const FlatListItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: '100%',
+          backgroundColor: 'transparent',
+        }}
+      />
+    );
+  };
   const getLatestProjectInfo = () => {
     if (loading) {
       return (
@@ -78,108 +116,83 @@ const ProjectsList = props => {
     } else {
       return (
         <View>
-          <View style={{width: '100%'}}>
-            <Input
-              leftIcon={<IconM name="search" size={20} color={'#000'} />}
-              placeholder={'Search by project title or description'}
-              style={styles.customMargin}
-              onChangeText={text => {
-                setSearchedProjectName(text);
-                if (text.trim() !== '') {
-                  setProjects(
-                    searchedProject.filter(
-                      (item: Project) =>
-                        item.projectTitle.toLowerCase().includes(text) ||
-                        item.projectDescription.toLowerCase().includes(text),
-                    ),
-                  );
-                } else {
-                  setProjects(searchedProject);
-                }
-              }}
-              autoCompleteType={false}
-            />
-          </View>
-          <ScrollView>
-            <FlatList
-              keyExtractor={(item, index) => index.toString()}
-              data={projects.reverse()}
-              initialNumToRender={projects.length}
-              renderItem={({item}) => (
-                <View style={styles.project}>
-                  <Text style={styles.title}>
-                    Project Title: {item.projectTitle}
-                  </Text>
-                  <Text style={styles.text}>
-                    Project Description: {item.projectDescription}
-                  </Text>
-                  {/**
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={projects.reverse()}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListHeaderComponent={() => getListHeader()}
+            stickyHeaderIndices={[0]}
+            initialNumToRender={projects.length}
+            renderItem={({item}) => (
+              <View style={styles.project}>
+                <Text style={styles.title}>
+                  Project Title: {item.projectTitle}
+                </Text>
+                <Text style={styles.text}>
+                  Project Description: {item.projectDescription}
+                </Text>
+                {/**
                   <Text style={styles.text}>
                     Total Members: {item.members.length}
                   </Text>
                      */}
-                  <View style={styles.footer}>
-                    <Text style={styles.text}>
-                      <Icon name="calendar" size={18} color={'#000'} /> Start
-                      Date: {Moment(item.startDate).format('d-MM-YYYY')}
-                    </Text>
-                    <Text style={styles.text}>
-                      <Icon name="calendar" size={18} color={'#000'} /> End
-                      Date: {Moment(item.endDate).format('d-MM-YYYY')}
-                    </Text>
-                  </View>
-                  <View style={styles.buttonWrapper}>
-                    <Pressable
-                      style={[styles.button, styles.delete]}
-                      onPress={() => {
-                        removeItem(item.projectID);
-                      }}>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          color: '#fff',
-                          fontWeight: '500',
-                        }}>
-                        Remove
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.button, styles.borderButton, styles.view]}
-                      onPress={() => {
-                        updateItem(item.projectID);
-                      }}>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          color: '#fff',
-                          fontWeight: '500',
-                        }}>
-                        View
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      style={[
-                        styles.button,
-                        styles.borderButton,
-                        styles.update,
-                      ]}
-                      onPress={() => {
-                        updateItem(item.projectID);
-                      }}>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          color: '#fff',
-                          fontWeight: '500',
-                        }}>
-                        Update
-                      </Text>
-                    </Pressable>
-                  </View>
+                <View style={styles.footer}>
+                  <Text style={styles.text}>
+                    <Icon name="calendar" size={18} color={'#000'} /> Start
+                    Date: {Moment(item.startDate).format('d-MM-YYYY')}
+                  </Text>
+                  <Text style={styles.text}>
+                    <Icon name="calendar" size={18} color={'#000'} /> End Date:{' '}
+                    {Moment(item.endDate).format('d-MM-YYYY')}
+                  </Text>
                 </View>
-              )}
-            />
-          </ScrollView>
+                <View style={styles.buttonWrapper}>
+                  <Pressable
+                    style={[styles.button, styles.delete]}
+                    onPress={() => {
+                      removeItem(item.projectID);
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: '#fff',
+                        fontWeight: '500',
+                      }}>
+                      Remove
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.borderButton, styles.view]}
+                    onPress={() => {
+                      updateItem(item.projectID);
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: '#fff',
+                        fontWeight: '500',
+                      }}>
+                      View
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.borderButton, styles.update]}
+                    onPress={() => {
+                      updateItem(item.projectID);
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: '#fff',
+                        fontWeight: '500',
+                      }}>
+                      Update
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+          />
         </View>
       );
     }
@@ -191,6 +204,8 @@ export default ProjectsList;
 const styles = StyleSheet.create({
   customMargin: {
     marginTop: 15,
+    paddingBottom: 0,
+    marginBottom: 0,
   },
   loadingContainer: {
     display: 'flex',

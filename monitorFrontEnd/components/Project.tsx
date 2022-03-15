@@ -22,7 +22,7 @@ export const TabNavigator = () => {
         tabBarShowLabel: false,
         tabBarStyle: {backgroundColor: '#262626', height: 25},
         tabBarInactiveTintColor: '#fff',
-        tabBarActiveTintColor: 'yellow',
+        tabBarActiveTintColor: '#d81e05',
       }}>
       <Tab.Screen
         name="projects"
@@ -30,7 +30,7 @@ export const TabNavigator = () => {
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
-            backgroundColor: '#AD40AF',
+            backgroundColor: '#262626',
           },
           tabBarLabel: 'Project List',
           tabBarIcon: ({color, size}) => (
@@ -45,7 +45,7 @@ export const TabNavigator = () => {
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
-            backgroundColor: '#AD40AF',
+            backgroundColor: '#262626',
           },
           tabBarLabel: 'Add Project',
           tabBarIcon: ({color, size}) => (
@@ -62,9 +62,7 @@ const ProjectComponent = () => {
 
   return (
     <SafeAreaView>
-      <View style={{paddingBottom: 100}}>
-        {isFocused ? <ProjectsList /> : <Text>''</Text>}
-      </View>
+      <View>{isFocused ? <ProjectsList /> : <Text>''</Text>}</View>
     </SafeAreaView>
   );
 };
