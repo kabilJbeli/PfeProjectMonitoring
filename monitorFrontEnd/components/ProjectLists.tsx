@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 
 import {Input} from 'react-native-elements';
-const ProjectsList = props => {
+const ProjectsList = (props:any) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [searchedProject, setSearchedProject] = useState<Project[]>([]);
   const [searchedProjectName, setSearchedProjectName] = useState<String>('');

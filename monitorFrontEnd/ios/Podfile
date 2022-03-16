@@ -12,6 +12,8 @@ target 'monitorFrontEnd' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
+
   target 'monitorFrontEndTests' do
     inherit! :complete
     # Pods for testing

@@ -10,19 +10,19 @@ import ProjectsList from './ProjectLists';
 import AddProjectComponent from './AddProjectComponent';
 import {SafeAreaView} from 'react-navigation';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 export const TabNavigator = () => {
   return (
     <Tab.Navigator
       initialRouteName="projects"
       screenOptions={{
-        headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {backgroundColor: '#262626', height: 25},
         tabBarInactiveTintColor: '#fff',
-        tabBarActiveTintColor: '#d81e05',
+        tabBarActiveTintColor: '#fff',
       }}>
       <Tab.Screen
         name="projects"
@@ -30,11 +30,11 @@ export const TabNavigator = () => {
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
-            backgroundColor: '#262626',
+            backgroundColor: '#3e3d3d',
           },
           tabBarLabel: 'Project List',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="ios-medal-outline" color={color} size={size} />
+          tabBarIcon: ({color}) => (
+            <Ionicons name="ios-medal-outline" color={color} size={25} />
           ),
         })}
       />
@@ -45,11 +45,11 @@ export const TabNavigator = () => {
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
-            backgroundColor: '#262626',
+            backgroundColor: '#3e3d3d',
           },
           tabBarLabel: 'Add Project',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="add" color={color} size={size} />
+          tabBarIcon: ({color}) => (
+            <Ionicons name="add" color={color} size={25} />
           ),
         })}
       />

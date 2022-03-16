@@ -13,6 +13,7 @@ import {useState} from 'react';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import validator from 'validator';
+import {showToastWithGravity} from "../utils";
 
 const User = () => {
   const [state, setState] = useState({
@@ -26,16 +27,23 @@ const User = () => {
       password: '',
     },
   });
+  const defaultState = state;
   const [emailValid, setEmailValid] = useState(false);
   const checkEmail = (email: string) => {
     setEmailValid(validator.isEmail(state.user.email));
+
   };
   const addUser = () => {
     axios
       .post(`${Environment.API_URL}/api/member/add`, state.user)
       .then((res: any) => {
+        showToastWithGravity('User Successfully Added');
+        setState(defaultState);
         console.log(res);
-      });
+      }).catch((error:any)=>{
+      showToastWithGravity('An Error Has occurred!!!');
+      console.log(error);
+    });
   };
 
   const getButtonStatus = (): boolean => {
@@ -43,7 +51,7 @@ const User = () => {
       state.user.name === '' ||
       state.user.lastName === '' ||
       state.user.email === '' ||
-      !validator.isEmail(state.user.email) ||
+      !emailValid ||
       state.user.password === '' ||
       state.user.Telephone === '' ||
       state.user.Address === ''
@@ -66,6 +74,7 @@ const User = () => {
               return {user};
             })
           }
+          value={state.user.name}
           autoCompleteType={false}
         />
       </View>
@@ -84,6 +93,8 @@ const User = () => {
               return {user};
             })
           }
+          value={state.user.lastName}
+
           autoCompleteType={false}
         />
       </View>
@@ -105,6 +116,8 @@ const User = () => {
               return {user};
             })
           }
+          value={state.user.email}
+
           autoCompleteType={false}
         />
       </View>
@@ -123,6 +136,8 @@ const User = () => {
               return {user};
             })
           }
+          value={state.user.password}
+
           secureTextEntry={true}
           autoCompleteType={false}
         />

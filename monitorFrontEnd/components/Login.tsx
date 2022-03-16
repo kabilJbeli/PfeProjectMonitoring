@@ -7,11 +7,14 @@ import {
   StyleSheet,
   TextInput,
   View,
+
 } from 'react-native';
+
 import {Text} from 'react-native-elements';
 import Images from '../assets/Images';
 import axios from 'axios';
 import Environment from '../Environment';
+import {_storeData} from "../utils";
 
 const Login = (props: any) => {
   const [user, setUser] = useState({
@@ -37,15 +40,20 @@ const Login = (props: any) => {
       .then(response => {
         if (response.data !== '') {
           props.changeSignInStatus(true);
+          _storeData('loggedIn','true');
         } else {
           props.changeSignInStatus(false);
           setError(true);
+          _storeData('loggedIn','false');
+
         }
         console.log(response);
       })
       .catch(err => {
         props.changeSignInStatus(false);
         setError(true);
+        _storeData('loggedIn','true');
+
         console.log(err);
       });
   };

@@ -20,74 +20,77 @@ import {StatusBar} from 'react-native';
 
 import Login from './components/Login';
 import SafeAreaView from 'react-native-safe-area-view';
+import {_retrieveData} from "./utils";
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-  LogBox.ignoreAllLogs();
-  const logoutUser = (logout: any) => {
-    setLoggedIn(!logout);
-  };
+	const [loggedIn, setLoggedIn] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const getInitialView = (): any => {
-    let returnedValue: any;
-    if (loggedIn == true) {
-      returnedValue = (
-        <Provider store={Store}>
-          <NavigationContainer>
-            <StatusBar
-              translucent={true}
-              backgroundColor="#262626"
-              hidden={true}
-              animated={true}
-            />
-            <Navigation
-              logout={(value: any) => {
-                logoutUser(value);
-              }}
-            />
-          </NavigationContainer>
-        </Provider>
-      );
-    } else {
-      returnedValue = (
-        <Provider store={Store}>
-          <SafeAreaView style={styles.containerLogin}>
-            <StatusBar translucent={false} backgroundColor="#262626" />
-            <Login
-              changeSignInStatus={(
-                value: boolean | ((prevState: boolean) => boolean),
-              ) => setLoggedIn(value)}
-            />
-          </SafeAreaView>
-        </Provider>
-      );
-    }
-    return returnedValue;
-  };
+	LogBox.ignoreAllLogs();
+	const logoutUser = (logout: any) => {
+		setLoggedIn(!logout);
+	};
 
-  return getInitialView();
+	const getInitialView = (): any => {
+		let returnedValue: any;
+
+		_retrieveData('loggedIn').then((result: any) => {
+			console.log('isLoggedIn in Store:',result)
+			setIsLoggedIn(Boolean(result));
+		});
+		console.log('isLoggedIn in out of Store:',loggedIn)
+
+		if (loggedIn === true || isLoggedIn === true) {
+			returnedValue = (
+				<Provider store={Store}>
+					<NavigationContainer>
+						<StatusBar
+							translucent={true}
+							backgroundColor="#262626"
+							animated={true}
+						/>
+						<Navigation
+							logout={(value: any) => {
+								logoutUser(value);
+							}}
+						/>
+					</NavigationContainer>
+				</Provider>
+			);
+		} else {
+			returnedValue = (
+				<Provider store={Store}>
+					<SafeAreaView style={styles.containerLogin}>
+						<StatusBar translucent={false} backgroundColor="#262626"/>
+						<Login
+							changeSignInStatus={(
+								value: boolean | ((prevState: boolean) => boolean),
+							) => setLoggedIn(value)}
+						/>
+					</SafeAreaView>
+				</Provider>
+			);
+		}
+		return returnedValue;
+	};
+
+	return getInitialView();
 };
 
 const styles = StyleSheet.create({
-  containerLogin: {
-    backgroundColor: '#262626',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-  },
-  container: {
-    backgroundColor: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-  },
-  background: {
-    shadowColor: '#171717',
-    shadowOffset: {width: -2, height: 6},
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-  },
+	containerLogin: {
+		backgroundColor: '#262626',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: '100%',
+	},
+	container: {
+		backgroundColor: '#fff',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: '100%',
+	}
 });
 export default App;
