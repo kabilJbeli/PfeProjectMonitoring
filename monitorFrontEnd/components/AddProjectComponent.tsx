@@ -239,7 +239,8 @@ const AddProjectComponent = (props: any) => {
 							<TouchableOpacity
 								style={styles.cancelWrapper}
 								onPress={() => {
-									//props.clickHandler(!props.visible);
+									setState(defaultState);
+
 								}}>
 								<Text
 									style={{
@@ -247,7 +248,7 @@ const AddProjectComponent = (props: any) => {
 										color: '#fff',
 										fontWeight: '500',
 									}}>
-									Cancel
+									Reset
 								</Text>
 							</TouchableOpacity>
 							<TouchableOpacity
@@ -262,7 +263,7 @@ const AddProjectComponent = (props: any) => {
 										color: '#fff',
 										fontWeight: '500',
 									}}>
-									Add Project
+									Add New Project
 								</Text>
 							</TouchableOpacity>
 						</View>

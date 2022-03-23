@@ -38,7 +38,9 @@ const User = () => {
 	};
 	const addUser = () => {
 		axios
-			.post(`${Environment.API_URL}/api/member/add`, state.user)
+			.post(`${Environment.API_URL}/api/keycloak/user?username=${state.user.name}
+			&email=${state.user.email}&firstname=${state.user.name}&lastname=${state.user.lastName}
+			&password=${state.user.password}&role=${state.user.role}&address=${state.user.Address}&telephone=${state.user.Telephone}`, {})
 			.then((res: any) => {
 				showToastWithGravity('User Successfully Added');
 				setState(defaultState);
@@ -156,6 +158,8 @@ const User = () => {
 								return {user};
 							})
 						}
+						value={state.user.Address}
+
 						autoCompleteType={false}
 					/>
 				</View>
@@ -173,6 +177,7 @@ const User = () => {
 							})
 						}
 						keyboardType="numeric"
+						value={state.user.Telephone}
 
 						autoCompleteType={false}
 					/>
@@ -199,9 +204,10 @@ const User = () => {
 				</View>
 				<View style={styles.columnDisplay}>
 					<TouchableOpacity style={styles.cancelWrapper} onPress={() => {
+						setState(defaultState);
 					}}>
 						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
-							Cancel
+							Reset
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -210,7 +216,7 @@ const User = () => {
 							addUser();
 						}}>
 						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
-							Add User
+							Add New User
 						</Text>
 					</TouchableOpacity>
 				</View>

@@ -32,9 +32,9 @@ public class MemberService {
 		repository.delete(member);
 	}
 	
-	public Member findMember(String password, String username) {
-		return repository.findMember(password, username);
-	}
+	public Member findByKeycloakId(String keycloakId){
+	return repository.findBykeycloakId(keycloakId);
+}
 	
 	public List<Member> findmanagers() {
 		return repository.findByRole(Roles.MANAGER);

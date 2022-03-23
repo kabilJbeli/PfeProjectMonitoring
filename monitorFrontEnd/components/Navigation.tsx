@@ -9,7 +9,7 @@ import {
 import Home from './Home';
 import Category from './Category';
 import Dashboard from './Dashboard';
-import Project, {TabNavigator} from './Project';
+import Project from './Project';
 import Sprint from './Sprint';
 import Task from './Task';
 import User from './Users';
@@ -19,10 +19,8 @@ import IconE from 'react-native-vector-icons/FontAwesome';
 
 import IconS from 'react-native-vector-icons/SimpleLineIcons';
 
-
-import {createStackNavigator} from '@react-navigation/stack';
 import ProjectStatus from './ProjectStatus';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 
 import {
@@ -36,42 +34,41 @@ import {
 	UserStack,
 } from './navigationUtils';
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {_retrieveData, _storeData} from "../utils";
-import {UserTabNavigator} from "./UserManagement";
 import {useEffect, useState} from "react";
-import {ScrollView} from "react-native-gesture-handler";
 
-const Stack = createStackNavigator();
 
 const CustomDrawerContent = (props: any) => {
-	const logOut = () => {
-		props.logout(true);
-
-	};
-	const [userInfo, setUserInfo]= useState<any>(null);
-
+	const [userInfo, setUserInfo] = useState<any>(null);
 	const {state, descriptors, navigation} = props;
 
-	_retrieveData('userInfo').then((userInfo: any) => {
-		setUserInfo(JSON.parse(userInfo));
-	});
+	const logOut = () => {
+		props.logout(true);
+	};
 
+	const retrieveUserInformation = () => {
+		useEffect(() => {
+			if(userInfo === null){
+				_retrieveData('userInfo').then((userInfo: any) => {
+					setUserInfo(JSON.parse(userInfo));
+				});
+			}
 
-
+		}, [userInfo])
+	}
 
 	let lastGroupName = '';
 	let newGroup = true;
+	retrieveUserInformation();
+
 	return (
 		<DrawerContentScrollView
-stickyHeaderIndices={[0]}
-
-			style={{width:'100%'}} {...props}>
+			style={{width: '100%'}} {...props}>
 			{/* <DrawerItemList {...props} />*/}
 			<View style={styles.profile}>
-				<View style={styles.username}><IconE color={'#fff'} size={15} style={{paddingRight:5}}
-							  name={'user-circle-o'}/>
-				<Text style={styles.profileText}>{userInfo?.username}</Text>
+				<View style={styles.username}><IconE color={'#fff'} size={15} style={{paddingRight: 5}}
+													 name={'user-circle-o'}/>
+					<Text style={styles.profileText}>{userInfo?.firstName} {userInfo?.lastName}</Text>
 				</View>
 				<Text style={styles.emailText}>{userInfo?.email}</Text>
 			</View>
@@ -129,6 +126,7 @@ const Navigation = (props: any) => {
 	};
 	return (
 		<Drawer.Navigator
+
 			screenOptions={{
 				drawerStyle: {
 					width: 250,
@@ -136,6 +134,7 @@ const Navigation = (props: any) => {
 				drawerPosition: 'left',
 				drawerType: 'slide',
 			}}
+
 			drawerContent={props => (
 				<CustomDrawerContent
 					{...props}
@@ -260,23 +259,23 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		marginTop: 0,
-		paddingTop:15,
-		paddingBottom:15,
-		height:'90%'
+		paddingTop: 15,
+		paddingBottom: 15,
+		height: '90%'
 	},
-	profile:{
-		backgroundColor:'#00a99d',
-		color:'#fff',
-		marginTop:-5,
-		padding:10,
-		justifyContent:'center',
+	profile: {
+		backgroundColor: '#00a99d',
+		color: '#fff',
+		marginTop: -5,
+		padding: 10,
+		justifyContent: 'center',
 	},
-	profileText:{
-		color:'#fff',
-fontWeight:'bold'
+	profileText: {
+		color: '#fff',
+		fontWeight: 'bold'
 	},
-	emailText:{
-		color:'#fff',
+	emailText: {
+		color: '#fff',
 	},
 	sectionLine: {
 		backgroundColor: 'gray',
@@ -285,12 +284,12 @@ fontWeight:'bold'
 		marginLeft: 10,
 		marginRight: 20,
 	},
-	scrollSection:{
-		maxHeight:'500',
+	scrollSection: {
+		maxHeight: '500',
 	},
-	username:{
-		display:"flex",
-		flexDirection:"row",
-		alignItems:"center"
+	username: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center"
 	}
 });

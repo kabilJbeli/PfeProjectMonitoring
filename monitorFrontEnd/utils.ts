@@ -50,7 +50,6 @@ export const  _retrieveData = async (key:string) => {
 	} catch (error) {
 		// Error retrieving data
 		console.log(error);
-
 	}
 	return response;
 };

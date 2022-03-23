@@ -639,10 +639,10 @@ ul#kc-totp-supported-apps {
 }
 .login-pf-page {
     padding-top: 20px;
-    height: 100%;
+   /* height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center;*/
 }
 .pf-c-form__label-text {
     color: #fff;

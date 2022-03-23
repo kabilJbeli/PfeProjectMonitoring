@@ -45,7 +45,7 @@ public class Member implements Serializable {
 	
 	private String Address;	
 	
-	private String Password;	
+	private String keyclokId;	
 
 	
 	
@@ -58,11 +58,11 @@ public class Member implements Serializable {
 	public String toString() {
 		return "Member [memberID=" + memberID + ", tasks=" + tasks + ", Projects=" + Projects + ", managedproject="
 				+ managedproject + ", role=" + role + ", name=" + name + ", lastName=" + lastName + ", email=" + email
-				+ ", Telephone=" + Telephone + ", Address=" + Address + ", Password=" + Password + "]";
+				+ ", Telephone=" + Telephone + ", Address=" + Address + ", keyclokId=" + keyclokId + "]";
 	}
 
 	public Member(Integer memberID, Set<Task> tasks, Set<Project> projects, Project managedproject, Roles role,
-			String name, String lastName, String email, Integer telephone, String address, String password) {
+			String name, String lastName, String email, Integer telephone, String address, String keyclokId) {
 		super();
 		this.memberID = memberID;
 		this.tasks = tasks;
@@ -72,18 +72,18 @@ public class Member implements Serializable {
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
-		Telephone = telephone;
-		Address = address;
-		Password = password;
+		this.Telephone = telephone;
+		this.Address = address;
+		this.keyclokId = keyclokId;
 	}
 
-	@Column(name = "PASSWORD")
-	public String getPassword() {
-		return Password;
+	@Column(name = "KEYCLOAKID",unique=true)
+	public String getKeycloakId() {
+		return keyclokId;
 	}
 
-	public void setPassword(String password) {
-		Password = password;
+	public void setKeycloakId(String keyclokId) {
+		this.keyclokId = keyclokId;
 	}
 
 	@Column(name = "NAME")
@@ -104,7 +104,7 @@ public class Member implements Serializable {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "EMAIL")
+	@Column(name = "EMAIL",unique=true)
 	public String getEmail() {
 		return email;
 	}

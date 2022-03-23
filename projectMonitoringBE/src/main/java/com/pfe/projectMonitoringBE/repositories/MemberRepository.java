@@ -11,10 +11,8 @@ import com.pfe.projectMonitoringBE.entities.Member;
 
 @Repository
 public interface MemberRepository  extends JpaRepository<Member, Integer> {
-	public Member findByNameAndPassword(String password, String username);
 	
-	@Query("select m from Member m where password = ?1 and name = ?2")
-	public Member findMember (String password, String username);
 	public List<Member> findByRole(Roles role);
+	public Member findBykeycloakId(String keycloakId);
 
 }

@@ -3,9 +3,11 @@ package com.pfe.projectMonitoringBE.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 
@@ -30,12 +32,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.Enums.Roles;
+import com.pfe.projectMonitoringBE.entities.Member;
+import com.pfe.projectMonitoringBE.services.MemberService;
+
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/keycloak")
 public class KeycloakController {
 	@Autowired
 	private Environment env;
+
+	@Autowired
+	private MemberService memberService;
 
 	private Keycloak getKeycloakInstance() {
 
@@ -46,7 +55,7 @@ public class KeycloakController {
 	@PostMapping("/user")
 	public ResponseEntity<String> createUser(@RequestParam String username, @RequestParam String email,
 			@RequestParam String firstname, @RequestParam String lastname, @RequestParam String password,
-			@RequestParam Boolean ismanager) {
+			@RequestParam Roles role, @RequestParam String address, @RequestParam Integer telephone) {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
 			return ResponseEntity.badRequest().body("Empty username or password");
 		}
@@ -56,26 +65,64 @@ public class KeycloakController {
 		credentials.setValue(password);
 		credentials.setTemporary(false);
 		UserRepresentation userRepresentation = new UserRepresentation();
-		userRepresentation.setUsername(username);
-		userRepresentation.setEmail(username);
+		userRepresentation.setUsername(email);
+		userRepresentation.setEmail(email);
 		userRepresentation.setFirstName(firstname);
 		userRepresentation.setLastName(lastname);
 		userRepresentation.setEnabled(true);
 		userRepresentation.setCredentials(Arrays.asList(credentials));
 		userRepresentation.setEmailVerified(false);
-		if (ismanager) {
-			List<String> roles = new ArrayList<String>();
-			roles.add("front-manager");
-			Map<String, List<String>> clientRoles = new HashMap<>();
-			clientRoles.put("federateur", roles);
-			userRepresentation.setClientRoles(clientRoles);
-		}
 
-		Map<String, List<String>> attributes = new HashMap<>();
-		userRepresentation.setAttributes(attributes);
 		Keycloak keycloak = getKeycloakInstance();
+
 		Response result = keycloak.realm(env.getProperty("keycloak.realm")).users().create(userRepresentation);
+		List<UserRepresentation> userRepresentations = keycloak.realm(env.getProperty("keycloak.realm")).users().list();
+		int status = result.getStatus();
+		if (status == 201 || status == 200) {
+			Member member = new Member();
+			for (UserRepresentation user : userRepresentations) {
+				if (user.getEmail() != null && user.getEmail().equalsIgnoreCase(email)) {
+					member.setKeycloakId(user.getId());
+					assignRoles(user.getId(), Arrays.asList(role.name()));
+					break;
+				}
+			}
+			member.setEmail(email);
+			member.setName(firstname);
+			member.setLastName(lastname);
+			member.setRole(role);
+			member.setTelephone(telephone);
+			member.setAddress(address);
+			memberService.createOrUpdateMember(member);
+		}
 		return new ResponseEntity<>(HttpStatus.valueOf(result.getStatus()));
+	}
+
+	private void assignRoles(String userId, List<String> roles) {
+		Keycloak keycloak = getKeycloakInstance();
+
+		List<RoleRepresentation> roleList = rolesToRealmRoleRepresentation(roles);
+		keycloak.realm(env.getProperty("keycloak.realm")).users().get(userId).roles().realmLevel().add(roleList);
+
+	}
+
+	private List<RoleRepresentation> rolesToRealmRoleRepresentation(List<String> roles) {
+		Keycloak keycloak = getKeycloakInstance();
+
+		List<RoleRepresentation> existingRoles = keycloak.realm(env.getProperty("keycloak.realm")).roles().list();
+
+		List<String> serverRoles = existingRoles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
+		List<RoleRepresentation> resultRoles = new ArrayList<>();
+
+		for (String role : roles) {
+			int index = serverRoles.indexOf(role);
+			if (index != -1) {
+				resultRoles.add(existingRoles.get(index));
+			} else {
+				System.out.println("Role does not exist");
+			}
+		}
+		return resultRoles;
 	}
 
 	@GetMapping("/users")
@@ -87,8 +134,7 @@ public class KeycloakController {
 
 	@PutMapping("/user")
 	public ResponseEntity<UserRepresentation> updateUserDescriptionAttribute(@RequestParam String username,
-			@RequestParam String firstname, @RequestParam String lastname, @RequestParam String password
-			) {
+			@RequestParam String firstname, @RequestParam String lastname, @RequestParam String password) {
 		Keycloak keycloak = getKeycloakInstance();
 		Optional<UserRepresentation> user = keycloak.realm(env.getProperty("keycloak.realm")).users().search(username)
 				.stream().filter(u -> u.getUsername().equals(username)).findFirst();
@@ -99,10 +145,11 @@ public class KeycloakController {
 			userRepresentation.setFirstName(firstname);
 			userRepresentation.setLastName(lastname);
 			userRepresentation.setEmail(username);
-			/*CredentialRepresentation credentials = new CredentialRepresentation();
-			credentials.setType(CredentialRepresentation.PASSWORD);
-			credentials.setValue(password);
-			credentials.setTemporary(false);*/
+			/*
+			 * CredentialRepresentation credentials = new CredentialRepresentation();
+			 * credentials.setType(CredentialRepresentation.PASSWORD);
+			 * credentials.setValue(password); credentials.setTemporary(false);
+			 */
 			userResource.update(userRepresentation);
 			return ResponseEntity.ok().body(userRepresentation);
 		} else {
@@ -114,8 +161,12 @@ public class KeycloakController {
 	public void deleteUser(@RequestParam String username) {
 		Keycloak keycloak = getKeycloakInstance();
 		UsersResource users = keycloak.realm(env.getProperty("keycloak.realm")).users();
-		users.search(username).stream()
-				.forEach(user -> keycloak.realm(env.getProperty("keycloak.realm")).users().delete(user.getId()));
+		users.search(username).stream().forEach(user -> {
+
+			keycloak.realm(env.getProperty("keycloak.realm")).users().delete(user.getId());
+			Member member = memberService.findByKeycloakId(user.getId());
+			memberService.deleteMember(member);
+		});
 	}
 
 	@GetMapping("/roles")
@@ -145,6 +196,5 @@ public class KeycloakController {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-	
 
 }

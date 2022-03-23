@@ -14,6 +14,7 @@ const KeycloakLogin = () => {
 	const [token, setToken] = useState<any>(null);
 
 	_retrieveData('token').then((result: any) => {
+		console.log(result);
 		setToken(result);
 	});
 
@@ -21,8 +22,7 @@ const KeycloakLogin = () => {
 		keycloak?.init({
 			onLoad: 'check-sso'
 		}).then(val => {
-		})
-
+		});
 	}
 
 	if (keycloak?.token) {
@@ -31,12 +31,6 @@ const KeycloakLogin = () => {
 			_storeData('userInfo', JSON.stringify(val));
 		});
 	}
-
-
-
-
-
-
 
 	const logoutUser = (logout: any) => {
 		keycloak?.logout().then(response=>{

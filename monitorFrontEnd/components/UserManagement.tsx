@@ -10,10 +10,11 @@ import {useEffect, useState} from "react";
 import {Project} from "../models/Project";
 import axios from "axios";
 import Environment from "../Environment";
+import {Props} from "../utils";
 
 const Tab = createMaterialTopTabNavigator();
 
-export const UserTabNavigator = () => {
+export const UserTabNavigator = ({navigation}: Props) => {
 	return (
 		<Tab.Navigator
 			initialRouteName="UserManagement"
@@ -67,7 +68,7 @@ const getTabBarVisibility = (route: any) => {
 	return 'flex';
 };
 
-const UserManagement = () => {
+const UserManagement = ({navigation}: Props) => {
 	const [users, setUsers] = useState<any[]>([]);
 
 	const [loading, setLoading] = useState(true);
@@ -108,10 +109,10 @@ const UserManagement = () => {
 		}, [loading]);
 	};
 	getUsers();
-	const removeItem = (memberID: Number) => {
+	const removeItem = (email: String) => {
 		axios({
 			method: 'DELETE',
-			url: `${Environment.API_URL}/api/member/delete/` + memberID,
+			url: `${Environment.API_URL}/api/keycloak/user/?username=` + email,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -126,7 +127,7 @@ const UserManagement = () => {
 			});
 	};
 	const updateItem = (projectID: Number) => {
-		//	navigation.navigate('Home', {id: projectID});
+		//	navigation.navigate("AddUser", {id: projectID});
 	};
 
 	const getLatestUserInfo = () => {
@@ -176,7 +177,7 @@ const UserManagement = () => {
 									<Pressable
 										style={[styles.button, styles.delete]}
 										onPress={() => {
-											removeItem(item.memberID);
+											removeItem(item.email);
 										}}>
 										<Text
 											style={{
