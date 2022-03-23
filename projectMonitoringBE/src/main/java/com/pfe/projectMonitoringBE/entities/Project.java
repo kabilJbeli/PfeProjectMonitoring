@@ -15,8 +15,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
@@ -109,7 +113,6 @@ public class Project implements Serializable {
 	public void setMembers(Set<Member> members) {
 		this.members = members;
 	}
-
 	@OneToOne
 	public ProjectStatus getProjectStatus() {
 		return projectStatus;
