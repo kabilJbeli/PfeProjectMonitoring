@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Category;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.repositories.MemberRepository;
@@ -29,5 +30,13 @@ public class MemberService {
 
 	public void deleteMember(Member member) {
 		repository.delete(member);
+	}
+	
+	public Member findByKeycloakId(String keycloakId){
+	return repository.findBykeycloakId(keycloakId);
+}
+	
+	public List<Member> findmanagers() {
+		return repository.findByRole(Roles.MANAGER);
 	}
 }

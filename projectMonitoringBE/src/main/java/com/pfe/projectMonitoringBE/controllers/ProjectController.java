@@ -3,6 +3,8 @@ package com.pfe.projectMonitoringBE.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.services.ProjectService;
 
@@ -41,6 +44,18 @@ public class ProjectController {
 			return new ResponseEntity<Project>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	
+	@GetMapping("/getProjectsByProjectManager")
+	public List<Project> getProjectById(@RequestBody Member projectManager) {		
+		return service.getManagerProjects(projectManager);	
+	}
+	
+	@PostMapping("/getProjectsByMember")
+	public List<Project> getProjectbymember(@RequestBody Member member) {		
+		return service.getManagerProjects(member);	
+	}
+	
 
 	@PostMapping("/add")
 	public void addProject(@RequestBody Project project) {

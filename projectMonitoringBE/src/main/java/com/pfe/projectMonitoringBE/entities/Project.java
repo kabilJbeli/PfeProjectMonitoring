@@ -1,6 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -9,10 +10,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
@@ -33,8 +41,12 @@ public class Project implements Serializable {
 	private Set<Task> tasks;
 
 	private ProjectStatus projectStatus;
-
+	
 	private Set<Member> members;
+	
+	private Member projectManager;
+	
+	
 
 	@Column(name = "PROJECTTITLE")
 	private String projectTitle;
@@ -43,12 +55,24 @@ public class Project implements Serializable {
 	private String projectDescription;
 	
 	@Column(name = "STARTDATE")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 	
 	@Column(name = "ENDDATE")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 
 	
+	
+	
+	@OneToOne
+	@JoinColumn(name = "manager")
+	public Member getProjectManager() {
+		return projectManager;
+	}
+
+	public void setProjectManager(Member projectManager) {
+		this.projectManager = projectManager;
+	}
+
 	public String getProjectTitle() {
 		return projectTitle;
 	}
@@ -65,23 +89,23 @@ public class Project implements Serializable {
 		this.projectDescription = projectDescription;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
-	@OneToMany
+	@ManyToMany	
 	public Set<Member> getMembers() {
 		return members;
 	}
@@ -89,7 +113,6 @@ public class Project implements Serializable {
 	public void setMembers(Set<Member> members) {
 		this.members = members;
 	}
-
 	@OneToOne
 	public ProjectStatus getProjectStatus() {
 		return projectStatus;

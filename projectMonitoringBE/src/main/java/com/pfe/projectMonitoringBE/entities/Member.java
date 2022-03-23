@@ -8,8 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pfe.projectMonitoringBE.Enums.Roles;
 
@@ -27,6 +30,8 @@ public class Member implements Serializable {
 	private Set<Task> tasks;
 
 	private Set<Project> Projects;
+	
+	private Project managedproject;
 
 	private Roles role;
 
@@ -40,6 +45,47 @@ public class Member implements Serializable {
 	
 	private String Address;	
 	
+	private String keyclokId;	
+
+	
+	
+	public Member() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Member [memberID=" + memberID + ", tasks=" + tasks + ", Projects=" + Projects + ", managedproject="
+				+ managedproject + ", role=" + role + ", name=" + name + ", lastName=" + lastName + ", email=" + email
+				+ ", Telephone=" + Telephone + ", Address=" + Address + ", keyclokId=" + keyclokId + "]";
+	}
+
+	public Member(Integer memberID, Set<Task> tasks, Set<Project> projects, Project managedproject, Roles role,
+			String name, String lastName, String email, Integer telephone, String address, String keyclokId) {
+		super();
+		this.memberID = memberID;
+		this.tasks = tasks;
+		Projects = projects;
+		this.managedproject = managedproject;
+		this.role = role;
+		this.name = name;
+		this.lastName = lastName;
+		this.email = email;
+		this.Telephone = telephone;
+		this.Address = address;
+		this.keyclokId = keyclokId;
+	}
+
+	@Column(name = "KEYCLOAKID",unique=true)
+	public String getKeycloakId() {
+		return keyclokId;
+	}
+
+	public void setKeycloakId(String keyclokId) {
+		this.keyclokId = keyclokId;
+	}
+
 	@Column(name = "NAME")
 	public String getName() {
 		return name;
@@ -58,7 +104,7 @@ public class Member implements Serializable {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "EMAIL")
+	@Column(name = "EMAIL",unique=true)
 	public String getEmail() {
 		return email;
 	}
@@ -94,7 +140,8 @@ public class Member implements Serializable {
 		this.role = role;
 	}
 
-	@OneToMany(mappedBy = "members")
+	@ManyToMany(mappedBy = "members")
+	@JsonIgnore
 	public Set<Project> getProjects() {
 		return Projects;
 	}
@@ -104,6 +151,7 @@ public class Member implements Serializable {
 	}
 
 	@OneToMany(mappedBy="member")
+	@JsonIgnore
 	public Set<Task> getTasks() {
 		return tasks;
 	}
@@ -122,5 +170,17 @@ public class Member implements Serializable {
 	public void setMemberID(Integer memberID) {
 		this.memberID = memberID;
 	}
+
+	@OneToOne(mappedBy = "projectManager")
+	@JsonIgnore
+	public Project getManagedproject() {
+		return managedproject;
+	}
+
+	public void setManagedproject(Project managedproject) {
+		this.managedproject = managedproject;
+	}
+	
+	
 
 }
