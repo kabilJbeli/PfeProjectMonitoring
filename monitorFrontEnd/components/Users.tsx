@@ -12,10 +12,15 @@ import axios from 'axios';
 import Environment from '../Environment';
 import {useState} from 'react';
 import {Input} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Feather';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+
+import IconFontisto from 'react-native-vector-icons/Fontisto';
+
 import validator from 'validator';
 import {showToastWithGravity} from "../utils";
 import {Dropdown} from 'react-native-material-dropdown-v2';
+
 
 const User = () => {
 	const defaultState = {
@@ -34,9 +39,9 @@ const User = () => {
 	const [emailValid, setEmailValid] = useState(false);
 	const checkEmail = (email: string) => {
 		setEmailValid(validator.isEmail(state.user.email));
-
 	};
 	const addUser = () => {
+		console.log('Added User=====> ',state.user)
 		axios
 			.post(`${Environment.API_URL}/api/keycloak/user?username=${state.user.name}
 			&email=${state.user.email}&firstname=${state.user.name}&lastname=${state.user.lastName}
@@ -69,7 +74,7 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>User Name</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<Icon name="user-plus" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
 						errorStyle={styles.ErrorStyle}
@@ -87,7 +92,7 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>User Last Name</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<Icon name="user-plus" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
 						errorStyle={styles.ErrorStyle}
@@ -106,11 +111,10 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>User Email</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<IconFontisto name="email" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
-						renderErrorMessage={!emailValid}
-						errorMessage="Enter a valid email"
+
 						errorStyle={styles.ErrorStyle}
 						onChangeText={text =>
 							setState(prevState => {
@@ -128,7 +132,7 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>User Password</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<Icon name="disc" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
 						errorStyle={styles.ErrorStyle}
@@ -148,7 +152,7 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>Address</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<FontAwesomeIcon name="address-card-o" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
 						onChangeText={text =>
@@ -166,7 +170,7 @@ const User = () => {
 				<View style={{width: '100%'}}>
 					<Text>Telephone</Text>
 					<Input
-						leftIcon={<Icon name="tag" size={20} color={'#000'}/>}
+						leftIcon={<Icon name="phone" size={20} color={'#000'}/>}
 						inputContainerStyle={styles.InputContainerStyle}
 						leftIconContainerStyle={styles.LeftIconContainerStyle}
 						onChangeText={text =>
@@ -248,7 +252,7 @@ const styles = StyleSheet.create({
 		opacity: 1,
 	},
 	cancelWrapper: {
-		backgroundColor: 'red',
+		backgroundColor: '#F22F46',
 		padding: 10,
 		opacity: 1,
 	},

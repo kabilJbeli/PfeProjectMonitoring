@@ -1,0 +1,11 @@
+Server: smtp.sendgrid.net
+
+Ports : 	
+25, 587	(for unencrypted/TLS connections)
+465	(for SSL connections)
+
+Email From: kjbeli@vermeg.com
+
+Username: apikey
+
+password: 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

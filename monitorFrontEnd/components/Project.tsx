@@ -11,6 +11,7 @@ import AddProjectComponent from './AddProjectComponent';
 import {SafeAreaView} from 'react-navigation';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import UpdateProjectScreen from "./updateProject";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,6 +24,7 @@ export const TabNavigator = () => {
         tabBarStyle: {backgroundColor: '#262626', height: 25},
         tabBarInactiveTintColor: '#fff',
         tabBarActiveTintColor: '#fff',
+
       }}>
       <Tab.Screen
         name="projects"
@@ -38,7 +40,18 @@ export const TabNavigator = () => {
           ),
         })}
       />
-
+        <Tab.Screen
+            name="updateProject"
+            component={UpdateProjectScreen}
+            options={{
+                tabBarStyle: {
+                    display: 'none',
+                    backgroundColor: '#3e3d3d',
+                },
+                tabBarLabel: () => null,
+                tabBarIcon: () => null,
+            }}
+        />
       <Tab.Screen
         name="addProject"
         component={AddProjectComponent}

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
 		opacity: 1,
 	},
 	cancelWrapper: {
-		backgroundColor: 'red',
+		backgroundColor: '#F22F46',
 		padding: 10,
 		opacity: 1,
 	},

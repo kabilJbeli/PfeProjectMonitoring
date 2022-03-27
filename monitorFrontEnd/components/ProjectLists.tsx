@@ -15,17 +15,40 @@ import {Project} from '../models/Project';
 import {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconM from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 import {Input} from 'react-native-elements';
+import {_retrieveData, _storeData, Props} from "../utils";
 
 const ProjectsList = (props: any) => {
+	const navigation = useNavigation();
+	const [userInfo, setUserInfo] = useState<any>(null);
+	const retrieveUserInformation = ():boolean => {
+		let returned = false;
+
+		useEffect(() => {
+			if(userInfo === null){
+				_retrieveData('userInfo').then((info: any) => {
+					setUserInfo(JSON.parse(info));
+					returned=true;
+					if(userInfo.role ==='ADMINISTRATOR'){
+						getAllProjects();
+					}else{
+						getUserSpecificProjects(userInfo);
+					}
+				});
+			}
+
+		}, []);
+		return returned;
+	}
+
 	const [searchedProject, setSearchedProject] = useState<Project[]>([]);
 	const [searchedProjectName, setSearchedProjectName] = useState<String>('');
-	const {navigation} = props;
 	const [projects, setProjects] = useState<Project[]>([]);
 
 	const [loading, setLoading] = useState(true);
-	const getProjects = () => {
+	const getAllProjects = () => {
 		useEffect(() => {
 			// Update the document title using the browser API
 			if (loading) {
@@ -48,8 +71,33 @@ const ProjectsList = (props: any) => {
 			}
 		}, [loading]);
 	};
+	retrieveUserInformation();
+	const getUserSpecificProjects = (userInfo?:any) => {
+		useEffect(() => {
+			// Update the document title using the browser API
+			if (loading) {
+				axios({
+					method: 'POST',
+					url: `${Environment.API_URL}/api/project/all`,
+					headers: {
+						'Content-Type': 'application/json',
+						useQueryString: false,
+					},
+					params: {},
+					data:userInfo
+				})
+					.then(response => {
+						setProjects(response.data);
+						setSearchedProject(response.data);
+					})
+					.catch((err: any) => {
+					});
+				setTimeout(() => setLoading(false), 1000);
+			}
+		}, [loading]);
+	};
 
-	getProjects();
+	getAllProjects();
 	const removeItem = (projectID: Number) => {
 		axios({
 			method: 'DELETE',
@@ -62,13 +110,14 @@ const ProjectsList = (props: any) => {
 		})
 			.then((response: any) => {
 				setLoading(true);
-				getProjects();
+				getAllProjects();
 			})
 			.catch((err: any) => {
 			});
 	};
 	const updateItem = (projectID: Number) => {
-		navigation.navigate('Home', {id: projectID});
+		_storeData('updatedProjectId',projectID.toString());
+		setTimeout(()=>navigation.navigate('updateProject'),100);
 	};
 
 	const getListHeader = () => {
@@ -111,7 +160,6 @@ const ProjectsList = (props: any) => {
 	};
 	const getCurrentProjectStatus = (project: any): any => {
 		const projectStatus: any = project.item.projectStatus;
-		console.log(project.item.projectStatus);
 		let returnedValue: any;
 		if (projectStatus) {
 			returnedValue = (<View style={styles.status}>

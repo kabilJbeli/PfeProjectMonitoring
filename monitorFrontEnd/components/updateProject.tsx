@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
@@ -9,21 +9,28 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
-import {showToastWithGravity} from "../utils";
+import {_retrieveData, showToastWithGravity} from "../utils";
+import {useIsFocused, useRoute, useNavigation} from "@react-navigation/native";
 
 
-const AddProjectComponent = (props: any) => {
+const UpdateProjectScreen = (props: any) => {
 	const [date, setDate] = useState(new Date());
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [ProjectStatusData, setProjectStatusData] = useState<any[]>([]);
 	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [openEndDate, setOpenEndDate] = useState(false);
+	const [loading, setLoading] = useState(true);
 	let textInput: any = React.createRef();
 	let descriptionInput: any = React.createRef();
+	const navigation = useNavigation();
+	const [projectID, setProjectId] = useState<any>(null);
+	const route = useRoute();
+	const isFocused = useIsFocused();
 
 	const defaultState = {
 		project: {
+			projectID: '',
 			projectTitle: '',
 			projectDescription: '',
 			projectStatus: null,
@@ -33,6 +40,39 @@ const AddProjectComponent = (props: any) => {
 	};
 
 	const [state, setState] = useState(defaultState);
+	const getProps = () => {
+		_retrieveData('updatedProjectId').then((value) => {
+			if (!loading && isFocused && state.project.projectID !== projectID) {
+				getProjectInformation(value);
+			}
+
+			setProjectId(value);
+		})
+		if (!loading && projectID && state.project && isFocused) {
+			return (DisplayAddProjectScreen())
+		} else {
+			return (
+				<View style={{width: '100%', height: '100%', justifyContent: 'center'}}><ActivityIndicator size="large"
+																										   color="#d81e05"/></View>)
+		}
+	}
+
+	const getProjectInformation = (projectId: string) => {
+		setLoading(true);
+		axios
+			.get<any[]>(`${Environment.API_URL}/api/project/${projectId}`, {})
+			.then((res: any) => {
+				setLoading(false);
+				res.data.projectID = projectID;
+				setExpectedEndDate(new Date(res.data.endDate));
+				setDate(new Date(res.data.startDate));
+				setState({project: res.data});
+				setLoading(false);
+			}).catch((error: any) => {
+			console.error(error);
+		});
+	}
+
 	const getButtonStatus = (): boolean => {
 		return (
 			state.project.projectTitle === '' ||
@@ -40,6 +80,7 @@ const AddProjectComponent = (props: any) => {
 			state.project.projectStatus === null
 		);
 	};
+
 	const getProjectStatus = () => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -49,8 +90,12 @@ const AddProjectComponent = (props: any) => {
 				}).catch((error: any) => {
 				console.error(error);
 			});
-		})
+		});
+	}
 
+	const cancelAndGoBack = () => {
+		navigation.goBack();
+		setState(defaultState);
 	}
 
 	useEffect(() => {
@@ -69,20 +114,18 @@ const AddProjectComponent = (props: any) => {
 		});
 	}, []);
 
-	const addProject = () => {
+	const updateProject = () => {
 		axios
-			.post(`${Environment.API_URL}/api/project/add`, state.project)
+			.put(`${Environment.API_URL}/api/project/update/${state.project.projectID}`, state.project)
 			.then((res: any) => {
-				showToastWithGravity('Project Successfully Added');
-				setState(defaultState);
-				setDate(new Date());
-				setExpectedEndDate(new Date());
+				navigation.goBack();
+
+				showToastWithGravity('Project Successfully Updated');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
 			console.log(error);
 		});
 	};
-
 
 	const DisplayAddProjectScreen = (): any => {
 		let returnedElements: any;
@@ -137,7 +180,7 @@ const AddProjectComponent = (props: any) => {
 								style={{width: '100%'}}
 								label={'Project Status'}
 								data={ProjectStatusData}
-								onChangeText={(value:any)=>	setState((prevState: any) => {
+								onChangeText={(value: any) => setState((prevState: any) => {
 									let project = Object.assign({}, prevState.project);
 									project.projectStatus = value;
 									return {project};
@@ -238,8 +281,7 @@ const AddProjectComponent = (props: any) => {
 							<TouchableOpacity
 								style={styles.cancelWrapper}
 								onPress={() => {
-									setState(defaultState);
-
+									cancelAndGoBack();
 								}}>
 								<Text
 									style={{
@@ -247,14 +289,14 @@ const AddProjectComponent = (props: any) => {
 										color: '#fff',
 										fontWeight: '500',
 									}}>
-									Reset
+									Cancel
 								</Text>
 							</TouchableOpacity>
 							<TouchableOpacity
 								disabled={getButtonStatus()}
 								style={getButtonStatus() ? styles.disabled : styles.buttonWrapper}
 								onPress={() => {
-									addProject();
+									updateProject();
 								}}>
 								<Text
 									style={{
@@ -275,9 +317,9 @@ const AddProjectComponent = (props: any) => {
 		return returnedElements;
 	}
 
-	return DisplayAddProjectScreen()
+	return getProps();
 };
-export default AddProjectComponent;
+export default UpdateProjectScreen;
 const styles = StyleSheet.create({
 	columnDisplay: {
 		display: 'flex',
@@ -295,7 +337,7 @@ const styles = StyleSheet.create({
 		opacity: 1,
 	},
 	cancelWrapper: {
-		backgroundColor: '#F22F46',
+		backgroundColor: 'red',
 		padding: 10,
 		opacity: 1,
 	},

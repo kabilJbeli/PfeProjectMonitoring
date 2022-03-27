@@ -4,7 +4,7 @@ import Home from './Home';
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Image, TouchableOpacity, View} from 'react-native';
-import Category from './Category';
+import Category, {CategoryTabStatusNavigator} from './Category';
 import Dashboard from './Dashboard';
 import Sprint from './Sprint';
 import Task from './Task';
@@ -36,6 +36,7 @@ const NavigationDrawerStructure = (props: any) => {
 		</View>
 	);
 };
+
 export const ProjectStack = ({navigation}: Props) => {
 	return (
 		<Stack.Navigator initialRouteName="TabNavigator">
@@ -113,7 +114,7 @@ export const CategoryStack = ({navigation}: Props) => {
 		<Stack.Navigator initialRouteName="Category">
 			<Stack.Screen
 				name="Category"
-				component={Category}
+				component={CategoryTabStatusNavigator}
 				options={{
 					title: 'Category Management', //Set Header Title
 					headerLeft: () => (
@@ -180,7 +181,7 @@ export const SprintStack = ({navigation}: Props) => {
 	);
 };
 
-export const TaskStack = ({navigation}: Props) => {
+export const TaskStack = ({navigation}: any) => {
 	return (
 		<Stack.Navigator initialRouteName="Task">
 			<Stack.Screen
