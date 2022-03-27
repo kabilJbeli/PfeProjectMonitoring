@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/drawer';
 
 import Home from './Home';
-import Category from './Category';
+import Category, {CategoryTabStatusNavigator} from './Category';
 import Dashboard from './Dashboard';
 import Project from './Project';
 import Sprint from './Sprint';
@@ -20,7 +20,7 @@ import IconE from 'react-native-vector-icons/FontAwesome';
 import IconS from 'react-native-vector-icons/SimpleLineIcons';
 
 import ProjectStatus from './ProjectStatus';
-import { StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 
 import {
@@ -39,27 +39,14 @@ import {useEffect, useState} from "react";
 
 
 const CustomDrawerContent = (props: any) => {
-	const [userInfo, setUserInfo] = useState<any>(null);
-	const {state, descriptors, navigation} = props;
-
+	const {state, descriptors, navigation, keycloak} = props;
 	const logOut = () => {
 		props.logout(true);
 	};
 
-	const retrieveUserInformation = () => {
-		useEffect(() => {
-			if(userInfo === null){
-				_retrieveData('userInfo').then((userInfo: any) => {
-					setUserInfo(JSON.parse(userInfo));
-				});
-			}
-
-		}, [userInfo])
-	}
-
 	let lastGroupName = '';
 	let newGroup = true;
-	retrieveUserInformation();
+
 
 	return (
 		<DrawerContentScrollView
@@ -68,9 +55,18 @@ const CustomDrawerContent = (props: any) => {
 			<View style={styles.profile}>
 				<View style={styles.username}><IconE color={'#fff'} size={15} style={{paddingRight: 5}}
 													 name={'user-circle-o'}/>
-					<Text style={styles.profileText}>{userInfo?.firstName} {userInfo?.lastName}</Text>
+					<Text style={styles.profileText}>{props.userInfo?.firstName} {props.userInfo?.lastName}</Text>
 				</View>
-				<Text style={styles.emailText}>{userInfo?.email}</Text>
+				<View style={styles.username}>
+					<Text style={styles.profileText}>Role: {props.userInfo?.roles.includes('MANAGER') ? 'Manager' :
+						props.userInfo?.roles.includes('ADMINISTRATOR') ? 'Administrator' :
+							props.userInfo?.roles.includes('CLIENT') ? 'Client' : 'Employee'
+					}  </Text>
+				</View>
+				{/*<Text style={styles.emailText}>{userInfo?.email}</Text>*/}
+				<Pressable style={{paddingTop: 5, paddingBottom: 5}}>
+					<Text style={{color: '#fff', textDecorationLine: 'underline'}}>Update Profile Information</Text>
+				</Pressable>
 			</View>
 			{state.routes.map((route: any) => {
 				const {drawerLabel, activeTintColor, title, drawerIcon} =
@@ -117,139 +113,438 @@ const CustomDrawerContent = (props: any) => {
 };
 
 const Drawer = createDrawerNavigator();
-const Navigation = (props: any) => {
+
+
+const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
+	let [roles, setRoles] = useState<string[]>([]);
+
+
+	let returnedData: any = (<View></View>);
+
 	const logOutOfApp = (val: any) => {
 		props.logout(val);
 		_storeData('loggedIn', 'false').then(result => {
 		});
-
 	};
-	return (
-		<Drawer.Navigator
 
-			screenOptions={{
-				drawerStyle: {
-					width: 250,
-				},
-				drawerPosition: 'left',
-				drawerType: 'slide',
-			}}
+	if (userInfo?.roles.includes('ADMINISTRATOR')) {
+		returnedData = (
+			<Drawer.Navigator
+				screenOptions={{
+					drawerStyle: {
+						width: 250,
+					},
+					drawerPosition: 'left',
+					drawerType: 'slide',
+				}}
+				drawerContent={props => (
+					<CustomDrawerContent
+						{...props}
+						logout={(value: any) => logOutOfApp(value)}
+						userInfo={userInfo}
+						navigation={props.navigation}
+					/>
+				)}>
 
-			drawerContent={props => (
-				<CustomDrawerContent
-					{...props}
-					logout={(value: any) => logOutOfApp(value)}
-					navigation={props.navigation}
+				<Drawer.Screen
+					name={'Home'}
+					component={HomeStatusStack}
+					options={{
+						drawerLabel: 'Home',
+						title: 'home',
+						headerShown: false,
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="home" size={22} color={'#262626'}/>
+						),
+					}}
 				/>
-			)}>
-			<Drawer.Screen
-				name={'Home'}
-				component={HomeStatusStack}
-				options={{
-					drawerLabel: 'Home',
-					title: 'home',
-					headerShown: false,
-					swipeEnabled: false,
-					drawerIcon: ({focused, size}) => (
-						<Icon name="home" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'Category'}
-				component={CategoryStack}
-				options={{
-					drawerLabel: 'Category',
-					swipeEnabled: false,
-					headerShown: false,
-					title: 'project',
-					drawerIcon: ({focused, size}) => (
-						<Icon name="animation" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'Dashboard'}
-				component={DashboardStack}
-				options={{
-					drawerLabel: 'Dashboard',
-					swipeEnabled: false,
-					headerShown: false,
+				<Drawer.Screen
+					name={'Category'}
+					component={CategoryStack}
+					options={{
+						headerShown: false,
+						drawerLabel: 'Category',
+						title: 'task',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="animation" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Project'}
+					component={ProjectStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'ProjectStatus'}
+					component={ProjectStatusStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project Status',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'User'}
+					component={UserStack}
+					options={{
+						drawerLabel: 'User',
+						swipeEnabled: false,
+						title: 'user',
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="account" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+			</Drawer.Navigator>
+		);
 
-					drawerIcon: ({focused, size}) => (
-						<Icon name="view-dashboard" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'Project'}
-				component={ProjectStack}
-				options={{
-					headerShown: false,
-					title: 'project',
-					drawerLabel: 'Project',
-					swipeEnabled: false,
-					drawerIcon: ({focused, size}) => (
-						<Icon name="view-list" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'ProjectStatus'}
-				component={ProjectStatusStack}
-				options={{
-					headerShown: false,
-					title: 'project',
-					drawerLabel: 'Project Status',
-					swipeEnabled: false,
-					drawerIcon: ({focused, size}) => (
-						<Icon name="view-list" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'Sprint'}
-				component={SprintStack}
-				options={{
-					headerShown: false,
-					title: 'sprint',
-					drawerLabel: 'Sprint',
-					swipeEnabled: false,
-					drawerIcon: ({focused, size}) => (
-						<Icon name="view-module" size={22} color={'#262626'}/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name={'Task'}
-				component={TaskStack}
-				options={{
-					drawerLabel: 'Task',
-					title: 'sprint',
-					swipeEnabled: false,
-					headerShown: false,
+	} else if (userInfo?.roles.includes('Manager')) {
 
-					drawerIcon: ({focused, size}) => (
-						<Icon name="ticket-outline" size={22} color={'#262626'}/>
-					),
+		returnedData = (
+			<Drawer.Navigator
+				screenOptions={{
+					drawerStyle: {
+						width: 250,
+					},
+					drawerPosition: 'left',
+					drawerType: 'slide',
 				}}
-			/>
-			<Drawer.Screen
-				name={'User'}
-				component={UserStack}
-				options={{
-					drawerLabel: 'User',
-					swipeEnabled: false,
-					title: 'user',
-					headerShown: false,
+				drawerContent={props => (
+					<CustomDrawerContent
+						{...props}
+						logout={(value: any) => logOutOfApp(value)}
+						userInfo={userInfo}
+						navigation={props.navigation}
+					/>
+				)}>
 
-					drawerIcon: ({focused, size}) => (
-						<Icon name="account" size={22} color={'#262626'}/>
-					),
+				<Drawer.Screen
+					name={'Home'}
+					component={HomeStatusStack}
+					options={{
+						drawerLabel: 'Home',
+						title: 'home',
+						headerShown: false,
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="home" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Category'}
+					component={CategoryStack}
+					options={{
+						headerShown: false,
+						drawerLabel: 'Category',
+						title: 'task',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="animation" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Dashboard'}
+					component={DashboardStack}
+					options={{
+						drawerLabel: 'Dashboard',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-dashboard" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Project'}
+					component={ProjectStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'ProjectStatus'}
+					component={ProjectStatusStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project Status',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Sprint'}
+					component={SprintStack}
+					options={{
+						headerShown: false,
+						title: 'sprint',
+						drawerLabel: 'Sprint',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-module" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Task'}
+					component={TaskStack}
+					options={{
+						drawerLabel: 'Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'User'}
+					component={UserStack}
+					options={{
+						drawerLabel: 'User',
+						swipeEnabled: false,
+						title: 'user',
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="account" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+			</Drawer.Navigator>
+		);
+
+	} else if (userInfo?.roles.includes('EMPLOYEE')) {
+
+		returnedData = (
+			<Drawer.Navigator
+				screenOptions={{
+					drawerStyle: {
+						width: 250,
+					},
+					drawerPosition: 'left',
+					drawerType: 'slide',
 				}}
-			/>
-		</Drawer.Navigator>
-	);
+				drawerContent={props => (
+					<CustomDrawerContent
+						{...props}
+						logout={(value: any) => logOutOfApp(value)}
+						userInfo={userInfo}
+						navigation={props.navigation}
+					/>
+				)}>
+
+				<Drawer.Screen
+					name={'Home'}
+					component={HomeStatusStack}
+					options={{
+						drawerLabel: 'Home',
+						title: 'home',
+						headerShown: false,
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="home" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Category'}
+					component={CategoryStack}
+					options={{
+						headerShown: false,
+						drawerLabel: 'Category',
+						title: 'task',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="animation" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Project'}
+					component={ProjectStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Sprint'}
+					component={SprintStack}
+					options={{
+						headerShown: false,
+						title: 'sprint',
+						drawerLabel: 'Sprint',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-module" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Task'}
+					component={TaskStack}
+					options={{
+						drawerLabel: 'Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+			</Drawer.Navigator>
+		);
+
+	} else if (userInfo?.roles.includes('CLIENT')) {
+
+		returnedData = (
+			<Drawer.Navigator
+				screenOptions={{
+					drawerStyle: {
+						width: 250,
+					},
+					drawerPosition: 'left',
+					drawerType: 'slide',
+				}}
+				drawerContent={props => (
+					<CustomDrawerContent
+						{...props}
+						logout={(value: any) => logOutOfApp(value)}
+						userInfo={userInfo}
+						navigation={props.navigation}
+					/>
+				)}>
+
+				<Drawer.Screen
+					name={'Home'}
+					component={HomeStatusStack}
+					options={{
+						drawerLabel: 'Home',
+						title: 'home',
+						headerShown: false,
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="home" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+
+				<Drawer.Screen
+					name={'Dashboard'}
+					component={DashboardStack}
+					options={{
+						drawerLabel: 'Dashboard',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-dashboard" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Project'}
+					component={ProjectStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Sprint'}
+					component={SprintStack}
+					options={{
+						headerShown: false,
+						title: 'sprint',
+						drawerLabel: 'Sprint',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-module" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+				<Drawer.Screen
+					name={'Task'}
+					component={TaskStack}
+					options={{
+						drawerLabel: 'Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+				/>
+			</Drawer.Navigator>
+		);
+
+	}
+
+	useEffect(() => {
+		if (userInfo && userInfo.roles !== null) {
+			console.log(userInfo.roles);
+			setRoles(userInfo.roles)
+
+		}
+	}, []);
+
+	return returnedData;
+
+}
+
+const Navigation = (props: any) => {
+	const [userInfo, setUserInfo] = useState<any>(null);
+	const retrieveUserInformation = () => {
+		useEffect(() => {
+			if (userInfo === null) {
+				_retrieveData('userInfo').then((userInfo: any) => {
+					console.log(' retrieved userInfo= ', userInfo);
+					setUserInfo(JSON.parse(userInfo));
+				});
+			}
+		}, [userInfo])
+	}
+	retrieveUserInformation();
+
+	return getRoleBasedDrawerNavigator(props, userInfo);
 };
 export default Navigation;
 

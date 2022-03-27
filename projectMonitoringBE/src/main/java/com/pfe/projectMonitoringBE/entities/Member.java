@@ -41,7 +41,7 @@ public class Member implements Serializable {
 	
 	private String email;
 	
-	private Integer Telephone;
+	private String Telephone;
 	
 	private String Address;	
 	
@@ -62,7 +62,7 @@ public class Member implements Serializable {
 	}
 
 	public Member(Integer memberID, Set<Task> tasks, Set<Project> projects, Project managedproject, Roles role,
-			String name, String lastName, String email, Integer telephone, String address, String keyclokId) {
+			String name, String lastName, String email, String telephone, String address, String keyclokId) {
 		super();
 		this.memberID = memberID;
 		this.tasks = tasks;
@@ -114,11 +114,11 @@ public class Member implements Serializable {
 	}
 
 	@Column(name = "TELEPHONE")
-	public Integer getTelephone() {
+	public String getTelephone() {
 		return Telephone;
 	}
 
-	public void setTelephone(Integer telephone) {
+	public void setTelephone(String telephone) {
 		Telephone = telephone;
 	}
 	

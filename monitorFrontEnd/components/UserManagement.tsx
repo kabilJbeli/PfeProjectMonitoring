@@ -3,7 +3,7 @@ import {ActivityIndicator, FlatList, Pressable, SafeAreaView, StyleSheet, Text, 
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import User from "./Users";
-import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Moment from "moment";
 import {useEffect, useState} from "react";
@@ -72,6 +72,8 @@ const UserManagement = ({navigation}: Props) => {
 	const [users, setUsers] = useState<any[]>([]);
 
 	const [loading, setLoading] = useState(true);
+	const isFocused = useIsFocused();
+
 	const FlatListItemSeparator = () => {
 		return (
 			<View
@@ -87,7 +89,6 @@ const UserManagement = ({navigation}: Props) => {
 	const getUsers = () => {
 		useEffect(() => {
 			// Update the document title using the browser API
-			if (loading) {
 				axios({
 					method: 'GET',
 					url: `${Environment.API_URL}/api/member/all`,
@@ -105,7 +106,7 @@ const UserManagement = ({navigation}: Props) => {
 					.catch((err: any) => {
 					});
 				setTimeout(() => setLoading(false), 1000);
-			}
+
 		}, [loading]);
 	};
 	getUsers();
@@ -131,7 +132,7 @@ const UserManagement = ({navigation}: Props) => {
 	};
 
 	const getLatestUserInfo = () => {
-		if (loading) {
+		if (loading && !isFocused) {
 			return (
 				<View style={styles.loadingContainer}>
 					<ActivityIndicator size="large" color="#d81e05"/>
@@ -142,7 +143,7 @@ const UserManagement = ({navigation}: Props) => {
 				<View>
 					<FlatList
 						keyExtractor={(item, index) => index.toString()}
-						data={users.reverse()}
+						data={users}
 						ItemSeparatorComponent={FlatListItemSeparator}
 						initialNumToRender={users.length}
 						renderItem={({item}) => (

@@ -2,7 +2,7 @@ import {StackNavigationProp} from "@react-navigation/stack";
 import {AsyncStorage, ToastAndroid} from "react-native";
 
 type RootStackParamList = {
-	Home: undefined, // undefined because you aren't passing any params to the home screen
+	Home: { projectId: Number }, // undefined because you aren't passing any params to the home screen
 	Profile: { name: string };
 };
 type ProfileScreenNavigationProp = StackNavigationProp<

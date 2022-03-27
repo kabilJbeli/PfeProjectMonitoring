@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@chartiful/react-native-chart-builder": "^0.1.8",
+    "@chartiful/react-native-line-graph": "^0.1.2",
     "@rainbow-me/animated-charts": "^1.0.0-alpha.6",
     "@react-keycloak/native": "^0.6.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
@@ -22,6 +24,7 @@
     "babel-loader": "^8.2.3",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-devtools": "^4.23.0",

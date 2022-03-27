@@ -1087,6 +1087,16 @@
     deepmerge "^3.2.0"
     hoist-non-react-statics "^3.3.0"
 
+"@chartiful/react-native-chart-builder@^0.1.8":
+  version "0.1.8"
+  resolved "http://10.1.144.249:8081/repository/frontend-group/@chartiful/react-native-chart-builder/-/react-native-chart-builder-0.1.8.tgz#5d924246137afdedbb9294c9f850ff491accd6f8"
+  integrity sha512-rYVHyOA01kTMTyTqsF6+SOpBkAgOF6G6mh4kdFkEJqFnHGpwVrycDM6SI7cuTyN7awDhhHBrztguV+7TZokgZw==
+
+"@chartiful/react-native-line-graph@^0.1.2":
+  version "0.1.2"
+  resolved "http://10.1.144.249:8081/repository/frontend-group/@chartiful/react-native-line-graph/-/react-native-line-graph-0.1.2.tgz#bd50cc4f19a804734ad39cabe06173a05d475efc"
+  integrity sha512-IMM92nzcNXE/C/54/2aXx9rDKlbvwiCwWVf9YJXRRFtcYGd1jKZf99KQcQ/RXX+VqDhEsJ0og9IKO8z/n3277w==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@cnakazawa/watch/-/watch-1.0.4.tgz"
