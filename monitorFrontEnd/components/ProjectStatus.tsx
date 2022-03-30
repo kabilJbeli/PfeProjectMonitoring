@@ -54,9 +54,7 @@ export const ProjectTabStatusNavigator = () => {
 };
 
 const getTabBarVisibility = (route: any) => {
-	// console.log(route);
 	const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
-	// console.log(routeName);
 
 	if (routeName == 'GameDetails') {
 		return 'none';
@@ -83,15 +81,17 @@ const ProjectStatus = () => {
 				})
 					.then(response => {
 						setProjectsStatus(response.data);
+						setLoading(false);
 					})
 					.catch((err: any) => {
+						console.error(err);
+
 					});
 				setTimeout(() => setLoading(false), 1000);
 			}
 		}, [loading]);
 	};
 
-	getProjectStatus();
 	const removeItem = (projectStatusID: Number) => {
 		axios({
 			method: 'DELETE',
@@ -112,6 +112,7 @@ const ProjectStatus = () => {
 	const updateItem = (projectID: Number) => {
 		// navigation.navigate('Home', {id: projectID});
 	};
+	getProjectStatus();
 
 	const FlatListItemSeparator = () => {
 		return (
@@ -124,6 +125,8 @@ const ProjectStatus = () => {
 			/>
 		);
 	};
+	const isFocused = useIsFocused();
+
 
 	const getLatestProjectInfo = () => {
 		if (loading) {
@@ -137,7 +140,7 @@ const ProjectStatus = () => {
 				<View>
 					<FlatList
 						keyExtractor={(item, index) => index.toString()}
-						data={projectStatus.reverse()}
+						data={projectStatus}
 						ItemSeparatorComponent={FlatListItemSeparator}
 						initialNumToRender={projectStatus.length}
 						renderItem={({item}) => (
@@ -183,7 +186,6 @@ const ProjectStatus = () => {
 		}
 	};
 
-	const isFocused = useIsFocused();
 
 	return getLatestProjectInfo();
 };

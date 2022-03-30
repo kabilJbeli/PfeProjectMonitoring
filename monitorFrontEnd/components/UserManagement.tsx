@@ -58,9 +58,7 @@ export const UserTabNavigator = ({navigation}: Props) => {
 };
 
 const getTabBarVisibility = (route: any) => {
-	// console.log(route);
 	const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
-	// console.log(routeName);
 
 	if (routeName == 'GameDetails') {
 		return 'none';
@@ -99,7 +97,6 @@ const UserManagement = ({navigation}: Props) => {
 					params: {},
 				})
 					.then(response => {
-						console.log(response.data)
 						setUsers(response.data);
 						setLoading(false);
 					})

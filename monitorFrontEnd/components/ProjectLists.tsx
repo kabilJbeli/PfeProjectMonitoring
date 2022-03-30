@@ -23,33 +23,37 @@ import {_retrieveData, _storeData, Props} from "../utils";
 const ProjectsList = (props: any) => {
 	const navigation = useNavigation();
 	const [userInfo, setUserInfo] = useState<any>(null);
+	const [searchedProject, setSearchedProject] = useState<Project[]>([]);
+	const [searchedProjectName, setSearchedProjectName] = useState<String>('');
+	const [projects, setProjects] = useState<Project[]>([]);
+	const [loading, setLoading] = useState(true);
+
 	const retrieveUserInformation = ():boolean => {
 		let returned = false;
 
 		useEffect(() => {
-			if(userInfo === null){
 				_retrieveData('userInfo').then((info: any) => {
 					setUserInfo(JSON.parse(info));
 					returned=true;
-					if(userInfo.role ==='ADMINISTRATOR'){
-						getAllProjects();
-					}else{
-						getUserSpecificProjects(userInfo);
+					let parsedInfo = JSON.parse(info)
+					if(parsedInfo !== undefined){
+						if(parsedInfo?.roles.includes('ADMINISTRATOR')){
+							getAllProjects();
+						}else{
+							getUserSpecificProjects(parsedInfo);
+						}
 					}
-				});
-			}
 
-		}, []);
+				});
+
+
+		}, [props]);
 		return returned;
 	}
 
-	const [searchedProject, setSearchedProject] = useState<Project[]>([]);
-	const [searchedProjectName, setSearchedProjectName] = useState<String>('');
-	const [projects, setProjects] = useState<Project[]>([]);
 
-	const [loading, setLoading] = useState(true);
+
 	const getAllProjects = () => {
-		useEffect(() => {
 			// Update the document title using the browser API
 			if (loading) {
 				axios({
@@ -69,22 +73,22 @@ const ProjectsList = (props: any) => {
 					});
 				setTimeout(() => setLoading(false), 1000);
 			}
-		}, [loading]);
 	};
+
 	retrieveUserInformation();
-	const getUserSpecificProjects = (userInfo?:any) => {
-		useEffect(() => {
-			// Update the document title using the browser API
+
+	const getUserSpecificProjects = (userInfoParam?:any) => {
+			// Update the document title using the broconwser API
 			if (loading) {
 				axios({
 					method: 'POST',
-					url: `${Environment.API_URL}/api/project/all`,
+					url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
 					headers: {
 						'Content-Type': 'application/json',
 						useQueryString: false,
 					},
 					params: {},
-					data:userInfo
+					data:{}
 				})
 					.then(response => {
 						setProjects(response.data);
@@ -94,10 +98,8 @@ const ProjectsList = (props: any) => {
 					});
 				setTimeout(() => setLoading(false), 1000);
 			}
-		}, [loading]);
 	};
 
-	getAllProjects();
 	const removeItem = (projectID: Number) => {
 		axios({
 			method: 'DELETE',
@@ -110,14 +112,26 @@ const ProjectsList = (props: any) => {
 		})
 			.then((response: any) => {
 				setLoading(true);
-				getAllProjects();
+				if(userInfo?.roles.includes('ADMINISTRATOR')){
+					getAllProjects();
+				}else{
+					getUserSpecificProjects(userInfo);
+				}
 			})
 			.catch((err: any) => {
 			});
 	};
+
 	const updateItem = (projectID: Number) => {
 		_storeData('updatedProjectId',projectID.toString());
+		// @ts-ignore
 		setTimeout(()=>navigation.navigate('updateProject'),100);
+	};
+
+	const viewProject = (projectID: Number) => {
+		_storeData('updatedProjectId',projectID.toString());
+		// @ts-ignore
+		setTimeout(()=>navigation.navigate('viewProjectInformation'),100);
 	};
 
 	const getListHeader = () => {
@@ -228,7 +242,7 @@ const ProjectsList = (props: any) => {
 									<Pressable
 										style={[styles.button, styles.borderButton, styles.view]}
 										onPress={() => {
-											updateItem(item.projectID);
+											viewProject(item.projectID);
 										}}>
 										<Text
 											style={{

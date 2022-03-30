@@ -4,6 +4,7 @@ import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Environment from '../Environment';
+// @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
@@ -123,7 +124,7 @@ const UpdateProjectScreen = (props: any) => {
 				showToastWithGravity('Project Successfully Updated');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.log(error);
+			console.error(error);
 		});
 	};
 

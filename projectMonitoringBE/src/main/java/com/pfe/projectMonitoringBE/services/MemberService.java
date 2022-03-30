@@ -36,6 +36,9 @@ public class MemberService {
 	return repository.findBykeycloakId(keycloakId);
 }
 	
+	public Member findByMemberByEmail(String email){
+	return repository.findByEmail(email);
+}
 	public List<Member> findmanagers() {
 		return repository.findByRole(Roles.MANAGER);
 	}

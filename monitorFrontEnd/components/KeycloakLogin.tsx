@@ -10,27 +10,20 @@ import Images from "../assets/Images";
 import {Text} from "react-native-elements";
 import jwt_decode from "jwt-decode";
 import Icon from 'react-native-vector-icons/Feather';
-
 const KeycloakLogin = () => {
 	const {keycloak, initialized} = useKeycloak();
 	const [token, setToken] = useState<any>(null);
 
-	if (!token) {
-		keycloak?.init({
-			onLoad: 'check-sso'
-		}).then(val => {
-		});
-	}
+const getUserInfo = () => {
 
-	useEffect(() => {
 
-		if (token === null) {
-			_retrieveData('token').then((result: any) => {
-				console.log(result);
-				if (result) {
-					let decodedJwtData: any = jwt_decode(result)
+		console.log('Authenticated====================> ',keycloak?.authenticated)
+		console.log('Roles=======================>',keycloak?.realmAccess?.roles);
+
+
+				if (keycloak?.token) {
+					let decodedJwtData: any = jwt_decode(keycloak?.token)
 					console.log('decodes Token=====================>   ', decodedJwtData);
-
 					_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
 					let userInfo = {
 						firstName: decodedJwtData.given_name,
@@ -39,38 +32,41 @@ const KeycloakLogin = () => {
 						name: decodedJwtData.name,
 						username: decodedJwtData.preferred_username,
 						roles: decodedJwtData.realm_access.roles
+
+					}
+					if(token===null){
+						setToken(keycloak?.token);
+
 					}
 
-					_storeData('userInfo', JSON.stringify(userInfo));
-					setToken(result);
 
+					_storeData('token', JSON.stringify(keycloak?.token));
+					_storeData('refreshToken', JSON.stringify(keycloak?.refreshToken));
+					_storeData('userInfo', JSON.stringify(userInfo));
+
+				}else{
+					keycloak?.loadUserInfo().then(val=>{
+						getUserInfo()
+					});
 				}
 
-			});
-
-		}
-	}, [token]);
-
-	const checkToken = (): void => {
-		if (keycloak?.token) {
-			_storeData('token', JSON.stringify(keycloak?.token));
-		}
-	}
-
+}
 	const logoutUser = (logout: any) => {
 		keycloak?.logout().then(response => {
 			_storeData('token', '');
 			_storeData('userInfo', '');
+			_storeData('refreshToken', '');
+
 			setToken(null);
 		}).catch(err => {
-			console.log('Logout Error: ', err)
+			console.error('Logout Error: ', err)
 		})
 	};
 
 	const getApplicationMainView = (tokenValue:any) => {
 		let returnedValue;
-		if (!tokenValue || tokenValue === null) {
-			checkToken();
+
+		if (!keycloak?.authenticated) {
 
 			returnedValue = (
 				<KeyboardAvoidingView
@@ -94,7 +90,6 @@ const KeycloakLogin = () => {
 							<Pressable
 								style={styles.loginButton}
 								onPress={() => keycloak?.login().then(val => {
-									console.log(val)
 								})}>
 								<Text style={styles.loginButtonText}>Login To Proceed</Text>
 								<Icon name="arrow-right" size={22} color={'#fff'}/>
@@ -104,7 +99,12 @@ const KeycloakLogin = () => {
 				</KeyboardAvoidingView>
 			)
 		} else {
-			returnedValue = (<Provider store={Store}>
+			if(token===null){
+				getUserInfo();
+			}
+
+			returnedValue = (
+				<Provider store={Store}>
 				<NavigationContainer>
 					<StatusBar
 						translucent={true}
@@ -117,7 +117,8 @@ const KeycloakLogin = () => {
 						}}
 					/>
 				</NavigationContainer>
-			</Provider>)
+				</Provider>
+			)
 
 		}
 		return returnedValue;

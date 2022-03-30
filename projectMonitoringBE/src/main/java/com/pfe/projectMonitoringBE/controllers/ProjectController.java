@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
+import com.pfe.projectMonitoringBE.services.MemberService;
 import com.pfe.projectMonitoringBE.services.ProjectService;
 
 @RestController
@@ -29,6 +31,9 @@ public class ProjectController {
 
 	@Autowired
 	private ProjectService service;
+
+	@Autowired
+	private MemberService memberService;
 
 	@GetMapping("/all")
 	public List<Project> getAll() {
@@ -44,18 +49,14 @@ public class ProjectController {
 			return new ResponseEntity<Project>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	
-	@GetMapping("/getProjectsByProjectManager")
-	public List<Project> getProjectById(@RequestBody Member projectManager) {		
-		return service.getManagerProjects(projectManager);	
+
+	@PostMapping("/getProjectsByProjectManager")
+	public List<Project> getProjectById(@RequestParam String email) {
+
+		Member projectManager = memberService.findByMemberByEmail(email);
+		return service.getManagerProjects(projectManager);
+
 	}
-	
-	@PostMapping("/getProjectsByMember")
-	public List<Project> getProjectbymember(@RequestBody Member member) {		
-		return service.getManagerProjects(member);	
-	}
-	
 
 	@PostMapping("/add")
 	public void addProject(@RequestBody Project project) {

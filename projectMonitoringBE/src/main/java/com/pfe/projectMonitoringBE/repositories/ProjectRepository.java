@@ -11,9 +11,8 @@ import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
 
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
-
 	
-    public List<Project> findByProjectManager(Member projectmanager);
-    public List<Project> findByMembers(Member member);
+	@Query("SELECT  p FROM Project p WHERE p.projectManager = ?1")	
+    public List<Project> findByProjectmanager(Member projectmanager);
     
 }

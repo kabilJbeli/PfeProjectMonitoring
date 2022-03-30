@@ -4,35 +4,41 @@ import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Environment from '../Environment';
+// @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
 import {showToastWithGravity} from "../utils";
+import {useNavigation} from "@react-navigation/native";
 
 
 const AddProjectComponent = (props: any) => {
 	const [date, setDate] = useState(new Date());
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [ProjectStatusData, setProjectStatusData] = useState<any[]>([]);
+	const [projectManagers, setProjectManagers] = useState<any[]>([]);
+
 	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [openEndDate, setOpenEndDate] = useState(false);
 	let textInput: any = React.createRef();
 	let descriptionInput: any = React.createRef();
+	const navigation = useNavigation();
 
 	const defaultState = {
 		project: {
 			projectTitle: '',
 			projectDescription: '',
 			projectStatus: null,
+			projectManager:null,
 			startDate: new Date(),
 			endDate: new Date(),
 		},
 	};
 
-	const [state, setState] = useState(defaultState);
+	const [state, setState] = useState<any>(defaultState);
 	const getButtonStatus = (): boolean => {
 		return (
 			state.project.projectTitle === '' ||
@@ -52,6 +58,33 @@ const AddProjectComponent = (props: any) => {
 		})
 
 	}
+
+
+	const getProjectManagers = () => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any[]>(`${Environment.API_URL}/api/member/getProjectManagers`, {})
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+
+	}
+	useEffect(()=>{
+		getProjectManagers().then((data:any)=>{
+			const projectManagers: any[] = [];
+			if (data) {
+				data.map((item: any) => {
+					projectManagers.push({label: item.name+' '+item.lastName, value: item});
+				});
+				setProjectManagers(projectManagers);
+				setIsEnabled(true);
+			}
+		});
+
+	},[props])
 
 	useEffect(() => {
 		getProjectStatus().then((data: any) => {
@@ -73,13 +106,16 @@ const AddProjectComponent = (props: any) => {
 		axios
 			.post(`${Environment.API_URL}/api/project/add`, state.project)
 			.then((res: any) => {
+				// @ts-ignore
+				navigation.navigate('projects');
+
 				showToastWithGravity('Project Successfully Added');
 				setState(defaultState);
 				setDate(new Date());
 				setExpectedEndDate(new Date());
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.log(error);
+			console.error(error);
 		});
 	};
 
@@ -224,14 +260,13 @@ const AddProjectComponent = (props: any) => {
 							<Dropdown
 								style={{width: '100%'}}
 								label={'Project Manager'}
-								data={[
-									{label: 'testing manager 1', value: 'testing manager 1'},
-									{label: 'testing manager 2', value: 'testing manager 2'},
-									{label: 'testing mllanager 3', value: 'testing manager 3'},
-								]}
-								onChangeText={(text: string) => {
-								}}
-
+								data={projectManagers}
+								onChangeText={(value:any)=>	setState((prevState: any) => {
+									let project = Object.assign({}, prevState.project);
+									project.projectManager = value;
+									return {project};
+								})}
+								value={state.project?.projectManager?.name || ''}
 							/>
 						</View>
 						<View style={styles.columnDisplay}>

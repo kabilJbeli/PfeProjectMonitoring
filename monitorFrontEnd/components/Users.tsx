@@ -19,7 +19,9 @@ import IconFontisto from 'react-native-vector-icons/Fontisto';
 
 import validator from 'validator';
 import {showToastWithGravity} from "../utils";
+// @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
+import {useNavigation} from "@react-navigation/native";
 
 
 const User = () => {
@@ -35,24 +37,25 @@ const User = () => {
 		},
 	};
 	const [state, setState] = useState(defaultState);
+	const navigation = useNavigation();
 
 	const [emailValid, setEmailValid] = useState(false);
 	const checkEmail = (email: string) => {
 		setEmailValid(validator.isEmail(state.user.email));
 	};
 	const addUser = () => {
-		console.log('Added User=====> ',state.user)
 		axios
 			.post(`${Environment.API_URL}/api/keycloak/user?username=${state.user.name}
 			&email=${state.user.email}&firstname=${state.user.name}&lastname=${state.user.lastName}
 			&password=${state.user.password}&role=${state.user.role}&address=${state.user.Address}&telephone=${state.user.Telephone}`, {})
 			.then((res: any) => {
+				// @ts-ignore
+				navigation.navigate('UserManagement');
 				showToastWithGravity('User Successfully Added');
 				setState(defaultState);
-				console.log(res);
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has occurred!!!');
-			console.log(error);
+			console.error(error);
 		});
 	};
 
@@ -197,7 +200,6 @@ const User = () => {
 							{label: 'Client', value: 'CLIENT'},
 						]}
 						onChangeText={(value: any) => setState((prevState: any) => {
-							console.log(value);
 							let user = Object.assign({}, prevState.user);
 
 							user.role = value;

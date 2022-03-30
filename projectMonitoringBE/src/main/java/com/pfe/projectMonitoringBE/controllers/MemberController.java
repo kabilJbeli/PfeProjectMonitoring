@@ -73,7 +73,7 @@ public class MemberController {
 	
 
 	
-	@GetMapping("/findManagers")
+	@GetMapping("/getProjectManagers")
 	public List<Member> findManagers() {
 		return service.findmanagers();
 	}
