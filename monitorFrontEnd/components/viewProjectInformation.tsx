@@ -1,25 +1,18 @@
 import * as React from 'react';
 import {
-	ActivityIndicator,
-	Button,
-	Image,
+	ActivityIndicator, Dimensions,
 	Pressable,
-	SafeAreaView,
-	ScrollView,
 	StyleSheet,
 	Text,
 	View
 } from 'react-native';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import Environment from "../Environment";
 import {_retrieveData, _storeData, showToastWithGravity} from "../utils";
-// @ts-ignore
-import SelectMultiple from 'react-native-select-multiple';
-//import MultiSelect from 'react-native-multiple-select';
 
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 
 const ViewProjectInformation = (props: any) => {
@@ -51,8 +44,10 @@ const ViewProjectInformation = (props: any) => {
 				memberID: 0,
 				children: []
 			}];
+
 			if (data) {
 				data.map((item: any) => {
+					item.name = item.name + ' ' + item.lastName;
 					employees[0].children.push(item);
 				});
 				setEmployees(employees);
@@ -82,7 +77,7 @@ const ViewProjectInformation = (props: any) => {
 			memberID: 0,
 			children: []
 		}];
-
+		const selectedEmployees: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/project/${projectID}`,
@@ -94,9 +89,15 @@ const ViewProjectInformation = (props: any) => {
 		})
 			.then((response: any) => {
 				setProjectInfo(response.data);
+
+
 				response.data.members.map((item: any) => {
-					members[0].children.push(item)
-				})
+					item.name = item.name + ' ' + item.lastName;
+					members[0].children.push(item);
+					selectedEmployees.push(item.memberID);
+				});
+
+				setSelectedEmployees(selectedEmployees);
 				setAssignedEmployees(members);
 			})
 			.catch((err: any) => {
@@ -111,6 +112,7 @@ const ViewProjectInformation = (props: any) => {
 			memberID: 0,
 			children: []
 		}];
+		const selectedMembers: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/project/changeProjectStatus?projectId=${projectID}&projectStatus=${projectStatus}`,
@@ -122,8 +124,12 @@ const ViewProjectInformation = (props: any) => {
 			.then((response: any) => {
 				setProjectInfo(response.data);
 				response.data.members.map((item: any) => {
+					item.name = item.name + ' ' + item.lastName;
 					members[0].children.push(item)
-				})
+					selectedMembers.push(item.memberID)
+				});
+
+				setSelectedEmployees(selectedMembers);
 				setAssignedEmployees(members);
 				showToastWithGravity('Project Information Retrieved Successfully');
 			})
@@ -161,7 +167,6 @@ const ViewProjectInformation = (props: any) => {
 
 	const getNextDisplayedProjectStatusLabel = (currentStatus: string): string => {
 		let nextProjectStatus: any;
-
 		switch (currentStatus) {
 			case 'Created': {
 				nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
@@ -209,18 +214,19 @@ const ViewProjectInformation = (props: any) => {
 
 		return nextProjectStatus;
 	}
+
 	const onConfirm = () => {
-		console.log('Confirmed selectedEmployees ========>', selectedEmployees)
 		const retrievedMembers: any[] = [{
 			name: 'Employees',
 			memberID: 0,
 			children: []
 		}];
+		const selectedMembers: any[] = []
 		const selectedEmployeesArray: any[] = [];
-		console.log('selectedEmployees =============>', selectedEmployees)
-		selectedEmployees.map((item: any) => {
+
+		assignedEmployees[0].children.map((item: any) => {
 			if (item) {
-				selectedEmployeesArray.push(item.value);
+				selectedEmployeesArray.push(item);
 			}
 		})
 
@@ -238,9 +244,12 @@ const ViewProjectInformation = (props: any) => {
 				console.log(response.data)
 				response.data.members.map((item: any) => {
 					if (item) {
+						item.name = item.name + ' ' + item.lastName;
 						retrievedMembers[0].children.push(item)
+						selectedMembers.push(item.memberID);
 					}
 				});
+				setSelectedEmployees(selectedMembers);
 				setAssignedEmployees(retrievedMembers);
 			})
 			.catch((err: any) => {
@@ -248,12 +257,22 @@ const ViewProjectInformation = (props: any) => {
 				showToastWithGravity(err);
 			});
 	}
-	const onSelectionsChange = (selectedEmployees: any) => {
-		setSelectedEmployees(selectedEmployees);
+	const onSelectionsChange = (selectedArray: any) => {
+		const retrievedMembers: any[] = [{
+			name: 'Employees',
+			memberID: 0,
+			children: []
+		}];
+		for (let memberID of selectedArray) {
+			let employee = employees[0].children.find((item: any) => item.memberID === memberID);
+			retrievedMembers[0].children.push(employee);
+		}
+		setAssignedEmployees(retrievedMembers);
+		setSelectedEmployees(selectedArray);
 	}
 
 	const getMultipleSelect = () => {
-		return (<View style={{backgroundColor:'#fff',marginTop:15}}>
+		return (<View style={{marginTop: 15}}>
 			<SectionedMultiSelect
 				items={employees}
 				IconRenderer={Icon}
@@ -261,15 +280,54 @@ const ViewProjectInformation = (props: any) => {
 				subKey="children"
 				selectText="Choose project members..."
 				searchPlaceholderText="Search for a member"
-				showDropDowns={true}
-				readOnlyHeadings={true}
 				onSelectedItemsChange={onSelectionsChange}
-				selectedItems={assignedEmployees}
+				selectedItems={selectedEmployees}
 				displayKey="name"
-				showRemoveAll={true}
-				single={false}
+				chipsPosition="bottom"
+				selectChildren={true}
 				onConfirm={onConfirm}
 				expandDropDowns={true}
+				showDropDowns={false}
+				styles={{
+					chipText: {
+						maxWidth: Dimensions.get('screen').width - 90,
+						fontSize: 16
+					},
+					chipContainer: {
+						backgroundColor: '#00a3cc'
+					},
+					itemText: {
+						color: 'black'
+					},
+					selectedItemText: {
+						color: 'blue',
+					},
+					subItemText: {
+						color: 'black'
+					},
+					item: {
+						paddingHorizontal: 10
+					},
+					subItem: {
+						paddingHorizontal: 10
+					},
+					selectedItem: {
+						backgroundColor: 'rgba(0,0,0,0.1)'
+					},
+					selectedSubItem: {
+						backgroundColor: 'rgba(0,0,0,0.1)'
+					},
+					selectedSubItemText: {
+						color: 'blue',
+					},
+					scrollView: {paddingHorizontal: 0}
+				}}
+				colors={{
+					primary: '#00a3cc',
+					success: '#00a3cc',
+					chipColor: '#fff',
+				}}
+				hideChipRemove={true}
 			/>
 
 		</View>);
@@ -296,7 +354,7 @@ const ViewProjectInformation = (props: any) => {
 								navigation.goBack();
 							}}
 						><Icon name='arrow-back' size={20} color={'#000'}/>
-							<Text style={{paddingLeft: 10,fontWeight:'bold'}}
+							<Text style={{paddingLeft: 10, fontWeight: 'bold'}}
 							>Go Back</Text>
 						</Pressable>
 					</View>
@@ -307,53 +365,56 @@ const ViewProjectInformation = (props: any) => {
 						alignItems: 'center'
 					}}>
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Current Status:</Text> {projectInfo.projectStatus}
+							<Text style={{fontWeight: 'bold'}}>Current Status:</Text> {projectInfo.projectStatus}
 						</Text>
 						{getNextDisplayedProjectStatusLabel(projectInfo.projectStatus)}
 					</View>
 					<View style={{marginTop: 15}}>
 
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Project Description:</Text> {projectInfo.projectDescription}
+							<Text style={{fontWeight: 'bold'}}>Project
+								Description:</Text> {projectInfo.projectDescription}
 						</Text>
 					</View>
 
 					<View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Start Date:</Text> {projectInfo.startDate}
+							<Text style={{fontWeight: 'bold'}}>Start Date:</Text> {projectInfo.startDate}
 						</Text>
 
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Expected End Date:</Text> {projectInfo.endDate}
+							<Text style={{fontWeight: 'bold'}}>Expected End Date:</Text> {projectInfo.endDate}
 						</Text>
 					</View>
 					<View style={{marginTop: 15}}>
 
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Number of project Members:</Text> {assignedEmployees.length}
+							<Text style={{fontWeight: 'bold'}}>Number of project
+								Members:</Text> {selectedEmployees.length}
 						</Text>
 					</View>
 
 					<View style={{marginTop: 15}}>
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Number of sprints:</Text> {projectInfo.sprint.length}
+							<Text style={{fontWeight: 'bold'}}>Number of sprints:</Text> {projectInfo.sprint.length}
 						</Text>
 						<Text>
-							<Text style={{fontWeight:'bold'}}>Current sprint:</Text>
+							<Text style={{fontWeight: 'bold'}}>Current sprint:</Text>
 						</Text>
 					</View>
 					<View style={{marginTop: 15}}>
-						<Text style={{fontWeight:'bold'}}>
+						<Text style={{fontWeight: 'bold'}}>
 							Client Details
 						</Text>
 						<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
 							<Text>
-								<Text style={{fontWeight:'bold'}}>Name:</Text> {projectInfo.client.name} {projectInfo.client.lastName}
+								<Text
+									style={{fontWeight: 'bold'}}>Name:</Text> {projectInfo.client.name} {projectInfo.client.lastName}
 							</Text>
 
 							<Text>
-								<Text style={{fontWeight:'bold'}}>Email:</Text> <Text style={{
+								<Text style={{fontWeight: 'bold'}}>Email:</Text> <Text style={{
 								color: '#00a3cc',
 								textDecorationLine: 'underline'
 							}}>{projectInfo.client.email}</Text>
@@ -361,7 +422,7 @@ const ViewProjectInformation = (props: any) => {
 						</View>
 					</View>
 					<View>
-						<Text style={{marginTop: 15,fontWeight:'bold'}}>Assign Project Members:</Text>
+						<Text style={{marginTop: 15, fontWeight: 'bold'}}>Assign Project Members:</Text>
 
 						<View
 						>
