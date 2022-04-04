@@ -289,6 +289,11 @@ const ViewProjectInformation = (props: any) => {
 				expandDropDowns={true}
 				showDropDowns={false}
 				styles={{
+					selectToggle:{
+					backgroundColor:'#fff',
+						padding:15,
+						marginBottom:15
+					},
 					chipText: {
 						maxWidth: Dimensions.get('screen').width - 90,
 						fontSize: 16

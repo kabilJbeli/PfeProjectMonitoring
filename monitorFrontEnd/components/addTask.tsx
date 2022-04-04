@@ -127,7 +127,7 @@ const cancelTask = ()=>{
 	};
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={{backgroundColor:'#fff',height:'100%'}}>
 			<View style={{
 				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
 				backgroundColor: '#3a436c'
@@ -136,7 +136,7 @@ const cancelTask = ()=>{
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Create Task</Text>
 			</View>
-			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('window').height-280, backgroundColor: '#fff',paddingBottom:15}}>
+			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('window').height-280,paddingBottom:15}}>
 				<View style={styles.containerWrapper}>
 					<View style={{width: '100%', marginBottom: 15}}>
 						<Dropdown
@@ -312,7 +312,6 @@ export default AddTask;
 const styles = StyleSheet.create({
 	containerWrapper: {
 		padding: 15,
-		backgroundColor: "#fff",
 		height: "100%"
 	},
 	title: {
