@@ -19,16 +19,15 @@ import IconE from 'react-native-vector-icons/FontAwesome';
 
 import IconS from 'react-native-vector-icons/SimpleLineIcons';
 
-import ProjectStatus from './ProjectStatus';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
+import IconFeather from 'react-native-vector-icons/Feather'
 
 import {
 	CategoryStack,
 	DashboardStack,
 	HomeStatusStack,
 	ProjectStack,
-	ProjectStatusStack,
 	SprintStack,
 	TaskStack,
 	UserStack,
@@ -39,7 +38,7 @@ import {useEffect, useState} from "react";
 
 
 const CustomDrawerContent = (props: any) => {
-	const {state, descriptors, navigation, keycloak} = props;
+	const {state, descriptors, navigation} = props;
 	const logOut = () => {
 		props.logout(true);
 	};
@@ -96,7 +95,7 @@ const CustomDrawerContent = (props: any) => {
 								state.routes.findIndex((e: any) => e.name === route.name) ===
 								state.index
 							}
-
+							{...props}
 							activeTintColor={activeTintColor}
 							onPress={() => navigation.navigate(route.name)}
 						/>
@@ -136,7 +135,12 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					},
 					drawerPosition: 'left',
 					drawerType: 'slide',
-				}}
+					drawerInactiveTintColor:'#fff',
+					drawerAllowFontScaling:true,
+					drawerActiveTintColor:'#999999',
+					drawerIcon: () => (
+						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
+					),				}}
 				drawerContent={props => (
 					<CustomDrawerContent
 						{...props}
@@ -158,107 +162,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="home" size={22} color={'#262626'}/>
 						),
 					}}
-				/>
-				<Drawer.Screen
-					name={'Category'}
-					component={CategoryStack}
-					options={{
-						headerShown: false,
-						drawerLabel: 'Category',
-						title: 'task',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="animation" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'Project'}
-					component={ProjectStack}
-					options={{
-						headerShown: false,
-						title: 'project',
-						drawerLabel: 'Project',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-list" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'ProjectStatus'}
-					component={ProjectStatusStack}
-					options={{
-						headerShown: false,
-						title: 'project',
-						drawerLabel: 'Project Status',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-list" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'User'}
-					component={UserStack}
-					options={{
-						drawerLabel: 'User',
-						swipeEnabled: false,
-						title: 'user',
-						headerShown: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="account" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-			</Drawer.Navigator>
-		);
-
-	} else if (userInfo?.roles.includes('Manager')) {
-
-		returnedData = (
-			<Drawer.Navigator
-				screenOptions={{
-					drawerStyle: {
-						width: 250,
-					},
-					drawerPosition: 'left',
-					drawerType: 'slide',
-				}}
-				drawerContent={props => (
-					<CustomDrawerContent
-						{...props}
-						logout={(value: any) => logOutOfApp(value)}
-						userInfo={userInfo}
-						navigation={props.navigation}
-					/>
-				)}>
-
-				<Drawer.Screen
-					name={'Home'}
-					component={HomeStatusStack}
-					options={{
-						drawerLabel: 'Home',
-						title: 'home',
-						headerShown: false,
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="home" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'Category'}
-					component={CategoryStack}
-					options={{
-						headerShown: false,
-						drawerLabel: 'Category',
-						title: 'task',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="animation" size={22} color={'#262626'}/>
-						),
-					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Dashboard'}
@@ -273,6 +177,20 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					}}
 				/>
 				<Drawer.Screen
+					name={'Category'}
+					component={CategoryStack}
+					options={{
+						headerShown: false,
+						drawerLabel: 'Task Category',
+						title: 'task',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="animation" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+				<Drawer.Screen
 					name={'Project'}
 					component={ProjectStack}
 					options={{
@@ -284,45 +202,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="view-list" size={22} color={'#262626'}/>
 						),
 					}}
-				/>
-				<Drawer.Screen
-					name={'ProjectStatus'}
-					component={ProjectStatusStack}
-					options={{
-						headerShown: false,
-						title: 'project',
-						drawerLabel: 'Project Status',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-list" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'Sprint'}
-					component={SprintStack}
-					options={{
-						headerShown: false,
-						title: 'sprint',
-						drawerLabel: 'Sprint',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-module" size={22} color={'#262626'}/>
-						),
-					}}
-				/>
-				<Drawer.Screen
-					name={'Task'}
-					component={TaskStack}
-					options={{
-						drawerLabel: 'Task',
-						title: 'task',
-						swipeEnabled: false,
-						headerShown: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="ticket-outline" size={22} color={'#262626'}/>
-						),
-					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'User'}
@@ -336,7 +216,108 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="account" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
+			</Drawer.Navigator>
+		);
+
+	} else if (userInfo?.roles.includes('MANAGER')) {
+
+		returnedData = (
+			<Drawer.Navigator
+				screenOptions={{
+					drawerStyle: {
+						width: 250,
+					},
+					drawerPosition: 'left',
+					drawerType: 'slide',
+					drawerActiveTintColor:'#999999',
+
+					drawerIcon: () => (
+						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
+					),
+				}}
+				drawerContent={props => (
+					<CustomDrawerContent
+						{...props}
+						logout={(value: any) => logOutOfApp(value)}
+						userInfo={userInfo}
+						navigation={props.navigation}
+					/>
+				)}>
+
+				<Drawer.Screen
+					name={'Home'}
+					component={HomeStatusStack}
+					options={{
+						drawerLabel: 'Home',
+						title: 'home',
+						headerShown: false,
+						swipeEnabled: false,
+
+						drawerIcon: ({focused, size}) => (
+							<Icon name="home" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+				<Drawer.Screen
+					name={'Dashboard'}
+					component={DashboardStack}
+					options={{
+						drawerLabel: 'Dashboard',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-dashboard" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+				<Drawer.Screen
+					name={'Project'}
+					component={ProjectStack}
+					options={{
+						headerShown: false,
+						title: 'project',
+						drawerLabel: 'Project',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-list" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+
+				<Drawer.Screen
+					name={'Sprint'}
+					component={SprintStack}
+					options={{
+						headerShown: false,
+						title: 'sprint',
+						drawerLabel: 'Sprint',
+						swipeEnabled: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="view-module" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+				<Drawer.Screen
+					name={'Task'}
+					component={TaskStack}
+					options={{
+						drawerLabel: 'Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+
 			</Drawer.Navigator>
 		);
 
@@ -350,6 +331,12 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					},
 					drawerPosition: 'left',
 					drawerType: 'slide',
+					drawerInactiveTintColor:'#fff',
+					drawerAllowFontScaling:true,
+					drawerActiveTintColor:'#999999',
+					drawerIcon: () => (
+						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
+					),
 				}}
 				drawerContent={props => (
 					<CustomDrawerContent
@@ -372,32 +359,20 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="home" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 				<Drawer.Screen
-					name={'Category'}
-					component={CategoryStack}
+					name={'Dashboard'}
+					component={DashboardStack}
 					options={{
-						headerShown: false,
-						drawerLabel: 'Category',
-						title: 'task',
+						drawerLabel: 'Dashboard',
 						swipeEnabled: false,
+						headerShown: false,
 						drawerIcon: ({focused, size}) => (
-							<Icon name="animation" size={22} color={'#262626'}/>
+							<Icon name="view-dashboard" size={22} color={'#262626'}/>
 						),
 					}}
-				/>
-				<Drawer.Screen
-					name={'Project'}
-					component={ProjectStack}
-					options={{
-						headerShown: false,
-						title: 'project',
-						drawerLabel: 'Project',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-list" size={22} color={'#262626'}/>
-						),
-					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Sprint'}
@@ -411,6 +386,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="view-module" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Task'}
@@ -424,6 +400,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="ticket-outline" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 			</Drawer.Navigator>
 		);
@@ -438,6 +415,12 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					},
 					drawerPosition: 'left',
 					drawerType: 'slide',
+					drawerInactiveTintColor:'#fff',
+					drawerAllowFontScaling:true,
+					drawerActiveTintColor:'#999999',
+					drawerIcon: () => (
+						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
+					),
 				}}
 				drawerContent={props => (
 					<CustomDrawerContent
@@ -460,6 +443,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="home" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 
 				<Drawer.Screen
@@ -473,6 +457,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="view-dashboard" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Project'}
@@ -486,6 +471,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="view-list" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Sprint'}
@@ -499,6 +485,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="view-module" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 				<Drawer.Screen
 					name={'Task'}
@@ -512,6 +499,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 							<Icon name="ticket-outline" size={22} color={'#262626'}/>
 						),
 					}}
+					{...props}
 				/>
 			</Drawer.Navigator>
 		);
@@ -520,9 +508,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 
 	useEffect(() => {
 		if (userInfo && userInfo.roles !== null) {
-			console.log(userInfo.roles);
-			setRoles(userInfo.roles)
-
+			setRoles(userInfo.roles);
 		}
 	}, []);
 
@@ -536,7 +522,6 @@ const Navigation = (props: any) => {
 		useEffect(() => {
 			if (userInfo === null) {
 				_retrieveData('userInfo').then((userInfo: any) => {
-					console.log(' retrieved userInfo= ', userInfo);
 					setUserInfo(JSON.parse(userInfo));
 				});
 			}

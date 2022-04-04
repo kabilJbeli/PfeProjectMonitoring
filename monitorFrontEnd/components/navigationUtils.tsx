@@ -1,4 +1,4 @@
-import {TabNavigator} from './Project';
+import {MainProjectStack, TabNavigator} from './Project';
 import ProjectStatus, { ProjectTabStatusNavigator} from './ProjectStatus';
 import Home from './Home';
 import * as React from 'react';
@@ -7,10 +7,12 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import Category, {CategoryTabStatusNavigator} from './Category';
 import Dashboard from './Dashboard';
 import Sprint from './Sprint';
-import Task from './Task';
+import Task, {TaskTabStatusNavigator} from './Task';
 import User from './Users';
 import {Props} from "../utils";
 import UserManagement, {UserTabNavigator} from "./UserManagement";
+import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import {useNavigation} from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
@@ -37,12 +39,15 @@ const NavigationDrawerStructure = (props: any) => {
 	);
 };
 
-export const ProjectStack = ({navigation}: Props) => {
+
+
+
+export const ProjectStack = ({navigation}: Props,props:any) => {
 	return (
-		<Stack.Navigator initialRouteName="TabNavigator">
+		<Stack.Navigator initialRouteName="MainProjectStack">
 			<Stack.Screen
-				name="TabNavigator"
-				component={TabNavigator}
+				name="MainProjectStack"
+				component={MainProjectStack}
 				options={{
 					title: 'Project Management', //Set Header Title
 					headerLeft: () => (
@@ -56,12 +61,14 @@ export const ProjectStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const ProjectStatusStack = ({navigation}: Props) => {
+
+export const ProjectStatusStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="projectStatus">
 			<Stack.Screen
@@ -80,12 +87,14 @@ export const ProjectStatusStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const HomeStatusStack = ({navigation}: Props) => {
+export const HomeStatusStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="Home">
 			<Stack.Screen
@@ -104,19 +113,21 @@ export const HomeStatusStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const CategoryStack = ({navigation}: Props) => {
+export const CategoryStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="Category">
 			<Stack.Screen
 				name="Category"
 				component={CategoryTabStatusNavigator}
 				options={{
-					title: 'Category Management', //Set Header Title
+					title: 'Task Category Management', //Set Header Title
 					headerLeft: () => (
 						<NavigationDrawerStructure navigationProps={navigation}/>
 					),
@@ -128,12 +139,14 @@ export const CategoryStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const DashboardStack = ({navigation}: Props) => {
+export const DashboardStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="Dashboard">
 			<Stack.Screen
@@ -152,12 +165,14 @@ export const DashboardStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const SprintStack = ({navigation}: Props) => {
+export const SprintStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="Sprint">
 			<Stack.Screen
@@ -176,17 +191,19 @@ export const SprintStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const TaskStack = ({navigation}: any) => {
+export const TaskStack = ({navigation}: any,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="Task">
 			<Stack.Screen
 				name="Task"
-				component={Task}
+				component={TaskTabStatusNavigator}
 				options={{
 					title: 'Task Management', //Set Header Title
 					headerLeft: () => (
@@ -200,12 +217,14 @@ export const TaskStack = ({navigation}: any) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);
 };
 
-export const UserStack = ({navigation}: Props) => {
+export const UserStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="UserManagement">
 			<Stack.Screen
@@ -224,6 +243,8 @@ export const UserStack = ({navigation}: Props) => {
 						fontWeight: 'bold', //Set Header text style
 					},
 				}}
+				{...props}
+
 			/>
 		</Stack.Navigator>
 	);

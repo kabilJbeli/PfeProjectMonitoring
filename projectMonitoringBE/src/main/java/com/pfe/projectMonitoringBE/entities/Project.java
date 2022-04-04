@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,12 +16,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
@@ -46,7 +49,8 @@ public class Project implements Serializable {
 	
 	private Member projectManager;
 	
-	
+	private Member client;
+
 
 	@Column(name = "PROJECTTITLE")
 	private String projectTitle;
@@ -61,6 +65,17 @@ public class Project implements Serializable {
 	private LocalDate endDate;
 
 	
+	
+	@OneToOne
+	@JoinColumn(name = "client")
+	public Member getClient() {
+		return client;
+	}
+
+	public void setClient(Member client) {
+		this.client = client;
+	}
+
 	
 	
 	@OneToOne
@@ -113,7 +128,7 @@ public class Project implements Serializable {
 	public void setMembers(Set<Member> members) {
 		this.members = members;
 	}
-	@OneToOne
+
 	public ProjectStatus getProjectStatus() {
 		return projectStatus;
 	}
@@ -125,7 +140,7 @@ public class Project implements Serializable {
 	@OneToMany(mappedBy="project")
 	public Set<Task> getTasks() {
 		return tasks;
-	}
+	}	
 	
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;

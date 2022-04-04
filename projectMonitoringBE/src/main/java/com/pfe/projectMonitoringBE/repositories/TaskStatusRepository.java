@@ -6,4 +6,6 @@ import com.pfe.projectMonitoringBE.entities.TaskStatus;
 
 public interface TaskStatusRepository extends JpaRepository<TaskStatus, Integer> {
 
+	
+	
 }

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -150,7 +151,7 @@ public class Member implements Serializable {
 		Projects = projects;
 	}
 
-	@OneToMany(mappedBy="member")
+	@OneToMany(mappedBy="assignee")
 	@JsonIgnore
 	public Set<Task> getTasks() {
 		return tasks;
@@ -171,7 +172,7 @@ public class Member implements Serializable {
 		this.memberID = memberID;
 	}
 
-	@OneToOne(mappedBy = "projectManager")
+	@ManyToOne
 	@JsonIgnore
 	public Project getManagedproject() {
 		return managedproject;

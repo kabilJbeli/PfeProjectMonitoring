@@ -24,7 +24,6 @@ const Login = (props: any) => {
 			password: '',
 		},
 	});
-	console.log(props);
 
 	const [error, setError] = useState(false);
 
@@ -40,7 +39,6 @@ const Login = (props: any) => {
 		})
 			.then(response => {
 				if (response.data !== '') {
-					console.log(response);
 					props.changeSignInStatus(true);
 					_storeData('loggedIn', 'true');
 					_storeData('connectedMember', response.data.toString());
@@ -55,7 +53,7 @@ const Login = (props: any) => {
 				props.changeSignInStatus(false);
 				setError(true);
 				_storeData('connectedMember', '');
-				console.log(err);
+				console.error(err);
 			});
 	};
 	const renderAuthResponse = () => {
@@ -93,8 +91,6 @@ const Login = (props: any) => {
 						placeholder="Username"
 						onChangeText={username => {
 							setUser(prevState => {
-								console.log(prevState);
-
 								let user: any = Object.assign({}, prevState.user);
 								user.username = username;
 								return {user};
@@ -106,7 +102,6 @@ const Login = (props: any) => {
 						placeholder="Password"
 						onChangeText={password => {
 							setUser(prevState => {
-								console.log(prevState);
 								let user = Object.assign({}, prevState.user);
 								user.password = password;
 								return {user};

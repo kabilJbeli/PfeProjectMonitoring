@@ -10,67 +10,64 @@ import Images from "../assets/Images";
 import {Text} from "react-native-elements";
 import jwt_decode from "jwt-decode";
 import Icon from 'react-native-vector-icons/Feather';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const KeycloakLogin = () => {
 	const {keycloak, initialized} = useKeycloak();
 	const [token, setToken] = useState<any>(null);
 
-	if (!token) {
-		keycloak?.init({
-			onLoad: 'check-sso'
-		}).then(val => {
-		});
-	}
+	const getUserInfo = () => {
 
-	useEffect(() => {
+		console.log('Authenticated====================> ', keycloak?.authenticated)
+		console.log('Roles=======================>', keycloak?.realmAccess?.roles);
 
-		if (token === null) {
-			_retrieveData('token').then((result: any) => {
-				console.log(result);
-				if (result) {
-					let decodedJwtData: any = jwt_decode(result)
-					console.log('decodes Token=====================>   ', decodedJwtData);
 
-					_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
-					let userInfo = {
-						firstName: decodedJwtData.given_name,
-						lastName: decodedJwtData.family_name,
-						email: decodedJwtData.email,
-						name: decodedJwtData.name,
-						username: decodedJwtData.preferred_username,
-						roles: decodedJwtData.realm_access.roles
-					}
-
-					_storeData('userInfo', JSON.stringify(userInfo));
-					setToken(result);
-
-				}
-
-			});
-
-		}
-	}, [token]);
-
-	const checkToken = (): void => {
 		if (keycloak?.token) {
-			_storeData('token', JSON.stringify(keycloak?.token));
-		}
-	}
+			let decodedJwtData: any = jwt_decode(keycloak?.token)
+			console.log('decodes Token=====================>   ', decodedJwtData);
+			_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
+			let userInfo = {
+				firstName: decodedJwtData.given_name,
+				lastName: decodedJwtData.family_name,
+				email: decodedJwtData.email,
+				name: decodedJwtData.name,
+				username: decodedJwtData.preferred_username,
+				roles: decodedJwtData.realm_access.roles
 
+			}
+			if (token === null) {
+				setToken(keycloak?.token);
+
+			}
+
+
+			_storeData('token', JSON.stringify(keycloak?.token));
+			_storeData('refreshToken', JSON.stringify(keycloak?.refreshToken));
+			_storeData('userInfo', JSON.stringify(userInfo));
+
+		} else {
+			keycloak?.loadUserInfo().then(val => {
+				getUserInfo()
+			});
+		}
+
+	}
 	const logoutUser = (logout: any) => {
 		keycloak?.logout().then(response => {
 			_storeData('token', '');
 			_storeData('userInfo', '');
+			_storeData('refreshToken', '');
+
 			setToken(null);
 		}).catch(err => {
-			console.log('Logout Error: ', err)
+			console.error('Logout Error: ', err)
 		})
 	};
 
-	const getApplicationMainView = (tokenValue:any) => {
+	const getApplicationMainView = (tokenValue: any) => {
 		let returnedValue;
-		if (!tokenValue || tokenValue === null) {
-			checkToken();
+
+		if (!keycloak?.authenticated) {
 
 			returnedValue = (
 				<KeyboardAvoidingView
@@ -94,7 +91,6 @@ const KeycloakLogin = () => {
 							<Pressable
 								style={styles.loginButton}
 								onPress={() => keycloak?.login().then(val => {
-									console.log(val)
 								})}>
 								<Text style={styles.loginButtonText}>Login To Proceed</Text>
 								<Icon name="arrow-right" size={22} color={'#fff'}/>
@@ -104,20 +100,28 @@ const KeycloakLogin = () => {
 				</KeyboardAvoidingView>
 			)
 		} else {
-			returnedValue = (<Provider store={Store}>
-				<NavigationContainer>
-					<StatusBar
-						translucent={true}
-						backgroundColor="#262626"
-						animated={true}
-					/>
-					<Navigation
-						logout={(value: any) => {
-							logoutUser(value);
-						}}
-					/>
-				</NavigationContainer>
-			</Provider>)
+			if (token === null) {
+				getUserInfo();
+			}
+
+			returnedValue = (
+				<Provider store={Store}>
+					<PaperProvider theme={theme}>
+						<NavigationContainer>
+							<StatusBar
+								translucent={true}
+								backgroundColor="#262626"
+								animated={true}
+							/>
+							<Navigation
+								logout={(value: any) => {
+									logoutUser(value);
+								}}
+							/>
+						</NavigationContainer>
+					</PaperProvider>
+				</Provider>
+			)
 
 		}
 		return returnedValue;
@@ -173,14 +177,14 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		width: 250,
 		display: 'flex',
-		flexDirection:'row',
+		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	loginButtonText: {
 		color: '#fff',
 		fontSize: 18,
-		paddingRight:15
+		paddingRight: 15
 	},
 	fbLoginButton: {
 		height: 45,
@@ -196,8 +200,12 @@ const styles = StyleSheet.create({
 });
 
 
-
-
-
-
-
+const theme = {
+	...DefaultTheme,
+	roundness: 2,
+	colors: {
+		...DefaultTheme.colors,
+		primary: '#3498db',
+		accent: '#f1c40f',
+	},
+};

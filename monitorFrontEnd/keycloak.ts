@@ -11,4 +11,11 @@ const keycloak = new RNKeycloak({
 	clientId: 'projectMonitoringFE',
 });
 
+keycloak.init({
+	onLoad: 'check-sso',
+	checkLoginIframe: true,
+	checkLoginIframeInterval: 1,
+	enableLogging:true
+})
+
 export default keycloak;

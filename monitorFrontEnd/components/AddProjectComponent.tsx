@@ -1,38 +1,45 @@
 import * as React from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Environment from '../Environment';
+// @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
 import {showToastWithGravity} from "../utils";
+import {useNavigation} from "@react-navigation/native";
 
 
 const AddProjectComponent = (props: any) => {
 	const [date, setDate] = useState(new Date());
 	const [isEnabled, setIsEnabled] = useState(false);
-	const [ProjectStatusData, setProjectStatusData] = useState<any[]>([]);
+	const [clients, setClients] = useState<any[]>([]);
+	const [projectManagers, setProjectManagers] = useState<any[]>([]);
+
 	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [openEndDate, setOpenEndDate] = useState(false);
 	let textInput: any = React.createRef();
 	let descriptionInput: any = React.createRef();
+	const navigation = useNavigation();
 
 	const defaultState = {
 		project: {
 			projectTitle: '',
 			projectDescription: '',
-			projectStatus: null,
+			projectStatus: 'Created',
+			projectManager:null,
+			client:null,
 			startDate: new Date(),
 			endDate: new Date(),
 		},
 	};
 
-	const [state, setState] = useState(defaultState);
+	const [state, setState] = useState<any>(defaultState);
 	const getButtonStatus = (): boolean => {
 		return (
 			state.project.projectTitle === '' ||
@@ -40,10 +47,10 @@ const AddProjectComponent = (props: any) => {
 			state.project.projectStatus === null
 		);
 	};
-	const getProjectStatus = () => {
+	const getClients = () => {
 		return new Promise((resolve, reject) => {
 			axios
-				.get<any[]>(`${Environment.API_URL}/api/projectStatus/all`, {})
+				.get<any[]>(`${Environment.API_URL}/api/member/getMemberByRole?role=CLIENT`, {})
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
@@ -53,14 +60,41 @@ const AddProjectComponent = (props: any) => {
 
 	}
 
-	useEffect(() => {
-		getProjectStatus().then((data: any) => {
-			const status: any[] = [];
+
+	const getProjectManagers = () => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any[]>(`${Environment.API_URL}/api/member/getProjectManagers`, {})
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+
+	}
+	useEffect(()=>{
+		getProjectManagers().then((data:any)=>{
+			const projectManagers: any[] = [];
 			if (data) {
 				data.map((item: any) => {
-					status.push({label: item.projectStatusTitle, value: item});
+					projectManagers.push({label: item.name+' '+item.lastName, value: item});
 				});
-				setProjectStatusData(status);
+				setProjectManagers(projectManagers);
+				setIsEnabled(true);
+			}
+		});
+
+	},[props])
+
+	useEffect(() => {
+		getClients().then((data: any) => {
+			const clients: any[] = [];
+			if (data) {
+				data.map((item: any) => {
+					clients.push({label: item.name, value: item});
+				});
+				setClients(clients);
 				setIsEnabled(true);
 			}
 		}).catch(error => {
@@ -73,22 +107,35 @@ const AddProjectComponent = (props: any) => {
 		axios
 			.post(`${Environment.API_URL}/api/project/add`, state.project)
 			.then((res: any) => {
+				// @ts-ignore
+				navigation.navigate('projects');
+
 				showToastWithGravity('Project Successfully Added');
 				setState(defaultState);
 				setDate(new Date());
 				setExpectedEndDate(new Date());
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.log(error);
+			console.error(error);
 		});
 	};
+
+
 
 
 	const DisplayAddProjectScreen = (): any => {
 		let returnedElements: any;
 		if (isEnabled) {
 			returnedElements = (
-				<View style={styles.centeredView}>
+				<View>
+					<View style={{
+						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+						backgroundColor: '#00a3cc'
+
+					}}>
+						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+							Add Project</Text>
+					</View>
 					<View style={styles.modalView}>
 						<View style={{width: '100%'}}>
 							<Text>Project Title</Text>
@@ -132,19 +179,6 @@ const AddProjectComponent = (props: any) => {
 							/>
 						</View>
 
-						<View style={{width: '100%', marginBottom: 15}}>
-							<Dropdown
-								style={{width: '100%'}}
-								label={'Project Status'}
-								data={ProjectStatusData}
-								onChangeText={(value:any)=>	setState((prevState: any) => {
-									let project = Object.assign({}, prevState.project);
-									project.projectStatus = value;
-									return {project};
-								})}
-								value={state.project.projectStatus}
-							/>
-						</View>
 						<View
 							style={{
 								width: '100%',
@@ -224,32 +258,30 @@ const AddProjectComponent = (props: any) => {
 							<Dropdown
 								style={{width: '100%'}}
 								label={'Project Manager'}
-								data={[
-									{label: 'testing manager 1', value: 'testing manager 1'},
-									{label: 'testing manager 2', value: 'testing manager 2'},
-									{label: 'testing mllanager 3', value: 'testing manager 3'},
-								]}
-								onChangeText={(text: string) => {
-								}}
+								data={projectManagers}
+								onChangeText={(value:any)=>	setState((prevState: any) => {
+									let project = Object.assign({}, prevState.project);
+									project.projectManager = value;
+									return {project};
+								})}
+								value={state.project?.projectManager?.name || ''}
+							/>
+						</View>
 
+						<View style={{width: '100%', marginBottom: 15}}>
+							<Dropdown
+								style={{width: '100%'}}
+								label={'Client'}
+								data={clients}
+								onChangeText={(value:any)=>	setState((prevState: any) => {
+									let project = Object.assign({}, prevState.project);
+									project.client = value;
+									return {project};
+								})}
+								value={state.project?.client?.name || ''}
 							/>
 						</View>
 						<View style={styles.columnDisplay}>
-							<TouchableOpacity
-								style={styles.cancelWrapper}
-								onPress={() => {
-									setState(defaultState);
-
-								}}>
-								<Text
-									style={{
-										textAlign: 'center',
-										color: '#fff',
-										fontWeight: '500',
-									}}>
-									Reset
-								</Text>
-							</TouchableOpacity>
 							<TouchableOpacity
 								disabled={getButtonStatus()}
 								style={getButtonStatus() ? styles.disabled : styles.buttonWrapper}
@@ -265,12 +297,32 @@ const AddProjectComponent = (props: any) => {
 									Add New Project
 								</Text>
 							</TouchableOpacity>
+							<TouchableOpacity
+								style={styles.cancelWrapper}
+								onPress={() => {
+									setState(defaultState);
+
+								}}>
+								<Text
+									style={{
+										textAlign: 'center',
+										color: '#fff',
+										fontWeight: '500',
+									}}>
+									Reset
+								</Text>
+							</TouchableOpacity>
+
 						</View>
 					</View>
 				</View>
 			);
 		} else {
-			returnedElements = (<Text>Still Loading ...</Text>)
+			returnedElements = (<View style={{alignItems:'center',justifyContent:'center',height:'100%'}}>
+				<View style={{padding:15}}>
+				<ActivityIndicator size="large" color="#d81e05"/>
+				</View>
+				<Text>Still Loading ...</Text></View>)
 		}
 		return returnedElements;
 	}
@@ -281,7 +333,7 @@ export default AddProjectComponent;
 const styles = StyleSheet.create({
 	columnDisplay: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		position: 'relative',
 		width: '100%',
 		justifyContent: 'space-between',
@@ -290,22 +342,24 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 	},
 	buttonWrapper: {
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 		opacity: 1,
+		width:'100%'
 	},
 	cancelWrapper: {
-		backgroundColor: '#F22F46',
+		backgroundColor: '#c8003f',
 		padding: 10,
 		opacity: 1,
+		width:'100%',
+marginTop:15
 	},
 	disabled: {
 		opacity: 0.5,
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 	},
 	centeredView: {
-		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 0,

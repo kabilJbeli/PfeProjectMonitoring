@@ -19,7 +19,9 @@ import IconFontisto from 'react-native-vector-icons/Fontisto';
 
 import validator from 'validator';
 import {showToastWithGravity} from "../utils";
+// @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
+import {useNavigation} from "@react-navigation/native";
 
 
 const User = () => {
@@ -35,24 +37,25 @@ const User = () => {
 		},
 	};
 	const [state, setState] = useState(defaultState);
+	const navigation = useNavigation();
 
 	const [emailValid, setEmailValid] = useState(false);
 	const checkEmail = (email: string) => {
 		setEmailValid(validator.isEmail(state.user.email));
 	};
 	const addUser = () => {
-		console.log('Added User=====> ',state.user)
 		axios
 			.post(`${Environment.API_URL}/api/keycloak/user?username=${state.user.name}
 			&email=${state.user.email}&firstname=${state.user.name}&lastname=${state.user.lastName}
 			&password=${state.user.password}&role=${state.user.role}&address=${state.user.Address}&telephone=${state.user.Telephone}`, {})
 			.then((res: any) => {
+				// @ts-ignore
+				navigation.navigate('UserManagement');
 				showToastWithGravity('User Successfully Added');
 				setState(defaultState);
-				console.log(res);
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has occurred!!!');
-			console.log(error);
+			console.error(error);
 		});
 	};
 
@@ -69,8 +72,18 @@ const User = () => {
 		);
 	};
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView style={{paddingRight: 15}}>
+		<SafeAreaView>
+			<View style={{
+				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+				backgroundColor: '#da1971'
+
+			}}>
+				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+				Add User </Text>
+			</View>
+			<ScrollView style={{paddingRight: 15,height:'100%',backgroundColor:'#fff'}} >
+				<View style={styles.container} >
+
 				<View style={{width: '100%'}}>
 					<Text>User Name</Text>
 					<Input
@@ -197,7 +210,6 @@ const User = () => {
 							{label: 'Client', value: 'CLIENT'},
 						]}
 						onChangeText={(value: any) => setState((prevState: any) => {
-							console.log(value);
 							let user = Object.assign({}, prevState.user);
 
 							user.role = value;
@@ -207,13 +219,7 @@ const User = () => {
 					/>
 				</View>
 				<View style={styles.columnDisplay}>
-					<TouchableOpacity style={styles.cancelWrapper} onPress={() => {
-						setState(defaultState);
-					}}>
-						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
-							Reset
-						</Text>
-					</TouchableOpacity>
+
 					<TouchableOpacity
 						style={styles.buttonWrapper}
 						onPress={() => {
@@ -223,7 +229,16 @@ const User = () => {
 							Add New User
 						</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={styles.cancelWrapper} onPress={() => {
+						setState(defaultState);
+					}}>
+						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
+							Reset
+						</Text>
+					</TouchableOpacity>
 				</View>
+				</View>
+
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -233,13 +248,15 @@ export default User;
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
+		height:'100%',
 		padding: 15,
 		paddingRight: 0,
-		backgroundColor: '#fff'
+		backgroundColor: '#fff',
+		flex:1
 	},
 	columnDisplay: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		width: '100%',
 		justifyContent: 'space-between',
 	},
@@ -247,18 +264,22 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 	},
 	buttonWrapper: {
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 		opacity: 1,
+		width:'100%',
+
 	},
 	cancelWrapper: {
-		backgroundColor: '#F22F46',
+		backgroundColor: '#c8003f',
 		padding: 10,
 		opacity: 1,
+		marginTop:15,
+		width:'100%',
 	},
 	disabled: {
 		opacity: 0.5,
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 	},
 	centeredView: {
