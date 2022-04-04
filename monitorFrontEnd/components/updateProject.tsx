@@ -132,7 +132,15 @@ const UpdateProjectScreen = (props: any) => {
 		let returnedElements: any;
 		if (isEnabled) {
 			returnedElements = (
-				<View style={styles.centeredView}>
+				<View>
+					<View style={{
+						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+						backgroundColor: '#00a3cc'
+
+					}}>
+						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+							Update Project</Text>
+					</View>
 					<View style={styles.modalView}>
 						<View style={{width: '100%'}}>
 							<Text>Project Title</Text>

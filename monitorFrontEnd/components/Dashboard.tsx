@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dimensions, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, ImageBackground, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {
 	LineChart,
 	BarChart,
@@ -8,7 +8,7 @@ import {
 	ContributionGraph,
 	StackedBarChart
 } from "react-native-chart-kit";
-
+import Images from '../assets/Images';
 const Dashboard = () => {
 	const data = {
 		labels: ["January", "February", "March", "April", "May"],
@@ -19,7 +19,18 @@ const Dashboard = () => {
 		]
 	};
 	return (
+		<SafeAreaView>
+		<View style={{
+			height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+			backgroundColor: '#262626'
+
+		}}>
+			<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+				Dashboard</Text>
+
+		</View>
 		<View style={styles.container}>
+
 			<View>
 				<Text>Bezier Line Chart</Text>
 				<LineChart
@@ -101,6 +112,7 @@ const Dashboard = () => {
 				/>
 			</View>
 		</View>
+		</SafeAreaView>
 	);
 };
 export default Dashboard;
@@ -108,4 +120,5 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 15,
 	},
+
 });

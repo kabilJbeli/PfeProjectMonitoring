@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ActivityIndicator, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Dimensions, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AddProjectStatus from "./addProjectStatus";
 import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
@@ -143,7 +143,17 @@ const Category = () => {
         } else {
             return (
                 <View>
+                    <View style={{
+                        height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+                        backgroundColor: '#3a436c'
+
+                    }}>
+                        <Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+                           Category List</Text>
+                    </View>
                     <FlatList
+                        style={{height:Dimensions.get('window').height-300}}
+
                         keyExtractor={(item, index) => index.toString()}
                         data={categories}
                         ItemSeparatorComponent={FlatListItemSeparator}
@@ -293,13 +303,13 @@ const styles = StyleSheet.create({
         borderRightColor: 'transparent',
     },
     delete: {
-        backgroundColor: '#b5483a',
+        backgroundColor: '#c8003f',
     },
     view: {
         backgroundColor: '#6e6e6e',
     },
     update: {
-        backgroundColor: '#3ab56b',
+        backgroundColor: '#1f9683',
     },
     status: {
         backgroundColor: '#6e6e6e',

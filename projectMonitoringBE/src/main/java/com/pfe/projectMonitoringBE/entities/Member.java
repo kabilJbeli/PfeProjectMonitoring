@@ -151,7 +151,7 @@ public class Member implements Serializable {
 		Projects = projects;
 	}
 
-	@OneToMany(mappedBy="member")
+	@OneToMany(mappedBy="assignee")
 	@JsonIgnore
 	public Set<Task> getTasks() {
 		return tasks;

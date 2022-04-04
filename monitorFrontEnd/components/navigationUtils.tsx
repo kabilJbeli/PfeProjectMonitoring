@@ -7,10 +7,12 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import Category, {CategoryTabStatusNavigator} from './Category';
 import Dashboard from './Dashboard';
 import Sprint from './Sprint';
-import Task from './Task';
+import Task, {TaskTabStatusNavigator} from './Task';
 import User from './Users';
 import {Props} from "../utils";
 import UserManagement, {UserTabNavigator} from "./UserManagement";
+import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import {useNavigation} from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +39,9 @@ const NavigationDrawerStructure = (props: any) => {
 	);
 };
 
+
+
+
 export const ProjectStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="MainProjectStack">
@@ -61,6 +66,7 @@ export const ProjectStack = ({navigation}: Props,props:any) => {
 		</Stack.Navigator>
 	);
 };
+
 
 export const ProjectStatusStack = ({navigation}: Props,props:any) => {
 	return (
@@ -197,7 +203,7 @@ export const TaskStack = ({navigation}: any,props:any) => {
 		<Stack.Navigator initialRouteName="Task">
 			<Stack.Screen
 				name="Task"
-				component={Task}
+				component={TaskTabStatusNavigator}
 				options={{
 					title: 'Task Management', //Set Header Title
 					headerLeft: () => (

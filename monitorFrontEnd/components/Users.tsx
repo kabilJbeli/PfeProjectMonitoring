@@ -72,8 +72,18 @@ const User = () => {
 		);
 	};
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView style={{paddingRight: 15}}>
+		<SafeAreaView>
+			<View style={{
+				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+				backgroundColor: '#da1971'
+
+			}}>
+				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+				Add User </Text>
+			</View>
+			<ScrollView style={{paddingRight: 15,height:'100%',backgroundColor:'#fff'}} >
+				<View style={styles.container} >
+
 				<View style={{width: '100%'}}>
 					<Text>User Name</Text>
 					<Input
@@ -209,13 +219,7 @@ const User = () => {
 					/>
 				</View>
 				<View style={styles.columnDisplay}>
-					<TouchableOpacity style={styles.cancelWrapper} onPress={() => {
-						setState(defaultState);
-					}}>
-						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
-							Reset
-						</Text>
-					</TouchableOpacity>
+
 					<TouchableOpacity
 						style={styles.buttonWrapper}
 						onPress={() => {
@@ -225,7 +229,16 @@ const User = () => {
 							Add New User
 						</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={styles.cancelWrapper} onPress={() => {
+						setState(defaultState);
+					}}>
+						<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
+							Reset
+						</Text>
+					</TouchableOpacity>
 				</View>
+				</View>
+
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -235,13 +248,15 @@ export default User;
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
+		height:'100%',
 		padding: 15,
 		paddingRight: 0,
-		backgroundColor: '#fff'
+		backgroundColor: '#fff',
+		flex:1
 	},
 	columnDisplay: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		width: '100%',
 		justifyContent: 'space-between',
 	},
@@ -249,18 +264,22 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 	},
 	buttonWrapper: {
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 		opacity: 1,
+		width:'100%',
+
 	},
 	cancelWrapper: {
-		backgroundColor: '#F22F46',
+		backgroundColor: '#c8003f',
 		padding: 10,
 		opacity: 1,
+		marginTop:15,
+		width:'100%',
 	},
 	disabled: {
 		opacity: 0.5,
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 	},
 	centeredView: {

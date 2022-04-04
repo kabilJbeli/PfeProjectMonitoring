@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ProjectsList from './ProjectLists';
@@ -30,7 +30,7 @@ export const MainProjectStack = (props: any) => {
 			<Stack.Screen name="projectTab" component={TabNavigator}
 						  {...props}
 						  options={{
-							  headerShown: false
+							  headerShown: false,
 						  }}
 			/>
 			<Stack.Screen name="updateProject" component={UpdateProjectScreen}
@@ -45,7 +45,8 @@ export const MainProjectStack = (props: any) => {
 						  {...props}
 						  options={{
 							  title: 'Project Information',
-							  presentation: 'card'
+							  presentation: 'card',
+							  headerShown: false
 						  }}
 
 			/>
@@ -54,13 +55,19 @@ export const MainProjectStack = (props: any) => {
 	);
 }
 
+
+
 export const TabNavigator = (props: any) => {
 	const [roles, setRoles] = useState<string[]>([]);
 	let conditionalTabNavigatorValue = (<View></View>);
+useEffect(()=>{
+
+
 
 	_retrieveData('userInfo').then((userInfo: any) => {
 		setRoles(JSON.parse(userInfo).roles);
 	});
+},[props])
 	if (roles.includes('ADMINISTRATOR')) {
 		conditionalTabNavigatorValue = (
 			<Tab.Navigator
@@ -70,7 +77,6 @@ export const TabNavigator = (props: any) => {
 					tabBarStyle: {backgroundColor: '#262626', height: 25},
 					tabBarInactiveTintColor: '#fff',
 					tabBarActiveTintColor: '#fff',
-
 				}}>
 				<Tab.Screen
 					name="projects"
@@ -84,6 +90,7 @@ export const TabNavigator = (props: any) => {
 						tabBarIcon: ({color}) => (
 							<Ionicons name="ios-medal-outline" color={color} size={25}/>
 						),
+
 					})}
 					{...props}
 
@@ -205,9 +212,9 @@ const styles = StyleSheet.create({
 	},
 });
 const getTabBarVisibility = (route: any) => {
-	const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
+	const routeName = getFocusedRouteNameFromRoute(route);
 
-	if (routeName == 'GameDetails') {
+	if (routeName == 'viewProjectInformation') {
 		return 'none';
 	}
 	return 'flex';

@@ -2,6 +2,7 @@ package com.pfe.projectMonitoringBE.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
+import com.pfe.projectMonitoringBE.models.ProjectMembers;
+import com.pfe.projectMonitoringBE.models.SelectProjectMembers;
 import com.pfe.projectMonitoringBE.services.MemberService;
 import com.pfe.projectMonitoringBE.services.ProjectService;
 
@@ -51,10 +56,18 @@ public class ProjectController {
 	}
 
 	@PostMapping("/getProjectsByProjectManager")
-	public List<Project> getProjectById(@RequestParam String email) {
+	public List<Project> getProjectByManagerEmail(@RequestParam String email) {
 
 		Member projectManager = memberService.findByMemberByEmail(email);
 		return service.getManagerProjects(projectManager);
+
+	}
+	
+	
+	@GetMapping("/findByMember")
+	public List<Project> getProjectByMemberEmail(@RequestParam String email) {
+
+		return service.findByMember(email.trim());
 
 	}
 
@@ -85,5 +98,38 @@ public class ProjectController {
 		} catch (NoSuchElementException e) {
 
 		}
+	}
+	
+	
+	@PostMapping("/assignMembersToProject")
+	public Project assignProjectMembers(@RequestBody Set<Member> members,@RequestParam Integer projectId) {
+		
+		Project searchedProject = null;
+		try {
+			 searchedProject = service.findProject(projectId);			
+			if (searchedProject.getProjectID() != null) {
+				
+				searchedProject.setMembers(members);
+				service.createOrUpdateProject(searchedProject);
+			}
+		} catch (NoSuchElementException e) {
+
+		}
+		return searchedProject;
+	}
+	
+	@GetMapping("/changeProjectStatus")
+	public Project changeProjectStatus(@RequestParam Integer projectId,@RequestParam ProjectStatus projectStatus) {
+		Project searchedProject = null;
+		try {
+			 searchedProject = service.findProject(projectId);			
+			if (searchedProject.getProjectID() != null) {
+				searchedProject.setProjectStatus(projectStatus);
+				service.createOrUpdateProject(searchedProject);
+			}
+		} catch (NoSuchElementException e) {
+
+		}
+		return searchedProject;
 	}
 }

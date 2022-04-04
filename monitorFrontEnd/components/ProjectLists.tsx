@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {
-	ActivityIndicator,
+	ActivityIndicator, Dimensions,
 	FlatList,
-	Pressable,
+	Pressable, SafeAreaView,
 	ScrollView,
 	StyleSheet,
-	Text,
+	Text, TextInput,
 	View,
 } from 'react-native';
 import axios from 'axios';
@@ -15,89 +15,87 @@ import {Project} from '../models/Project';
 import {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconM from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import {Input} from 'react-native-elements';
 import {_retrieveData, _storeData, Props} from "../utils";
+import * as _ from 'lodash';
 
 const ProjectsList = (props: any) => {
 	const navigation = useNavigation();
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const [searchedProject, setSearchedProject] = useState<Project[]>([]);
-	const [searchedProjectName, setSearchedProjectName] = useState<String>('');
+	const [searchedProjectName, setSearchedProjectName] = useState<string>('');
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	const retrieveUserInformation = ():boolean => {
-		let returned = false;
 
-		useEffect(() => {
-				_retrieveData('userInfo').then((info: any) => {
-					setUserInfo(JSON.parse(info));
-					returned=true;
-					let parsedInfo = JSON.parse(info)
-					if(parsedInfo !== undefined){
-						if(parsedInfo?.roles.includes('ADMINISTRATOR')){
-							getAllProjects();
-						}else{
-							getUserSpecificProjects(parsedInfo);
-						}
+	useEffect(() => {
+		if (loading) {
+			_retrieveData('userInfo').then((info: any) => {
+				console.log('userInfo Called')
+				let parsedInfo = JSON.parse(info)
+				if (parsedInfo !== undefined && loading) {
+					setUserInfo(parsedInfo);
+
+					if (parsedInfo?.roles.includes('ADMINISTRATOR')) {
+						getAllProjects(parsedInfo);
+					} else {
+						getUserSpecificProjects(parsedInfo);
 					}
+				}
 
-				});
+			});
+		}
 
-
-		}, [props]);
-		return returned;
-	}
-
+	}, [props]);
 
 
-	const getAllProjects = () => {
-			// Update the document title using the browser API
-			if (loading) {
-				axios({
-					method: 'GET',
-					url: `${Environment.API_URL}/api/project/all`,
-					headers: {
-						'Content-Type': 'application/json',
-						useQueryString: false,
-					},
-					params: {},
-				})
-					.then(response => {
-						setProjects(response.data);
-						setSearchedProject(response.data);
-					})
-					.catch((err: any) => {
-					});
+	const getAllProjects = (userInfoParam: any) => {
+		// Update the document title using the browser API
+
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/project/all`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setProjects(response.data);
+				setSearchedProject(response.data);
 				setTimeout(() => setLoading(false), 1000);
-			}
+
+			})
+			.catch((err: any) => {
+			});
 	};
 
-	retrieveUserInformation();
 
-	const getUserSpecificProjects = (userInfoParam?:any) => {
-			// Update the document title using the broconwser API
-			if (loading) {
-				axios({
-					method: 'POST',
-					url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
-					headers: {
-						'Content-Type': 'application/json',
-						useQueryString: false,
-					},
-					params: {},
-					data:{}
+	const getUserSpecificProjects = (userInfoParam?: any) => {
+		// Update the document title using the broconwser API
+
+		if (loading) {
+			axios({
+				method: 'POST',
+				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+				data: {}
+			})
+				.then(response => {
+					setProjects(response.data);
+					setSearchedProject(response.data);
 				})
-					.then(response => {
-						setProjects(response.data);
-						setSearchedProject(response.data);
-					})
-					.catch((err: any) => {
-					});
-				setTimeout(() => setLoading(false), 1000);
-			}
+				.catch((err: any) => {
+				});
+			setTimeout(() => setLoading(false), 1000);
+		}
 	};
 
 	const removeItem = (projectID: Number) => {
@@ -112,9 +110,9 @@ const ProjectsList = (props: any) => {
 		})
 			.then((response: any) => {
 				setLoading(true);
-				if(userInfo?.roles.includes('ADMINISTRATOR')){
-					getAllProjects();
-				}else{
+				if (userInfo?.roles.includes('ADMINISTRATOR')) {
+					getAllProjects(userInfo);
+				} else {
 					getUserSpecificProjects(userInfo);
 				}
 			})
@@ -123,39 +121,42 @@ const ProjectsList = (props: any) => {
 	};
 
 	const updateItem = (projectID: Number) => {
-		_storeData('updatedProjectId',projectID.toString());
+		_storeData('updatedProjectId', projectID.toString());
 		// @ts-ignore
-		setTimeout(()=>navigation.navigate('updateProject'),100);
+		setTimeout(() => navigation.navigate('updateProject'), 100);
 	};
 
 	const viewProject = (projectID: Number) => {
-		_storeData('updatedProjectId',projectID.toString());
+		_storeData('updatedProjectId', projectID.toString());
 		// @ts-ignore
-		setTimeout(()=>navigation.navigate('viewProjectInformation'),100);
+		setTimeout(() => navigation.navigate('viewProjectInformation'), 100);
 	};
 
+
+	const filterProjects = (text:any) =>{
+		setSearchedProjectName(text);
+		if (text.trim() !== '') {
+			setProjects(
+				searchedProject.filter(
+					(item: Project) =>
+						item.projectTitle.toLowerCase().includes(text) ||
+						item.projectDescription.toLowerCase().includes(text),
+				),
+			);
+		} else {
+			setProjects(searchedProject);
+		}
+	}
 	const getListHeader = () => {
 		return (
 			<View style={{width: '100%', backgroundColor: '#fff'}}>
 				<Input
-					leftIcon={<IconM name="search" size={20} color={'#000'}/>}
+
 					placeholder={'Search by project title or description'}
 					style={styles.customMargin}
-					onChangeText={text => {
-						setSearchedProjectName(text);
-						if (text.trim() !== '') {
-							setProjects(
-								searchedProject.filter(
-									(item: Project) =>
-										item.projectTitle.toLowerCase().includes(text) ||
-										item.projectDescription.toLowerCase().includes(text),
-								),
-							);
-						} else {
-							setProjects(searchedProject);
-						}
-					}}
-					autoCompleteType={false}
+					onChangeText={_.debounce((text) => filterProjects(text), 400)}
+					value={searchedProjectName}
+					autoCompleteType={true}
 				/>
 			</View>
 		);
@@ -173,14 +174,128 @@ const ProjectsList = (props: any) => {
 		);
 	};
 	const getCurrentProjectStatus = (project: any): any => {
-		const projectStatus: any = project.item.projectStatus;
+		let projectStatus: any = project.item.projectStatus;
 		let returnedValue: any;
-		if (projectStatus) {
-			returnedValue = (<View style={styles.status}>
-				<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus.projectStatusTitle}</Text>
-			</View>)
+
+		switch (projectStatus) {
+			case 'Created': {
+				projectStatus = 'Created';
+
+				returnedValue = (<View style={[styles.created,styles.status]}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
+				</View>)
+				break;
+			}
+			case 'InProgress': {
+				projectStatus = 'In Progress';
+
+				returnedValue = (<View style={[styles.inprogress,styles.status]}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
+				</View>)
+				break;
+			}
+			case 'Released': {
+				projectStatus = 'Released';
+
+				returnedValue = (<View style={[styles.released,styles.status]}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
+				</View>)
+				break;
+			}
+			case 'Finished': {
+				projectStatus = 'Finished';
+
+				returnedValue = (<View style={[styles.finished,styles.status]}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
+				</View>)
+				break;
+			}
+			default: {
+				projectStatus = 'Created';
+
+				returnedValue = (<View style={[styles.created,styles.status]}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
+				</View>)
+				break;
+			}
 		}
+
+
 		return returnedValue;
+	}
+	const projectCustomActions = (item: any) => {
+		let returnedActionElements = (<View></View>);
+		if (userInfo.roles.includes('ADMINISTRATOR')) {
+
+
+			returnedActionElements = (
+				<View style={{width: '100%', flexDirection: 'row'}}>
+					<Pressable
+						style={[styles.button, styles.delete]}
+						onPress={() => {
+							removeItem(item.projectID);
+						}}>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>
+							Remove
+						</Text>
+					</Pressable>
+					<Pressable
+						style={[styles.button, styles.borderButton, styles.update]}
+						onPress={() => {
+							updateItem(item.projectID);
+						}}>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>
+							Update
+						</Text>
+					</Pressable>
+				</View>
+			);
+		} else {
+
+			returnedActionElements = (
+				<View style={{width: '100%', flexDirection: 'row'}}>
+					{/*	<Pressable
+						style={[styles.button, styles.delete]}
+						onPress={() => {
+							removeItem(item.projectID);
+						}}>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>
+							Remove
+						</Text>
+					</Pressable>*/}
+					<Pressable
+						style={[styles.button, styles.borderButton, styles.view,{width:'100%'}]}
+						onPress={() => {
+							viewProject(item.projectID);
+						}}>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>
+							View Project
+						</Text>
+					</Pressable>
+				</View>);
+
+		}
+		return returnedActionElements;
 	}
 	const getLatestProjectInfo = () => {
 		if (loading) {
@@ -192,9 +307,18 @@ const ProjectsList = (props: any) => {
 		} else {
 			return (
 				<View>
+					<View style={{
+						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+						backgroundColor: '#00a3cc'
+
+					}}>
+						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+							Project List</Text>
+					</View>
 					<FlatList
+						style={{height:Dimensions.get('window').height-300}}
 						keyExtractor={(item, index) => index.toString()}
-						data={projects.reverse()}
+						data={projects}
 						ItemSeparatorComponent={FlatListItemSeparator}
 						ListHeaderComponent={() => getListHeader()}
 						stickyHeaderIndices={[0]}
@@ -225,48 +349,7 @@ const ProjectsList = (props: any) => {
 									</Text>
 								</View>
 								<View style={styles.buttonWrapper}>
-									<Pressable
-										style={[styles.button, styles.delete]}
-										onPress={() => {
-											removeItem(item.projectID);
-										}}>
-										<Text
-											style={{
-												textAlign: 'center',
-												color: '#fff',
-												fontWeight: '500',
-											}}>
-											Remove
-										</Text>
-									</Pressable>
-									<Pressable
-										style={[styles.button, styles.borderButton, styles.view]}
-										onPress={() => {
-											viewProject(item.projectID);
-										}}>
-										<Text
-											style={{
-												textAlign: 'center',
-												color: '#fff',
-												fontWeight: '500',
-											}}>
-											View
-										</Text>
-									</Pressable>
-									<Pressable
-										style={[styles.button, styles.borderButton, styles.update]}
-										onPress={() => {
-											updateItem(item.projectID);
-										}}>
-										<Text
-											style={{
-												textAlign: 'center',
-												color: '#fff',
-												fontWeight: '500',
-											}}>
-											Update
-										</Text>
-									</Pressable>
+									{projectCustomActions(item)}
 								</View>
 							</View>
 						)}
@@ -348,7 +431,7 @@ const styles = StyleSheet.create({
 		textTransform: 'none',
 		maxWidth: 250,
 		overflow: 'hidden',
-		height: 30
+		height: 30,
 	},
 	footer: {
 		display: 'flex',
@@ -364,7 +447,7 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		backgroundColor: '#fff',
-		width: '33.33%',
+		width: '50%',
 		padding: 10,
 		textAlign: 'center',
 	},
@@ -377,16 +460,15 @@ const styles = StyleSheet.create({
 		borderRightColor: 'transparent',
 	},
 	delete: {
-		backgroundColor: '#b5483a',
+		backgroundColor: '#c8003f',
 	},
 	view: {
-		backgroundColor: '#6e6e6e',
+		backgroundColor: '#00a3cc',
 	},
 	update: {
-		backgroundColor: '#3ab56b',
+		backgroundColor: '#1f9683',
 	},
 	status: {
-		backgroundColor: '#6e6e6e',
 		borderRadius: 90,
 		//height:15,
 		padding: 5,
@@ -394,6 +476,19 @@ const styles = StyleSheet.create({
 		paddingRight: 9,
 		color: '#fff',
 		fontSize: 10,
-		textAlign: 'center'
+		textAlign: 'center',
+		minWidth:100
+	},
+	created:{
+		backgroundColor: '#6e6e6e',
+	},
+	inprogress:{
+		backgroundColor: '#f59c10',
+	},
+	released:{
+		backgroundColor: '#9aae0c',
+	},
+	finished:{
+		backgroundColor: '#23ab96',
 	}
 });

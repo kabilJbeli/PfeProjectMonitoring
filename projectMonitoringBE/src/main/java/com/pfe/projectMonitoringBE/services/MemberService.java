@@ -42,4 +42,8 @@ public class MemberService {
 	public List<Member> findmanagers() {
 		return repository.findByRole(Roles.MANAGER);
 	}
+	
+	public List<Member> findByRole(Roles role) {
+		return repository.findByRole(role);
+	}
 }

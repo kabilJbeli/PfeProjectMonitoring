@@ -10,47 +10,48 @@ import Images from "../assets/Images";
 import {Text} from "react-native-elements";
 import jwt_decode from "jwt-decode";
 import Icon from 'react-native-vector-icons/Feather';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+
 const KeycloakLogin = () => {
 	const {keycloak, initialized} = useKeycloak();
 	const [token, setToken] = useState<any>(null);
 
-const getUserInfo = () => {
+	const getUserInfo = () => {
+
+		console.log('Authenticated====================> ', keycloak?.authenticated)
+		console.log('Roles=======================>', keycloak?.realmAccess?.roles);
 
 
-		console.log('Authenticated====================> ',keycloak?.authenticated)
-		console.log('Roles=======================>',keycloak?.realmAccess?.roles);
+		if (keycloak?.token) {
+			let decodedJwtData: any = jwt_decode(keycloak?.token)
+			console.log('decodes Token=====================>   ', decodedJwtData);
+			_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
+			let userInfo = {
+				firstName: decodedJwtData.given_name,
+				lastName: decodedJwtData.family_name,
+				email: decodedJwtData.email,
+				name: decodedJwtData.name,
+				username: decodedJwtData.preferred_username,
+				roles: decodedJwtData.realm_access.roles
+
+			}
+			if (token === null) {
+				setToken(keycloak?.token);
+
+			}
 
 
-				if (keycloak?.token) {
-					let decodedJwtData: any = jwt_decode(keycloak?.token)
-					console.log('decodes Token=====================>   ', decodedJwtData);
-					_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
-					let userInfo = {
-						firstName: decodedJwtData.given_name,
-						lastName: decodedJwtData.family_name,
-						email: decodedJwtData.email,
-						name: decodedJwtData.name,
-						username: decodedJwtData.preferred_username,
-						roles: decodedJwtData.realm_access.roles
+			_storeData('token', JSON.stringify(keycloak?.token));
+			_storeData('refreshToken', JSON.stringify(keycloak?.refreshToken));
+			_storeData('userInfo', JSON.stringify(userInfo));
 
-					}
-					if(token===null){
-						setToken(keycloak?.token);
+		} else {
+			keycloak?.loadUserInfo().then(val => {
+				getUserInfo()
+			});
+		}
 
-					}
-
-
-					_storeData('token', JSON.stringify(keycloak?.token));
-					_storeData('refreshToken', JSON.stringify(keycloak?.refreshToken));
-					_storeData('userInfo', JSON.stringify(userInfo));
-
-				}else{
-					keycloak?.loadUserInfo().then(val=>{
-						getUserInfo()
-					});
-				}
-
-}
+	}
 	const logoutUser = (logout: any) => {
 		keycloak?.logout().then(response => {
 			_storeData('token', '');
@@ -63,7 +64,7 @@ const getUserInfo = () => {
 		})
 	};
 
-	const getApplicationMainView = (tokenValue:any) => {
+	const getApplicationMainView = (tokenValue: any) => {
 		let returnedValue;
 
 		if (!keycloak?.authenticated) {
@@ -99,24 +100,26 @@ const getUserInfo = () => {
 				</KeyboardAvoidingView>
 			)
 		} else {
-			if(token===null){
+			if (token === null) {
 				getUserInfo();
 			}
 
 			returnedValue = (
 				<Provider store={Store}>
-				<NavigationContainer>
-					<StatusBar
-						translucent={true}
-						backgroundColor="#262626"
-						animated={true}
-					/>
-					<Navigation
-						logout={(value: any) => {
-							logoutUser(value);
-						}}
-					/>
-				</NavigationContainer>
+					<PaperProvider theme={theme}>
+						<NavigationContainer>
+							<StatusBar
+								translucent={true}
+								backgroundColor="#262626"
+								animated={true}
+							/>
+							<Navigation
+								logout={(value: any) => {
+									logoutUser(value);
+								}}
+							/>
+						</NavigationContainer>
+					</PaperProvider>
 				</Provider>
 			)
 
@@ -174,14 +177,14 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		width: 250,
 		display: 'flex',
-		flexDirection:'row',
+		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	loginButtonText: {
 		color: '#fff',
 		fontSize: 18,
-		paddingRight:15
+		paddingRight: 15
 	},
 	fbLoginButton: {
 		height: 45,
@@ -197,8 +200,12 @@ const styles = StyleSheet.create({
 });
 
 
-
-
-
-
-
+const theme = {
+	...DefaultTheme,
+	roundness: 2,
+	colors: {
+		...DefaultTheme.colors,
+		primary: '#3498db',
+		accent: '#f1c40f',
+	},
+};

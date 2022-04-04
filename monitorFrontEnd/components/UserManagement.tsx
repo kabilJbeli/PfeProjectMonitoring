@@ -11,6 +11,7 @@ import {Project} from "../models/Project";
 import axios from "axios";
 import Environment from "../Environment";
 import {Props} from "../utils";
+import { Dimensions } from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -66,7 +67,7 @@ const getTabBarVisibility = (route: any) => {
 	return 'flex';
 };
 
-const UserManagement = ({navigation}: Props) => {
+const UserManagement = ({navigation}: Props,props:any) => {
 	const [users, setUsers] = useState<any[]>([]);
 
 	const [loading, setLoading] = useState(true);
@@ -85,7 +86,7 @@ const UserManagement = ({navigation}: Props) => {
 	};
 
 	const getUsers = () => {
-		useEffect(() => {
+		console.log('getUsers')
 			// Update the document title using the browser API
 				axios({
 					method: 'GET',
@@ -98,15 +99,15 @@ const UserManagement = ({navigation}: Props) => {
 				})
 					.then(response => {
 						setUsers(response.data);
-						setLoading(false);
 					})
 					.catch((err: any) => {
 					});
 				setTimeout(() => setLoading(false), 1000);
 
-		}, [loading]);
 	};
-	getUsers();
+	useEffect(() => {
+		getUsers();
+	},[]);
 	const removeItem = (email: String) => {
 		axios({
 			method: 'DELETE',
@@ -129,16 +130,25 @@ const UserManagement = ({navigation}: Props) => {
 	};
 
 	const getLatestUserInfo = () => {
-		if (loading && !isFocused) {
+		if (!isFocused) {
 			return (
 				<View style={styles.loadingContainer}>
 					<ActivityIndicator size="large" color="#d81e05"/>
 				</View>
 			);
 		} else {
-			return (
+		return (
 				<View>
+					<View style={{
+						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+						backgroundColor: '#da1971'
+
+					}}>
+						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+							User List</Text>
+					</View>
 					<FlatList
+						style={{height:Dimensions.get('window').height-300}}
 						keyExtractor={(item, index) => index.toString()}
 						data={users}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -311,13 +321,13 @@ const styles = StyleSheet.create({
 		borderRightColor: 'transparent',
 	},
 	delete: {
-		backgroundColor: '#b5483a',
+		backgroundColor: '#c8003f',
 	},
 	view: {
-		backgroundColor: '#6e6e6e',
+		backgroundColor: '#00a3cc',
 	},
 	update: {
-		backgroundColor: '#3ab56b',
+		backgroundColor: '#1f9683',
 	},
 	status: {
 		backgroundColor: '#6e6e6e',

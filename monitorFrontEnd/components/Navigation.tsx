@@ -19,7 +19,6 @@ import IconE from 'react-native-vector-icons/FontAwesome';
 
 import IconS from 'react-native-vector-icons/SimpleLineIcons';
 
-import ProjectStatus from './ProjectStatus';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import IconFeather from 'react-native-vector-icons/Feather'
@@ -29,7 +28,6 @@ import {
 	DashboardStack,
 	HomeStatusStack,
 	ProjectStack,
-	ProjectStatusStack,
 	SprintStack,
 	TaskStack,
 	UserStack,
@@ -139,7 +137,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					drawerType: 'slide',
 					drawerInactiveTintColor:'#fff',
 					drawerAllowFontScaling:true,
-					drawerActiveTintColor:'#fff',
+					drawerActiveTintColor:'#999999',
 					drawerIcon: () => (
 						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
 					),				}}
@@ -207,20 +205,6 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					{...props}
 				/>
 				<Drawer.Screen
-					name={'ProjectStatus'}
-					component={ProjectStatusStack}
-					options={{
-						headerShown: false,
-						title: 'project',
-						drawerLabel: 'Project Status',
-						swipeEnabled: false,
-						drawerIcon: ({focused, size}) => (
-							<Icon name="view-list" size={22} color={'#262626'}/>
-						),
-					}}
-					{...props}
-				/>
-				<Drawer.Screen
 					name={'User'}
 					component={UserStack}
 					options={{
@@ -247,6 +231,8 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					},
 					drawerPosition: 'left',
 					drawerType: 'slide',
+					drawerActiveTintColor:'#999999',
+
 					drawerIcon: () => (
 						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
 					),
@@ -268,6 +254,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 						title: 'home',
 						headerShown: false,
 						swipeEnabled: false,
+
 						drawerIcon: ({focused, size}) => (
 							<Icon name="home" size={22} color={'#262626'}/>
 						),
@@ -346,7 +333,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					drawerType: 'slide',
 					drawerInactiveTintColor:'#fff',
 					drawerAllowFontScaling:true,
-					drawerActiveTintColor:'#fff',
+					drawerActiveTintColor:'#999999',
 					drawerIcon: () => (
 						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
 					),
@@ -430,7 +417,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					drawerType: 'slide',
 					drawerInactiveTintColor:'#fff',
 					drawerAllowFontScaling:true,
-					drawerActiveTintColor:'#fff',
+					drawerActiveTintColor:'#999999',
 					drawerIcon: () => (
 						<IconFeather name="menu" size={24} style={{ color: '#fff' }}  />
 					),

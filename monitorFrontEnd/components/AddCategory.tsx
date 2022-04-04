@@ -33,7 +33,15 @@ const AddCategory = () => {
 		});
 	};
 	return  (
-		<View style={styles.centeredView}>
+		<View>
+			<View style={{
+				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+				backgroundColor: '#3a436c'
+
+			}}>
+				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+					Add Task Category</Text>
+			</View>
 			<View style={styles.modalView}>
 				<View style={{width: '100%'}}>
 					<Text>Task Category Title</Text>
@@ -56,20 +64,6 @@ const AddCategory = () => {
 
 				<View style={styles.columnDisplay}>
 					<TouchableOpacity
-						style={styles.cancelWrapper}
-						onPress={() => {
-							//props.clickHandler(!props.visible);
-						}}>
-						<Text
-							style={{
-								textAlign: 'center',
-								color: '#fff',
-								fontWeight: '500',
-							}}>
-							Cancel
-						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
 						disabled={getButtonStatus()}
 						style={getButtonStatus() ? styles.disabled : styles.buttonWrapper}
 						onPress={() => {
@@ -84,6 +78,22 @@ const AddCategory = () => {
 							Add New Task Category
 						</Text>
 					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={styles.cancelWrapper}
+						onPress={() => {
+							//props.clickHandler(!props.visible);
+						}}>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>
+							Cancel
+						</Text>
+					</TouchableOpacity>
+
 				</View>
 			</View>
 
@@ -95,7 +105,7 @@ export default AddCategory;
 const styles = StyleSheet.create({
 	columnDisplay: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		position: 'relative',
 		width: '100%',
 		justifyContent: 'space-between',
@@ -104,18 +114,23 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 	},
 	buttonWrapper: {
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 		opacity: 1,
+		width:'100%',
+
 	},
 	cancelWrapper: {
-		backgroundColor: '#F22F46',
+		backgroundColor: '#c8003f',
 		padding: 10,
 		opacity: 1,
+		marginTop:15,
+		width:'100%',
+
 	},
 	disabled: {
 		opacity: 0.5,
-		backgroundColor: 'green',
+		backgroundColor: '#1f9683',
 		padding: 10,
 	},
 	centeredView: {

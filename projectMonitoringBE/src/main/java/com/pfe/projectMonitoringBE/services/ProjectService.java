@@ -36,5 +36,8 @@ public class ProjectService {
 	public  List<Project> getManagerProjects(Member member) {
 		return repository.findByProjectmanager(member);
 	}
+	public  List<Project> findByMember(String email) {
+		return repository.findByMember(email);
+	}
 	
 }

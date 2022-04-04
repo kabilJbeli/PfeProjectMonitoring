@@ -35,8 +35,20 @@ public class Task implements Serializable {
 
 	private TaskStatus taskStatus;
 
-	private Member member;
+	private Member assignee;
 	
+	private Member reporter;
+	
+	
+	@OneToOne
+	public Member getReporter() {
+		return reporter;
+	}
+
+	public void setReporter(Member reporter) {
+		this.reporter = reporter;
+	}
+
 	@Column(name = "TASKTITLE")
 	private String taskTitle;
 	
@@ -96,12 +108,12 @@ public class Task implements Serializable {
 	}
 
 	@OneToOne
-	public Member getMember() {
-		return member;
+	public Member getAssignee() {
+		return assignee;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
+	public void setAssignee(Member member) {
+		this.assignee = member;
 	}
 
 	@ManyToOne
