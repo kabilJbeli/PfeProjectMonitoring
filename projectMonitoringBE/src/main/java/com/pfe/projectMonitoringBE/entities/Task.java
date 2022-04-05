@@ -2,6 +2,7 @@ package com.pfe.projectMonitoringBE.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,9 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
@@ -36,10 +40,9 @@ public class Task implements Serializable {
 	private TaskStatus taskStatus;
 
 	private Member assignee;
-	
+
 	private Member reporter;
-	
-	
+
 	@OneToOne
 	public Member getReporter() {
 		return reporter;
@@ -51,21 +54,18 @@ public class Task implements Serializable {
 
 	@Column(name = "TASKTITLE")
 	private String taskTitle;
-	
-	
+
 	@Column(name = "TASKDESCRIPTION")
 	private String taskDescription;
-	
+
 	@Column(name = "CREATIONDATE")
-	private LocalDateTime CreationDate;
-	
+	private LocalDateTime creationDate;
+
 	@Column(name = "TASKDURATION")
-	private Integer taskDuration;
-	
+	private Set<TaskDuration> taskDuration;
+
 	@Column(name = "TASKESTIMATION")
 	private Integer taskEstimation;
-	
-	
 
 	public String getTaskTitle() {
 		return taskTitle;
@@ -84,18 +84,19 @@ public class Task implements Serializable {
 	}
 
 	public LocalDateTime getCreationDate() {
-		return CreationDate;
+		return creationDate;
 	}
 
 	public void setCreationDate(LocalDateTime creationDate) {
-		CreationDate = creationDate;
+		this.creationDate = creationDate;
 	}
 
-	public Integer getTaskDuration() {
+	@OneToMany(mappedBy="task")
+	public Set<TaskDuration> getTaskDuration() {
 		return taskDuration;
 	}
 
-	public void setTaskDuration(Integer taskDuration) {
+	public void setTaskDuration(Set<TaskDuration> taskDuration) {
 		this.taskDuration = taskDuration;
 	}
 
@@ -116,6 +117,8 @@ public class Task implements Serializable {
 		this.assignee = member;
 	}
 
+	@JsonManagedReference
+	@JsonIgnore
 	@ManyToOne
 	public Project getProject() {
 		return project;
@@ -133,7 +136,9 @@ public class Task implements Serializable {
 	public void setTaskStatus(TaskStatus taskStatus) {
 		this.taskStatus = taskStatus;
 	}
-
+	
+	@JsonManagedReference
+	@JsonIgnore
 	@OneToOne
 	public Priority getPriority() {
 		return priority;
@@ -142,7 +147,9 @@ public class Task implements Serializable {
 	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
-
+	
+	@JsonManagedReference
+	@JsonIgnore
 	@OneToOne
 	public Category getCategory() {
 		return category;

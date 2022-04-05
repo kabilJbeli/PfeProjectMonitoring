@@ -132,4 +132,19 @@ public class ProjectController {
 		}
 		return searchedProject;
 	}
+	
+	
+	@GetMapping("/findProjectMembers")
+	public List<Member> findProjectMembers(@RequestParam Integer projectId) {
+		List<Member> members = null;
+		try {
+			members =service.findProjectMembers(projectId);
+			
+		} catch (NoSuchElementException e) {
+
+		}
+		return members;
+	}
+	
+	
 }
