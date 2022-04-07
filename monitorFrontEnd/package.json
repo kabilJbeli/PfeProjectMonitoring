@@ -12,6 +12,7 @@
   "dependencies": {
     "@chartiful/react-native-chart-builder": "^0.1.8",
     "@chartiful/react-native-line-graph": "^0.1.2",
+    "@mloureiro/react-native-expandable-text": "^0.2.3",
     "@rainbow-me/animated-charts": "^1.0.0-alpha.6",
     "@react-keycloak/keycloak-ts": "^0.2.4",
     "@react-keycloak/native": "^0.6.0",

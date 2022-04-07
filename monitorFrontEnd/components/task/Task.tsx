@@ -112,6 +112,9 @@ const getTabBarVisibility = (route: any) => {
 
 const Task = (props: any) => {
 	const [tasks, setTasks] = useState<any[]>([]);
+	const [mainTasks, setMainTasks] = useState<any[]>([]);
+
+	const [currentSelectedStatus, setCurrentSelectedStatus] = useState<string>('All');
 	const [loading, setLoading] = useState(true);
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const navigation = useNavigation();
@@ -132,6 +135,7 @@ const Task = (props: any) => {
 			.then(response => {
 				console.log(response.data)
 				setTasks(response.data);
+				setMainTasks(response.data);
 				setLoading(false);
 			})
 			.catch((err: any) => {
@@ -185,6 +189,7 @@ const Task = (props: any) => {
 	const isFocused = useIsFocused();
 
 	const getTaskDisplayStatus = (status: string): string => {
+
 		let returnedStatus: string = '';
 		switch (status) {
 
@@ -224,6 +229,57 @@ const Task = (props: any) => {
 
 		return returnedStatus;
 	}
+
+	const filterTasks = (status: string) => {
+		let filteredTasks: any[] = [];
+		setCurrentSelectedStatus(status);
+		switch (status) {
+
+			case 'ToDo': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'InProgress': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'Validating': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'Testing': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'ReadyForRelease': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'Released': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'Done': {
+				filteredTasks = mainTasks.filter(item => item.taskStatus === status);
+				setTasks(filteredTasks);
+				break;
+			}
+			case 'All': {
+				setTasks(mainTasks);
+				break;
+			}
+			default: {
+				setTasks(mainTasks);
+			}
+
+		}
+	}
 	const getLatestTasks = () => {
 		if (loading) {
 			return (
@@ -242,84 +298,68 @@ const Task = (props: any) => {
 						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 							Task List</Text>
 					</View>
-					<View style={{padding: 15,paddingBottom:0}}>
+					<View style={{padding: 15, paddingBottom: 0}}>
 						<ScrollView horizontal={true} style={{paddingBottom: 15, flexDirection: 'row'}}>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>All</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('All')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'All' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>All</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>To Do</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('ToDo')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ToDo' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>To Do</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>In Progress</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('InProgress')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'InProgress' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>In Progress</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>Validating</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('Validating')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Validating' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>Validating</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>Testing</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('Testing')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Testing' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>Testing</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>Ready For Release</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('ReadyForRelease')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ReadyForRelease' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>Ready For Release</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>Released</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('Released')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Released' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>Released</Text>
 							</Pressable>
-							<Pressable style={{
-								backgroundColor: '#00a3cc',
-								width: 'auto',
-								minWidth: 100,
-								padding: 10,
-								marginRight: 5
-							}}>
-								<Text style={{color: '#fff', textAlign: 'center'}}>Done</Text>
+							<Pressable
+								onPress={() => {
+									filterTasks('Done')
+								}}
+								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Done' ? 1 : 0.6}]}>
+								<Text style={styles.pressableText}>Done</Text>
 							</Pressable>
 						</ScrollView>
 					</View>
 					<FlatList
-						style={{height: Dimensions.get('window').height - 300}}
+						style={{height: Dimensions.get('window').height - 350}}
 						keyExtractor={(item, index) => index.toString()}
 						data={tasks}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -518,5 +558,16 @@ const styles = StyleSheet.create({
 		fontSize: 10,
 		textAlign: 'center',
 		minWidth: 100
+	},
+	filterPressable: {
+		backgroundColor: '#00a3cc',
+		width: 'auto',
+		minWidth: 100,
+		padding: 10,
+		marginRight: 5
+	},
+	pressableText: {
+		color: '#fff',
+		textAlign: 'center'
 	}
 });

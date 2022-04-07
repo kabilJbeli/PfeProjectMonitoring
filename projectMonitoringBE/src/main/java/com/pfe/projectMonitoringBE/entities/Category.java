@@ -37,6 +37,7 @@ public class Category implements Serializable {
 	public void setCategoryTitle(String categoryTitle) {
 		this.categoryTitle = categoryTitle;
 	}
+	
 	@JsonBackReference
 	@OneToMany(mappedBy="category")
 	public Set<Task> getTasks() {

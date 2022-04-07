@@ -22,12 +22,10 @@ const UpdateProjectScreen = (props: any) => {
 	const [open, setOpen] = useState(false);
 	const [openEndDate, setOpenEndDate] = useState(false);
 	const [loading, setLoading] = useState(true);
-	let textInput: any = React.createRef();
-	let descriptionInput: any = React.createRef();
 	const navigation = useNavigation();
 	const [projectID, setProjectId] = useState<any>(null);
-	const route = useRoute();
-
+	const [clients, setClients] = useState<any[]>([]);
+	const [projectManagers, setProjectManagers] = useState<any[]>([]);
 	const defaultState = {
 		project: {
 			projectID: '',
@@ -36,10 +34,69 @@ const UpdateProjectScreen = (props: any) => {
 			projectStatus: null,
 			startDate: new Date(),
 			endDate: new Date(),
+			projectManager:null,
+			client:null
 		},
 	};
+	const [state, setState] = useState<any>(defaultState);
 
-	const [state, setState] = useState(defaultState);
+
+	const getClients = () => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any[]>(`${Environment.API_URL}/api/member/getMemberByRole?role=CLIENT`, {})
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+
+	}
+	const getProjectManagers = () => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any[]>(`${Environment.API_URL}/api/member/getProjectManagers`, {})
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+
+	}
+
+
+	useEffect(() => {
+		getClients().then((data: any) => {
+			const clients: any[] = [];
+			if (data) {
+				data.map((item: any) => {
+					clients.push({label: item.name, value: item});
+				});
+				setClients(clients);
+				setIsEnabled(true);
+			}
+
+		}).catch(error => {
+			console.error(`HTTP error: ${error.name} => ${error.message}`);
+			throw "fail request at: GET /projectStatus";
+		});
+
+		getProjectManagers().then((data:any)=>{
+			const projectManagers: any[] = [];
+			if (data) {
+				data.map((item: any) => {
+					projectManagers.push({label: item.name+' '+item.lastName, value: item});
+				});
+				setProjectManagers(projectManagers);
+				setIsEnabled(true);
+			}
+		}).catch(error => {
+			console.error(`HTTP error: ${error.name} => ${error.message}`);
+			throw "fail request at: GET /projectStatus";
+		});
+	}, [props]);
 	const getProps = () => {
 		_retrieveData('updatedProjectId').then((value) => {
 			if (loading && state.project.projectID !== projectID) {
@@ -256,14 +313,27 @@ const UpdateProjectScreen = (props: any) => {
 							<Dropdown
 								style={{width: '100%'}}
 								label={'Project Manager'}
-								data={[
-									{label: 'testing manager 1', value: 'testing manager 1'},
-									{label: 'testing manager 2', value: 'testing manager 2'},
-									{label: 'testing mllanager 3', value: 'testing manager 3'},
-								]}
-								onChangeText={(text: string) => {
-								}}
+								data={projectManagers}
+								onChangeText={(value:any)=>	setState((prevState: any) => {
+									let project = Object.assign({}, prevState.project);
+									project.projectManager = value;
+									return {project};
+								})}
+								value={state.project?.projectManager?.name || ''}
 
+							/>
+						</View>
+						<View style={{width: '100%', marginBottom: 15}}>
+							<Dropdown
+								style={{width: '100%'}}
+								label={'Client'}
+								data={clients}
+								onChangeText={(value:any)=>	setState((prevState: any) => {
+									let project = Object.assign({}, prevState.project);
+									project.client = value;
+									return {project};
+								})}
+								value={state.project?.client?.name || ''}
 							/>
 						</View>
 						<View style={styles.columnDisplay}>

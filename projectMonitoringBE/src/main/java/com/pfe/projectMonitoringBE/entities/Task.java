@@ -69,6 +69,19 @@ public class Task implements Serializable {
 	@Column(name = "TASKESTIMATION")
 	private Integer taskEstimation;
 
+	
+	private Set<TaskComment> taskComment;
+	
+		
+	@OneToMany(mappedBy="task")
+	public Set<TaskComment> getTaskComment() {
+		return taskComment;
+	}
+
+	public void setTaskComment(Set<TaskComment> taskComment) {
+		this.taskComment = taskComment;
+	}
+
 	public String getTaskTitle() {
 		return taskTitle;
 	}
