@@ -48,8 +48,26 @@ public class Member implements Serializable {
 	
 	private String keyclokId;	
 
+	private Set<TaskComment> taskComment;
 	
-	
+		
+	public String getKeyclokId() {
+		return keyclokId;
+	}
+
+	public void setKeyclokId(String keyclokId) {
+		this.keyclokId = keyclokId;
+	}
+
+	@OneToMany(mappedBy="commentedBy")
+	public Set<TaskComment> getTaskComment() {
+		return taskComment;
+	}
+
+	public void setTaskComment(Set<TaskComment> taskComment) {
+		this.taskComment = taskComment;
+	}
+
 	public Member() {
 		super();
 		// TODO Auto-generated constructor stub
