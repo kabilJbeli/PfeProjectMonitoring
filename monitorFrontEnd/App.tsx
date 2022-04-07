@@ -9,7 +9,7 @@
  */
 
 import {StyleSheet, LogBox} from 'react-native';
-import Navigation from './components/Navigation';
+import Navigation from './components/navigation/Navigation';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import * as React from 'react';
@@ -18,7 +18,7 @@ import {_retrieveData, _storeData} from "./utils";
 import {ReactNativeKeycloakProvider} from '@react-keycloak/native';
 
 import keycloak from './keycloak';
-import KeycloakLogin from "./components/KeycloakLogin";
+import KeycloakLogin from "./components/login/KeycloakLogin";
 
 const App = () => {
 

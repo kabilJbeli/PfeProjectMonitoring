@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,28 +43,37 @@ public class Project implements Serializable {
 	private Set<Task> tasks;
 
 	private ProjectStatus projectStatus;
-	
+
 	private Set<Member> members;
-	
+
 	private Member projectManager;
-	
+
 	private Member client;
 
+	private LocalDateTime creationDate=  LocalDateTime.now();
+	
+	
+	
+	public LocalDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(LocalDateTime creationDate) {
+		this.creationDate = creationDate;
+	}
 
 	@Column(name = "PROJECTTITLE")
 	private String projectTitle;
-	
+
 	@Column(name = "PROJECTDESCRIPTION")
 	private String projectDescription;
-	
+
 	@Column(name = "STARTDATE")
 	private LocalDate startDate;
-	
+
 	@Column(name = "ENDDATE")
 	private LocalDate endDate;
 
-	
-	
 	@OneToOne
 	@JoinColumn(name = "client")
 	public Member getClient() {
@@ -76,8 +84,6 @@ public class Project implements Serializable {
 		this.client = client;
 	}
 
-	
-	
 	@OneToOne
 	@JoinColumn(name = "manager")
 	public Member getProjectManager() {
@@ -120,7 +126,7 @@ public class Project implements Serializable {
 		this.endDate = endDate;
 	}
 
-	@ManyToMany	
+	@ManyToMany
 	public Set<Member> getMembers() {
 		return members;
 	}
@@ -137,16 +143,17 @@ public class Project implements Serializable {
 		this.projectStatus = projectStatus;
 	}
 
-	@OneToMany(mappedBy="project")
+	@JsonBackReference
+	@OneToMany(mappedBy = "project")
 	public Set<Task> getTasks() {
 		return tasks;
-	}	
-	
+	}
+
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
 	}
 
-	@OneToMany(mappedBy="project")
+	@OneToMany(mappedBy = "project")
 	public Set<Report> getReport() {
 		return report;
 	}
@@ -155,7 +162,7 @@ public class Project implements Serializable {
 		this.report = report;
 	}
 
-	@OneToMany(mappedBy="project")
+	@OneToMany(mappedBy = "project")
 	public Set<Sprint> getSprint() {
 		return sprint;
 	}

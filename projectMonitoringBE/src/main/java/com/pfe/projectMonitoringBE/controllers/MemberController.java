@@ -73,7 +73,11 @@ public class MemberController {
 		}
 	}
 	
-
+	@GetMapping("/getMemberByEmail")
+	public Member findMemberByEmail(@RequestParam String email) {
+		return service.findByMemberByEmail(email);
+	}
+	
 
 	@GetMapping("/getMemberByRole")
 	public List<Member> findMemberByRole(@RequestParam Roles role) {

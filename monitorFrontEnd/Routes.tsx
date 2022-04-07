@@ -1,6 +1,6 @@
 import React from 'react';
 import {Router, Scene} from 'react-native-router-flux';
-import User from './components/Users';
+import User from './components/user/Users';
 
 const Routes = () => (
   <Router>

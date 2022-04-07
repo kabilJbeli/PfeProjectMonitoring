@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -38,6 +39,7 @@ public class Priority implements Serializable {
 		this.priorityTitle = priorityTitle;
 	}
 	
+	@JsonBackReference
 	@OneToMany(mappedBy="priority")
 	public Set<Task> getTasks() {
 		return tasks;
