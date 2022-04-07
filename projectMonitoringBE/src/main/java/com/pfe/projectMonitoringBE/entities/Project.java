@@ -50,6 +50,18 @@ public class Project implements Serializable {
 
 	private Member client;
 
+	private LocalDateTime creationDate=  LocalDateTime.now();
+	
+	
+	
+	public LocalDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(LocalDateTime creationDate) {
+		this.creationDate = creationDate;
+	}
+
 	@Column(name = "PROJECTTITLE")
 	private String projectTitle;
 

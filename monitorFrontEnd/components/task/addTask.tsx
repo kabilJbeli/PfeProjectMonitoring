@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from "react";
 import {Input} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -20,12 +20,12 @@ const AddTask = (props: any) => {
 			project: null,
 			category: null,
 			priority: null,
-			taskStatus: null,
+			taskStatus: 'ToDo',
 			assignee: null,
 			reporter: null,
 			taskTitle: null,
+			taskDuration:null,
 			taskDescription: null,
-			creationDate: new Date().toUTCString(),
 			taskEstimation: null
 		}
 	};
@@ -41,7 +41,7 @@ const AddTask = (props: any) => {
 	const navigation = useNavigation();
 	const getPriorities = () => {
 		// Update the document title using the browser API
-		const priorityLocal:any[]=[];
+		const priorityLocal: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/priority/all`,
@@ -53,8 +53,8 @@ const AddTask = (props: any) => {
 		})
 			.then(response => {
 
-				response.data.map((item:any)=>{
-					priorityLocal.push({label:item.priorityTitle,value:item})
+				response.data.map((item: any) => {
+					priorityLocal.push({label: item.priorityTitle, value: item})
 				})
 				console.log(response.data)
 				setPriorities(priorityLocal);
@@ -96,13 +96,13 @@ const AddTask = (props: any) => {
 			console.error(error);
 		});
 	}
-const cancelTask = ()=>{
-	setTask(defaultTask);
-	// @ts-ignore
-	navigation.navigate('Task');
-	showToastWithGravity('Task Creation Canceled');
+	const cancelTask = () => {
+		setTask(defaultTask);
+		// @ts-ignore
+		navigation.navigate('Task');
+		showToastWithGravity('Task Creation Canceled');
 
-}
+	}
 	const getUserSpecificProjects = (userInfoParam?: any) => {
 		// Update the document title using the broconwser API
 		const localProject: any = [];
@@ -129,7 +129,7 @@ const cancelTask = ()=>{
 			});
 	};
 
-	const getMember = (email:string)=>{
+	const getMember = (email: string) => {
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/member/getMemberByEmail?email=${email}`,
@@ -140,7 +140,7 @@ const cancelTask = ()=>{
 			params: {},
 		})
 			.then(response => {
-				console.log('response.data ========>',response.data)
+				console.log('response.data ========>', response.data)
 				setTask((prevState: any) => {
 					let task = Object.assign({}, prevState.task);
 					task.reporter = response.data;
@@ -178,8 +178,8 @@ const cancelTask = ()=>{
 			});
 	};
 
-	const getSelectedProjectMembers = (projectId:number) =>{
-		const localMemberData:any[]=[];
+	const getSelectedProjectMembers = (projectId: number) => {
+		const localMemberData: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/project/findProjectMembers?projectId=${projectId}`,
@@ -190,23 +190,25 @@ const cancelTask = ()=>{
 			params: {},
 		})
 			.then(response => {
-				response.data.map((item:any)=>{
-					localMemberData.push({label:item.name+' '+item.lastName,value:item})	;
+				response.data.map((item: any) => {
+					localMemberData.push({label: item.name + ' ' + item.lastName, value: item});
 				})
-			setMembers(localMemberData);
+				setMembers(localMemberData);
 			})
 			.catch((err: any) => {
 			});
 
 	}
 
-	const getButtonStatus = ():boolean=>{
+	const getButtonStatus = (): boolean => {
 		return task.task.project === null || task.task.assignee === null || task.task.priority === null ||
-			task.task.taskDescription === null  || task.task.taskTitle === null;
+			task.task.taskDescription === null || task.task.taskTitle === null || task.task.taskEstimation === null ||
+			task.task.project === '' || task.task.assignee === '' || task.task.priority === '' ||
+			task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === ''
 	}
 
 	return (
-		<SafeAreaView style={{backgroundColor:'#fff',height:'100%'}}>
+		<SafeAreaView style={{backgroundColor: '#fff', height: '100%'}}>
 			<View style={{
 				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
 				backgroundColor: '#3a436c'
@@ -215,8 +217,9 @@ const cancelTask = ()=>{
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Create Task</Text>
 			</View>
-			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('window').height-280,paddingBottom:15}}>
+			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('window').height - 280, paddingBottom: 15}}>
 				<View style={styles.containerWrapper}>
+
 					<View style={{width: '100%', marginBottom: 15}}>
 						<Dropdown
 							style={{width: '100%'}}
@@ -301,7 +304,7 @@ const cancelTask = ()=>{
 						<Dropdown
 							style={{width: '100%'}}
 							label={'Assignee'}
-							disabled={members.length ===0 ? true:false}
+							disabled={members.length === 0 ? true : false}
 							data={members}
 							onChangeText={(value: any) => setTask((prevState: any) => {
 								let task = Object.assign({}, prevState.task);
@@ -316,7 +319,7 @@ const cancelTask = ()=>{
 					<View style={{width: '100%', marginBottom: 15}}>
 						<Dropdown
 							style={{width: '100%'}}
-							disabled={sprints.length  === 0 ? true:false}
+							disabled={sprints.length === 0 ? true : false}
 
 							label={'Sprint (optional)'}
 							data={sprints}
@@ -331,7 +334,7 @@ const cancelTask = ()=>{
 
 
 					<View style={{width: '100%'}}>
-						<Text>Estimated Time (eg: 1h, 30m, 1w)</Text>
+						<Text>Estimated Time in hours</Text>
 						<Input
 							leftIcon={<Ionicons name="time" size={20} color={'#000'}/>}
 							inputContainerStyle={styles.InputContainerStyle}
@@ -344,13 +347,14 @@ const cancelTask = ()=>{
 									return {task};
 								})
 							}
-							value={task.task.taskEstimation}
+							value={task.task?.taskEstimation}
+							keyboardType="numeric"
 							autoCompleteType={false}
 						/>
 					</View>
 					<View style={{width: '100%'}}>
 						<TouchableOpacity
-							style={[styles.buttonCreate, {opacity: getButtonStatus() ? 0.5:1}]}
+							style={[styles.buttonCreate, {opacity: getButtonStatus() ? 0.5 : 1}]}
 
 							disabled={getButtonStatus()}
 							onPress={() => {
@@ -407,7 +411,7 @@ const styles = StyleSheet.create({
 		padding: 10,
 		elevation: 2,
 		backgroundColor: '#c8003f',
-		marginTop:15
+		marginTop: 15
 	},
 	textStyle: {
 		color: 'white',

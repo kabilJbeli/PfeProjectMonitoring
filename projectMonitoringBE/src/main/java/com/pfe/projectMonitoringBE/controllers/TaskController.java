@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Task;
@@ -32,6 +33,11 @@ public class TaskController {
 		return service.getAllTask();
 	}
 
+	@GetMapping("/getTaskByReporter")
+	public List<Task> getTaskByReporter(@RequestParam String email) {
+		return service.getTaskByReporter(email);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
 		try {
@@ -47,13 +53,11 @@ public class TaskController {
 		service.createOrUpdateTask(task);
 	}
 
-	@PutMapping("/update/{id}")
+	@PutMapping("/update")
 	public void updateTask(@RequestBody Task task) {
 		try {
-			Task searchedTask = service.findTask(task.getTaskID());
-			if (searchedTask.getTaskID() != null) {
-				service.createOrUpdateTask(task);
-			}
+			service.createOrUpdateTask(task);
+
 		} catch (NoSuchElementException e) {
 
 		}

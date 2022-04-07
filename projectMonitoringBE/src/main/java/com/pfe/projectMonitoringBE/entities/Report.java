@@ -30,7 +30,7 @@ public class Report implements Serializable {
 	private String reportTtile;
 	
 	@Column(name = "CREATIONDATE")
-	private LocalDateTime CreationDate;
+	private LocalDateTime CreationDate= LocalDateTime.now();
 	
 	public String getReportTtile() {
 		return reportTtile;

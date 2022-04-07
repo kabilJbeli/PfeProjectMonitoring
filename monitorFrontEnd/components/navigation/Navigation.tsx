@@ -54,7 +54,7 @@ const CustomDrawerContent = (props: any) => {
 			<View style={styles.profile}>
 				<View style={styles.username}><IconE color={'#fff'} size={15} style={{paddingRight: 5}}
 													 name={'user-circle-o'}/>
-					<Text style={styles.profileText}>{props.userInfo?.firstName} {props.userInfo?.lastName}</Text>
+					<Text style={styles.profileText}>{props.userInfo?.name}</Text>
 				</View>
 				<View style={styles.username}>
 					<Text style={styles.profileText}>Role: {props.userInfo?.roles.includes('MANAGER') ? 'Manager' :

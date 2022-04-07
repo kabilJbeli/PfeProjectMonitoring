@@ -30,4 +30,9 @@ public class TaskService {
 	public void deleteTask(Task task) {
 		repository.delete(task);
 	}
+	
+	public List<Task> getTaskByReporter(String email) {
+	return	repository.getTaskByReporter(email);
+	}
+	
 }

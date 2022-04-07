@@ -7,7 +7,7 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import Category, {CategoryTabStatusNavigator} from '../category/Category';
 import Dashboard from '../dashboard/Dashboard';
 import Sprint from '../sprint/Sprint';
-import Task, {TaskTabStatusNavigator} from '../task/Task';
+import Task, {MainTaskStack, TaskTabStatusNavigator} from '../task/Task';
 import User from '../user/Users';
 import {Props} from "../../utils";
 import UserManagement, {UserTabNavigator} from "../user/UserManagement";
@@ -231,7 +231,7 @@ export const TaskStack = ({navigation}: any,props:any) => {
 		<Stack.Navigator initialRouteName="Task">
 			<Stack.Screen
 				name="Task"
-				component={TaskTabStatusNavigator}
+				component={MainTaskStack}
 				options={{
 					title: 'Task Management', //Set Header Title
 					headerLeft: () => (

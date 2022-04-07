@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pfe.projectMonitoringBE.Enums.DurationType;
 
 @Entity
@@ -22,7 +24,7 @@ public class TaskDuration implements Serializable {
 	private Integer durationId;
 	private Integer duration;
 	private DurationType durationType;
-	private LocalDateTime creationDate;
+	private LocalDateTime creationDate= LocalDateTime.now();;
 
 	public LocalDateTime getCreationDate() {
 		return creationDate;
@@ -35,6 +37,7 @@ public class TaskDuration implements Serializable {
 	private Task task;
 
 	@OneToOne
+	@JsonBackReference
 	public Task getTask() {
 		return task;
 	}
