@@ -2,11 +2,14 @@ package com.pfe.projectMonitoringBE.entities;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,7 +38,8 @@ public class TaskComment {
 		this.commentID = commentID;
 	}
 
-
+	@Lob
+	@Column(name="comment", length=512)
 	public String getComment() {
 		return comment;
 	}
@@ -44,8 +48,7 @@ public class TaskComment {
 		this.comment = comment;
 	}
 	
-	@OneToOne
-	@JsonBackReference
+	@OneToOne	
 	public Member getCommentedBy() {
 		return commentedBy;
 	}

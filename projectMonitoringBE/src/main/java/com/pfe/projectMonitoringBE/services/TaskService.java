@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.repositories.TaskRepository;
@@ -34,5 +35,10 @@ public class TaskService {
 	public List<Task> getTaskByReporter(String email) {
 	return	repository.getTaskByReporter(email);
 	}
+	public List<Task> getTaskByMember(String email) {
+	return	repository.getTaskByMember(email);
+	}
+	
+	
 	
 }

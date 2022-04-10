@@ -85,7 +85,7 @@ public class Project implements Serializable {
 	}
 
 	@OneToOne
-	@JoinColumn(name = "manager")
+	@JoinColumn(name = "managedproject")
 	public Member getProjectManager() {
 		return projectManager;
 	}

@@ -21,9 +21,6 @@ import Environment from "../../Environment";
 import {useEffect, useState} from "react";
 import {_retrieveData, _storeData} from "../../utils";
 import {createStackNavigator} from "@react-navigation/stack";
-import UpdateProjectScreen from "../project/updateProject";
-import ViewProjectInformation from "../project/viewProjectInformation";
-import {TabNavigator} from "../project/Project";
 import ViewTask from "./viewTask";
 
 
@@ -57,48 +54,89 @@ export const MainTaskStack = (props: any) => {
 	);
 }
 
+const getTabRoleBasedDisplay =(props:any)=>{
 
-export const TaskTabStatusNavigator = () => {
-	return (
-		<taskTabStatus.Navigator
-			initialRouteName="Task"
-			screenOptions={{
-				tabBarShowLabel: false,
-				tabBarStyle: {backgroundColor: '#262626', height: 25},
-				tabBarInactiveTintColor: '#fff',
-				tabBarActiveTintColor: '#ffffff',
-			}}>
-			<taskTabStatus.Screen
-				name="Task"
-				component={Task}
-				options={({route}) => ({
-					tabBarStyle: {
-						display: getTabBarVisibility(route),
-						backgroundColor: '#3e3d3d',
-					},
-					tabBarLabel: 'Task List',
-					tabBarIcon: ({color}) => (
-						<Ionicons name="ios-medal-outline" color={color} size={25}/>
-					),
-				})}
-			/>
+	const [userInfo, setUserInfo] = useState<any>(null);
 
-			<taskTabStatus.Screen
-				name="AddTask"
-				component={AddTask}
-				options={({route}) => ({
-					tabBarStyle: {
-						display: getTabBarVisibility(route),
-						backgroundColor: '#3e3d3d',
-					},
-					tabBarLabel: 'Add Task',
-					tabBarIcon: ({color}) => (
-						<Ionicons name="add" color={color} size={25}/>
-					),
-				})}
-			/>
-		</taskTabStatus.Navigator>
-	);
+	let taskTabNavigatorContent:any=(<taskTabStatus.Navigator
+		initialRouteName="Task"
+		screenOptions={{
+			tabBarShowLabel: false,
+			tabBarStyle: {backgroundColor: '#262626', height: 25},
+			tabBarInactiveTintColor: '#fff',
+			tabBarActiveTintColor: '#ffffff',
+		}}>
+		<taskTabStatus.Screen
+			name="Task"
+			component={Task}
+			options={({route}) => ({
+				tabBarStyle: {
+					display: getTabBarVisibility(route),
+					backgroundColor: '#3e3d3d',
+				},
+				tabBarLabel: 'Task List',
+				tabBarIcon: ({color}) => (
+					<Ionicons name="ios-medal-outline" color={color} size={25}/>
+				),
+			})}
+		/>
+	</taskTabStatus.Navigator>);
+
+	useEffect(() => {
+		_retrieveData('userInfo').then((info: any) => {
+			setUserInfo(JSON.parse(info));
+		});
+	}, [props]);
+
+	if(userInfo && userInfo.roles.includes('MANAGER') || userInfo &&  userInfo.roles.includes('CLIENT')){
+		taskTabNavigatorContent = (
+			<taskTabStatus.Navigator
+				initialRouteName="Task"
+				screenOptions={{
+					tabBarShowLabel: false,
+					tabBarStyle: {backgroundColor: '#262626', height: 25},
+					tabBarInactiveTintColor: '#fff',
+					tabBarActiveTintColor: '#ffffff',
+				}}>
+				<taskTabStatus.Screen
+					name="Task"
+					component={Task}
+					options={({route}) => ({
+						tabBarStyle: {
+							display: getTabBarVisibility(route),
+							backgroundColor: '#3e3d3d',
+						},
+						tabBarLabel: 'Task List',
+						tabBarIcon: ({color}) => (
+							<Ionicons name="ios-medal-outline" color={color} size={25}/>
+						),
+					})}
+				/>
+
+				<taskTabStatus.Screen
+					name="AddTask"
+					component={AddTask}
+					options={({route}) => ({
+						tabBarStyle: {
+							display: getTabBarVisibility(route),
+							backgroundColor: '#3e3d3d',
+						},
+						tabBarLabel: 'Add Task',
+						tabBarIcon: ({color}) => (
+							<Ionicons name="add" color={color} size={25}/>
+						),
+					})}
+				/>
+			</taskTabStatus.Navigator>
+		);
+	}
+
+
+	return taskTabNavigatorContent;
+}
+
+export const TaskTabStatusNavigator = (props:any) => {
+	return getTabRoleBasedDisplay(props)
 };
 
 const getTabBarVisibility = (route: any) => {
@@ -118,6 +156,7 @@ const Task = (props: any) => {
 	const [loading, setLoading] = useState(true);
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const navigation = useNavigation();
+	const isFocused = useIsFocused();
 
 	const getTasksByReporter = (email: string) => {
 		// Update the document title using the browser API
@@ -133,24 +172,47 @@ const Task = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setTasks(response.data);
 				setMainTasks(response.data);
 				setLoading(false);
 			})
 			.catch((err: any) => {
 				console.error(err);
-
 			});
 	};
 
+	const getTasksByMember = (email: string) => {
+		// Update the document title using the browser API
+		setLoading(true);
+
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/task/getTaskByMember?email=${email}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setTasks(response.data);
+				setMainTasks(response.data);
+				setLoading(false);
+			})
+			.catch((err: any) => {
+				console.error(err);
+			});
+	};
 	useEffect(() => {
 		_retrieveData('userInfo').then((info: any) => {
 			setUserInfo(JSON.parse(info));
-			getTasksByReporter(JSON.parse(info).email);
+			if (JSON.parse(info).roles.includes('MANAGER')) {
+				getTasksByReporter(JSON.parse(info).email);
+			} else if (JSON.parse(info).roles.includes('EMPLOYEE')) {
+				getTasksByMember(JSON.parse(info).email);
+			}
 		});
 	}, [props]);
-
 
 	const removeItem = (taskID: Number) => {
 		axios({
@@ -171,10 +233,6 @@ const Task = (props: any) => {
 			});
 	};
 
-	const updateItem = (priorityID: Number) => {
-		// navigation.navigate('Home', {id: projectID});
-	};
-
 	const FlatListItemSeparator = () => {
 		return (
 			<View
@@ -186,13 +244,11 @@ const Task = (props: any) => {
 			/>
 		);
 	};
-	const isFocused = useIsFocused();
 
 	const getTaskDisplayStatus = (status: string): string => {
 
 		let returnedStatus: string = '';
 		switch (status) {
-
 			case 'ToDo': {
 				returnedStatus = 'To Do';
 				break;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.services.TaskService;
 
@@ -37,6 +38,12 @@ public class TaskController {
 	public List<Task> getTaskByReporter(@RequestParam String email) {
 		return service.getTaskByReporter(email);
 	}
+	
+	@GetMapping("/getTaskByMember")
+	public List<Task> getTaskByMember(@RequestParam String email) {
+		return service.getTaskByMember(email);
+	}
+	
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
@@ -63,6 +70,21 @@ public class TaskController {
 		}
 	}
 
+	
+	@PutMapping("/changeTaskStatus")
+	public ResponseEntity<Task> updateTask(@RequestParam Integer id,@RequestParam TaskStatus status) {
+		try {
+			Task task = service.findTask(id);
+			task.setTaskStatus(status);
+			service.createOrUpdateTask(task);
+			return new ResponseEntity<Task>(task, HttpStatus.OK);
+
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Task>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	
 	@DeleteMapping("/delete/{id}")
 	public void deleteTask(@PathVariable Integer id) {
 		try {
