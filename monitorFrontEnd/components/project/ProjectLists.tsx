@@ -266,20 +266,6 @@ const ProjectsList = (props: any) => {
 
 			returnedActionElements = (
 				<View style={{width: '100%', flexDirection: 'row'}}>
-					{/*	<Pressable
-						style={[styles.button, styles.delete]}
-						onPress={() => {
-							removeItem(item.projectID);
-						}}>
-						<Text
-							style={{
-								textAlign: 'center',
-								color: '#fff',
-								fontWeight: '500',
-							}}>
-							Remove
-						</Text>
-					</Pressable>*/}
 					<Pressable
 						style={[styles.button, styles.borderButton, styles.view,{width:'100%'}]}
 						onPress={() => {
@@ -309,14 +295,6 @@ const ProjectsList = (props: any) => {
 		} else {
 			return (
 				<View>
-					<View style={{
-						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
-						backgroundColor: '#00a3cc'
-
-					}}>
-						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
-							Project List</Text>
-					</View>
 					<FlatList
 						style={{height:Dimensions.get('window').height-300}}
 						keyExtractor={(item, index) => index.toString()}
@@ -372,7 +350,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: '100%',
+		height: Dimensions.get('window').height-300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

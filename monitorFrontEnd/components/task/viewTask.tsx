@@ -7,12 +7,12 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import Accordion from "react-native-collapsible/Accordion";
 import * as Animatable from 'react-native-animatable';
 
-// @ts-ignore
-import {Dropdown} from 'react-native-material-dropdown-v2';
 import axios from "axios";
 import Environment from "../../Environment";
 import {Input, Switch} from "react-native-elements";
 
+// @ts-ignore
+import {Dropdown} from 'react-native-material-dropdown-v2';
 
 const ViewTask = (props: any) => {
 	const location = useNavigation();
@@ -36,6 +36,19 @@ const ViewTask = (props: any) => {
 		activeSections: [],
 	});
 
+	const [getLoggedInTime, setLoggedIntTimeArray] = useState<any[]>([]);
+
+	const defaultLoggedInTime = {
+		loggedTime: {
+			'Week': 0,
+			'Day': 0,
+			'Hour': 0,
+			'Minute': 0,
+		}
+	};
+
+	const [getLoggedTime, setLoggedTime] = useState<any>(defaultLoggedInTime);
+
 	const [loggedInTime, setLoggedIntTime] = useState<any>({
 		loggedInTime: {
 			durationType: null,
@@ -51,7 +64,7 @@ const ViewTask = (props: any) => {
 				value: 'Week'
 			},
 			{
-				label: 'Days',
+				label: 'Day',
 				value: 'Day'
 			},
 			{
@@ -66,6 +79,124 @@ const ViewTask = (props: any) => {
 	});
 
 
+	const getDisplayButtonOfChangeTaskStatus = (taskInformation: any): any => {
+		let returnedValue: any = (<View></View>);
+		switch (taskInformation.taskStatus) {
+			case "ToDo" : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('InProgress', taskInfo.taskID);
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Start Progress
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'InProgress' : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('Validating', taskInfo.taskID);
+
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Ask For Validation
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'Validating' : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('Testing', taskInfo.taskID);
+
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Ask For Test
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'Testing' : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('ReadyForRelease', taskInfo.taskID);
+
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Ready For Release
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'ReadyForRelease' : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('Released', taskInfo.taskID);
+
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Set As Released
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'Released' : {
+				returnedValue = (<Pressable style={styles.button} onPress={() => {
+					changeTaskStatus('Done', taskInfo.taskID);
+				}}>
+					<Text style={{color: '#fff', textAlign: 'center'}}>
+						Set As Done
+					</Text>
+				</Pressable>);
+				break;
+			}
+			case 'Done' : {
+				returnedValue = (<View></View>);
+				break;
+			}
+		}
+		return returnedValue;
+	}
+
+	const getTaskDuration = (task:any) => {
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/taskDuration/findTaskDurationByTasks?id=${task.taskID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				let updatedConfigTime = {
+					loggedTime: {
+						'Week': 0,
+						'Day': 0,
+						'Hour': 0,
+						'Minute': 0,
+					}
+				}
+
+				response.data.map((item: any) => {
+					if (item.durationType === 'Day') {
+						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] + item.duration;
+					} else if (item.durationType === 'Week') {
+						updatedConfigTime.loggedTime['Week'] = updatedConfigTime.loggedTime['Week'] + item.duration;
+					} else if (item.durationType === 'Hour') {
+						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] + item.duration;
+					} else if (item.durationType === 'Minute') {
+						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] + item.duration;
+					}
+				});
+
+				setLoggedIntTimeArray(response.data);
+				setLoggedTime(updatedConfigTime);
+
+			})
+			.catch((err: any) => {
+				console.error(err);
+			});
+
+	}
+
+
 	useEffect(() => {
 		_retrieveData('taskInfo').then((task: any) => {
 			setTaskInfo(JSON.parse(task));
@@ -77,13 +208,14 @@ const ViewTask = (props: any) => {
 					task: JSON.parse(task)
 				}
 			});
-		})
-
+			getTaskDuration(JSON.parse(task));
+		});
 		_retrieveData('userInfo').then((info: any) => {
 			setUserInfo(JSON.parse(info));
 			getMemberInformation(JSON.parse(info).email);
 		})
 	}, [props]);
+
 
 	const getTaskTitle = (): any => {
 		if (taskInfo !== undefined && taskInfo.taskID) {
@@ -93,7 +225,6 @@ const ViewTask = (props: any) => {
 				<ActivityIndicator size="large" color="#fff"/>
 			</View>)
 		}
-
 	}
 
 
@@ -174,8 +305,8 @@ const ViewTask = (props: any) => {
 				setTaskInfo(response.data);
 				setLoggedIntTime({
 					loggedInTime: {
-						durationType: loggedInTime.loggedInTime.durationType,
-						duration: loggedInTime.loggedInTime.duration,
+						durationType: null,
+						duration: null,
 						task: response.data
 					}
 				});
@@ -187,15 +318,8 @@ const ViewTask = (props: any) => {
 			});
 	}
 
-	const _renderSectionTitle = (section: any) => {
-		return (
-			<View style={styles.content}>
-				<Text>{section.content}</Text>
-			</View>
-		);
-	};
 
-	const _renderHeader = (section: any, index: number, isActive: boolean, sections: any) => {
+	const _renderHeader = (section: any, index: number, isActive: boolean) => {
 		return (<Animatable.View
 			duration={300}
 			transition="backgroundColor"
@@ -240,9 +364,7 @@ const ViewTask = (props: any) => {
 		setState({activeSections});
 	};
 
-
-	const getCommentSection = () => {
-
+	const getCommentSection = (): any => {
 		return (
 			<Accordion
 				sections={taskInfo?.taskComment}
@@ -276,26 +398,21 @@ const ViewTask = (props: any) => {
 				getTaskInformationWs(taskInfo);
 				setLoggedIntTime({
 					loggedInTime: {
-						durationType: loggedInTime.loggedInTime.durationType,
-						duration: loggedInTime.loggedInTime.duration,
+						durationType: null,
+						duration: null,
 						task: taskInfo
 					}
 				});
-
 				setComment('');
-
 			})
 			.catch((err: any) => {
 				console.error(err);
 				showToastWithGravity('An Error Occurred!!!');
-
 			});
 	}
 
-
 	const getFunctionalityByRole = (taskInfo: any): any => {
 		let returnedFunctionalityValue: any = (<View></View>);
-
 		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
 			returnedFunctionalityValue = (<Dropdown
 				style={{width: '100%'}}
@@ -312,7 +429,6 @@ const ViewTask = (props: any) => {
 		} else if (userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 			returnedFunctionalityValue = getDisplayButtonOfChangeTaskStatus(taskInfo);
 		}
-
 		return returnedFunctionalityValue;
 	}
 
@@ -330,41 +446,43 @@ const ViewTask = (props: any) => {
 						loggedInTime.duration = value
 						return {loggedInTime};
 					})}
+					value={loggedInTime.loggedInTime.duration}
 				/>
 			</View>
 			<View style={{width: '33%'}}>
 				<Dropdown
 					style={{minHeight: 35, height: 52}}
-
 					label={'Logged In Time'}
 					data={loggedInTimeByValue.loggedInTime}
 					onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
 						let loggedInTime = Object.assign({}, prevState.loggedInTime);
-						loggedInTime.durationType = parseInt(value);
+						loggedInTime.durationType = value;
 						return {loggedInTime};
 					})}
 					value={loggedInTime.loggedInTime.durationType}
-
 				/>
-
 			</View>
 			<View style={{width: '25%'}}>
 				<Pressable
 					disabled={loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null
 
 					}
-					style={[styles.button, {height: 52, alignItems: 'center', justifyContent: "center"}]}
+					style={[styles.button, {
+						height: 52,
+						alignItems: 'center',
+						justifyContent: "center",
+						opacity: loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null ? 0.5 : 1
+					}]}
 					onPress={() => {
 						setLogInTime()
 					}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>Log in duration</Text>
+					<Text style={{color: '#fff', textAlign: 'center'}}>Login duration</Text>
 				</Pressable>
 			</View>
 		</View>);
-
-
 		return returnedValue;
 	}
+
 	const setLogInTime = () => {
 		axios({
 			method: 'POST',
@@ -377,8 +495,15 @@ const ViewTask = (props: any) => {
 		})
 			.then(response => {
 				_storeData('taskInfo', JSON.stringify(response.data)).then();
-
+				setLoggedIntTime({
+					loggedInTime: {
+						durationType: null,
+						duration: null,
+						task: taskInfo
+					}
+				})
 				getTaskInformationWs(taskInfo);
+				getTaskDuration(taskInfo);
 				showToastWithGravity('Log In Duration Successfully');
 			})
 			.catch((err: any) => {
@@ -416,84 +541,10 @@ const ViewTask = (props: any) => {
 			});
 	}
 
-	const getDisplayButtonOfChangeTaskStatus = (taskInformation: any): any => {
-		let returnedValue: any = (<View></View>);
-		switch (taskInformation.taskStatus) {
-			case "ToDo" : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('InProgress', taskInfo.taskID);
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Start Progress
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'InProgress' : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('Validating', taskInfo.taskID);
-
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Ask For Validation
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'Validating' : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('Testing', taskInfo.taskID);
-
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Ask For Test
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'Testing' : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('ReadyForRelease', taskInfo.taskID);
-
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Ready For Release
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'ReadyForRelease' : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('Released', taskInfo.taskID);
-
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Set As Released
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'Released' : {
-				returnedValue = (<Pressable style={styles.button} onPress={() => {
-					changeTaskStatus('Done', taskInfo.taskID);
-				}}>
-					<Text style={{color: '#fff', textAlign: 'center'}}>
-						Set As Done
-					</Text>
-				</Pressable>);
-				break;
-			}
-			case 'Done' : {
-				returnedValue = (<View></View>);
-				break;
-			}
-		}
-		return returnedValue;
-	}
 
 	const getTaskInformation = (): any => {
 		if (taskInfo !== undefined && taskInfo.taskID) {
-			return (<ScrollView style={[styles.containerView, {height: Dimensions.get('screen').height - 200}]}>
+			return (<ScrollView style={[styles.containerView, {height: Dimensions.get('screen').height - 285}]}>
 				<View>
 					<Pressable
 						style={{width: 80, flexDirection: 'row'}}
@@ -581,9 +632,20 @@ const ViewTask = (props: any) => {
 					}}>Estimated Time:</Text> {taskInfo?.taskEstimation}/H</Text>
 				</View>
 
-				<View style={styles.viewWrapper}>
+				<View style={{marginTop:15}}>
+					<Text style={{
+						fontWeight: 'bold'
+					}}>Logged In Time</Text>
+					<View style={styles.viewWrapper}>
 
+					<Text>{getLoggedTime?.loggedTime.Week} Week</Text>
+					<Text>{getLoggedTime?.loggedTime.Day} Day</Text>
+					<Text>{getLoggedTime?.loggedTime.Hour} Hour</Text>
+					<Text>{getLoggedTime?.loggedTime.Minute} Minutes</Text>
+
+					</View>
 				</View>
+
 				<View style={styles.viewWrapper}>
 					<View style={{width: '100%', marginBottom: 15}}>
 						{getFunctionalityByRole(taskInfo)}
@@ -592,10 +654,11 @@ const ViewTask = (props: any) => {
 
 
 				<View style={styles.viewWrapper}>
-					<View style={{width: '100%', marginBottom: 15}}>
+					<View style={{width: '100%'}}>
 						{loggedIn(props)}
 					</View>
 				</View>
+
 				<View>
 					<Text style={{
 						fontWeight: 'bold',
@@ -604,7 +667,7 @@ const ViewTask = (props: any) => {
 					{getCommentSection()}
 				</View>
 
-				<View style={{backgroundColor: '#fff'}}>
+				<View style={{backgroundColor: '#fff', marginBottom: 15}}>
 					<Input autoCompleteType={false}
 						   style={{marginBottom: 0}}
 						   containerStyle={{height: 65}}
@@ -651,6 +714,7 @@ export default ViewTask;
 const styles = StyleSheet.create({
 	containerView: {
 		padding: 15,
+		paddingBottom: 0
 	},
 	loadingContainer: {
 		display: 'flex',

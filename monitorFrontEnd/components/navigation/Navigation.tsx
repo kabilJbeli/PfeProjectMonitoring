@@ -7,12 +7,12 @@ import {
 } from '@react-navigation/drawer';
 
 import Home from '../home/Home';
-import Category, {CategoryTabStatusNavigator} from '../category/Category';
+import Category, {CategoryTabStatusNavigator} from '../category/CategoryList';
 import Dashboard from '../dashboard/Dashboard';
 import Project from '../project/Project';
 import Sprint from '../sprint/Sprint';
-import Task from '../task/Task';
-import User from '../user/Users';
+import Task from '../task/TaskList';
+import User from '../user/AddUser';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconE from 'react-native-vector-icons/FontAwesome';
 
