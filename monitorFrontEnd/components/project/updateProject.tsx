@@ -15,17 +15,6 @@ import {useIsFocused, useRoute, useNavigation} from "@react-navigation/native";
 
 
 const UpdateProjectScreen = (props: any) => {
-	const [date, setDate] = useState(new Date());
-	const [isEnabled, setIsEnabled] = useState(false);
-	const [ProjectStatusData, setProjectStatusData] = useState<any[]>([]);
-	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
-	const [open, setOpen] = useState(false);
-	const [openEndDate, setOpenEndDate] = useState(false);
-	const [loading, setLoading] = useState(true);
-	const navigation = useNavigation();
-	const [projectID, setProjectId] = useState<any>(null);
-	const [clients, setClients] = useState<any[]>([]);
-	const [projectManagers, setProjectManagers] = useState<any[]>([]);
 	const defaultState = {
 		project: {
 			projectID: '',
@@ -38,8 +27,18 @@ const UpdateProjectScreen = (props: any) => {
 			client:null
 		},
 	};
+	const [date, setDate] = useState(new Date());
+	const [isEnabled, setIsEnabled] = useState(false);
+	const [ProjectStatusData, setProjectStatusData] = useState<any[]>([]);
+	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
+	const [open, setOpen] = useState(false);
+	const [openEndDate, setOpenEndDate] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const navigation = useNavigation();
+	const [projectID, setProjectId] = useState<any>(null);
+	const [clients, setClients] = useState<any[]>([]);
+	const [projectManagers, setProjectManagers] = useState<any[]>([]);
 	const [state, setState] = useState<any>(defaultState);
-
 
 	const getClients = () => {
 		return new Promise((resolve, reject) => {
@@ -53,6 +52,7 @@ const UpdateProjectScreen = (props: any) => {
 		})
 
 	}
+
 	const getProjectManagers = () => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -62,10 +62,8 @@ const UpdateProjectScreen = (props: any) => {
 				}).catch((error: any) => {
 				console.error(error);
 			});
-		})
-
+		});
 	}
-
 
 	useEffect(() => {
 		getClients().then((data: any) => {
@@ -97,6 +95,7 @@ const UpdateProjectScreen = (props: any) => {
 			throw "fail request at: GET /projectStatus";
 		});
 	}, [props]);
+
 	const getProps = () => {
 		_retrieveData('updatedProjectId').then((value) => {
 			if (loading && state.project.projectID !== projectID) {
@@ -137,14 +136,10 @@ const UpdateProjectScreen = (props: any) => {
 		);
 	};
 
-
-
 	const cancelAndGoBack = () => {
 		navigation.goBack();
 		setState(defaultState);
 	}
-
-
 
 	const updateProject = () => {
 		axios

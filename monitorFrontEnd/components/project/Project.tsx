@@ -156,7 +156,17 @@ const ProjectComponent = (props: any) => {
 
 	return (
 		<SafeAreaView>
-			<View>{isFocused ? <ProjectsList   {...props}
+
+			<View>
+				<View style={{
+					height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
+					backgroundColor: '#00a3cc'
+
+				}}>
+					<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
+						Project List</Text>
+				</View>
+				{isFocused ? <ProjectsList   {...props}
 			/> : <Text>''</Text>}</View>
 		</SafeAreaView>
 	);

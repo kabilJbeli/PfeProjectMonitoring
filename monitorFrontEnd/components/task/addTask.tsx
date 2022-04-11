@@ -6,12 +6,13 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-// @ts-ignore
-import {Dropdown} from 'react-native-material-dropdown-v2';
 import axios from "axios";
 import Environment from "../../Environment";
 import {_retrieveData, showToastWithGravity} from "../../utils";
 import {useNavigation} from "@react-navigation/native";
+
+// @ts-ignore
+import {Dropdown} from 'react-native-material-dropdown-v2';
 
 const AddTask = (props: any) => {
 	const defaultTask = {

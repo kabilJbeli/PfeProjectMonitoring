@@ -1,71 +1,12 @@
 import * as React from 'react';
-import {ActivityIndicator, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import User from "./Users";
-import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Moment from "moment";
+import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {useIsFocused} from "@react-navigation/native";
 import {useEffect, useState} from "react";
-import {Project} from "../../models/Project";
 import axios from "axios";
 import Environment from "../../Environment";
 import {Props} from "../../utils";
 import { Dimensions } from 'react-native';
 
-const Tab = createMaterialTopTabNavigator();
-
-export const UserTabNavigator = ({navigation}: Props) => {
-	return (
-		<Tab.Navigator
-			initialRouteName="UserManagement"
-			screenOptions={{
-				tabBarShowLabel: false,
-				tabBarStyle: {backgroundColor: '#262626', height: 25},
-				tabBarInactiveTintColor: '#fff',
-				tabBarActiveTintColor: '#fff',
-			}}>
-			<Tab.Screen
-				name="UserManagement"
-				component={UserManagement}
-				options={({route}) => ({
-					tabBarStyle: {
-						display: getTabBarVisibility(route),
-						backgroundColor: '#3e3d3d',
-					},
-					tabBarLabel: 'User List',
-					tabBarIcon: ({color}) => (
-						<Ionicons name="ios-medal-outline" color={color} size={25}/>
-					),
-				})}
-			/>
-
-			<Tab.Screen
-				name="AddUser"
-				component={User}
-				options={({route}) => ({
-					tabBarStyle: {
-						display: getTabBarVisibility(route),
-						backgroundColor: '#3e3d3d',
-					},
-					tabBarLabel: 'Add User',
-					tabBarIcon: ({color}) => (
-						<Ionicons name="add" color={color} size={25}/>
-					),
-				})}
-			/>
-		</Tab.Navigator>
-	);
-};
-
-const getTabBarVisibility = (route: any) => {
-	const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
-
-	if (routeName == 'GameDetails') {
-		return 'none';
-	}
-	return 'flex';
-};
 
 const UserManagement = ({navigation}: Props,props:any) => {
 	const [users, setUsers] = useState<any[]>([]);
@@ -111,7 +52,7 @@ const UserManagement = ({navigation}: Props,props:any) => {
 	const removeItem = (email: String) => {
 		axios({
 			method: 'DELETE',
-			url: `${Environment.API_URL}/api/keycloak/user/?username=` + email,
+			url: `${Environment.API_URL}/api/keycloak/user/?username=`+email,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -139,15 +80,7 @@ const UserManagement = ({navigation}: Props,props:any) => {
 		} else {
 		return (
 				<View>
-					<View style={{
-						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
-						backgroundColor: '#da1971'
-
-					}}>
-						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
-							User List</Text>
-					</View>
-					<FlatList
+				<FlatList
 						style={{height:Dimensions.get('window').height-300}}
 						keyExtractor={(item, index) => index.toString()}
 						data={users}
@@ -231,7 +164,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: '100%',
+		height: Dimensions.get('window').height-300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',
@@ -267,6 +200,7 @@ const styles = StyleSheet.create({
 		shadowOffset: {width: -2, height: 4},
 		shadowOpacity: 0.2,
 		shadowRadius: 3,
+
 	},
 	text: {
 		color: '#000',

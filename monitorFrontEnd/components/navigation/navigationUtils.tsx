@@ -1,20 +1,17 @@
-import {MainProjectStack, TabNavigator} from '../project/Project';
-import ProjectStatus, { ProjectTabStatusNavigator} from '../projectStatus/ProjectStatus';
+import {MainProjectStack} from '../project/Project';
+import  { ProjectTabStatusNavigator} from '../projectStatus/ProjectStatus';
 import Home from '../home/Home';
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Image, TouchableOpacity, View} from 'react-native';
-import Category, {CategoryTabStatusNavigator} from '../category/Category';
 import Dashboard from '../dashboard/Dashboard';
 import Sprint from '../sprint/Sprint';
-import Task, {MainTaskStack, TaskTabStatusNavigator} from '../task/Task';
-import User from '../user/Users';
 import {Props} from "../../utils";
-import UserManagement, {UserTabNavigator} from "../user/UserManagement";
-import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
-import {useNavigation} from '@react-navigation/native';
 import ProfileInformation from "../profile/profileInformation";
-import {PriorityTabStatusNavigator} from "../priority/priority";
+import {MainTaskStack} from "../task/Task";
+import {UserTabNavigator} from "../user/User";
+import {PriorityTabStatusNavigator} from "../priority/Priority";
+import {CategoryTabStatusNavigator} from "../category/Category";
 
 const Stack = createStackNavigator();
 

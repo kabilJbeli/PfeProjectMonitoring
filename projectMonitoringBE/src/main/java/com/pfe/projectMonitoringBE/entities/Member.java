@@ -20,7 +20,6 @@ import com.pfe.projectMonitoringBE.Enums.Roles;
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
 public class Member implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -50,16 +49,9 @@ public class Member implements Serializable {
 
 	private Set<TaskComment> taskComment;
 	
-		
-	public String getKeyclokId() {
-		return keyclokId;
-	}
-
-	public void setKeyclokId(String keyclokId) {
-		this.keyclokId = keyclokId;
-	}
 
 	@OneToMany(mappedBy="commentedBy")
+	@JsonIgnore
 	public Set<TaskComment> getTaskComment() {
 		return taskComment;
 	}
@@ -94,7 +86,7 @@ public class Member implements Serializable {
 		this.Telephone = telephone;
 		this.Address = address;
 		this.keyclokId = keyclokId;
-	}
+	} 
 
 	@Column(name = "KEYCLOAKID",unique=true)
 	public String getKeycloakId() {
