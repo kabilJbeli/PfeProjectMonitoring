@@ -1,7 +1,6 @@
 import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
 import {SafeAreaView, Text, View} from "react-native";
 import * as React from "react";
-import Task from "./TaskList";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {createStackNavigator} from "@react-navigation/stack";
 import ViewTask from "./viewTask";
@@ -11,14 +10,9 @@ import {_retrieveData} from "../../utils";
 import AddTask from "./addTask";
 import TaskList from "./TaskList";
 
-
-
-
 const taskTabStatus = createMaterialTopTabNavigator();
 
-
 const Stack = createStackNavigator();
-
 
 export const MainTaskStack = (props: any) => {
 	return (
