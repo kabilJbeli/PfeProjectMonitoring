@@ -11,7 +11,7 @@ import axios from 'axios';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
 import {_retrieveData, showToastWithGravity} from "../../utils";
-import {useIsFocused, useRoute, useNavigation} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 
 
 const UpdateProjectScreen = (props: any) => {

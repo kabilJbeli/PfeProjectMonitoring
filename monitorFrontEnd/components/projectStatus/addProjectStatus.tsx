@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import * as React from 'react';
 import axios from "axios";
 import Environment from "../../Environment";

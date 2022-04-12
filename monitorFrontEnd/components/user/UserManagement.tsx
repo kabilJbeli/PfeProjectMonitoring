@@ -5,10 +5,10 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
 import {Props} from "../../utils";
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 
 
-const UserManagement = ({navigation}: Props,props:any) => {
+const UserManagement = ({navigation}: Props, props: any) => {
 	const [users, setUsers] = useState<any[]>([]);
 
 	const [loading, setLoading] = useState(true);
@@ -27,32 +27,32 @@ const UserManagement = ({navigation}: Props,props:any) => {
 	};
 
 	const getUsers = () => {
-		console.log('getUsers')
-			// Update the document title using the browser API
-				axios({
-					method: 'GET',
-					url: `${Environment.API_URL}/api/member/all`,
-					headers: {
-						'Content-Type': 'application/json',
-						useQueryString: false,
-					},
-					params: {},
-				})
-					.then(response => {
-						setUsers(response.data);
-					})
-					.catch((err: any) => {
-					});
-				setTimeout(() => setLoading(false), 1000);
-
+		// Update the document title using the browser API
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/member/all`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setUsers(response.data);
+			})
+			.catch((err: any) => {
+			});
+		setTimeout(() => setLoading(false), 1000);
 	};
+
 	useEffect(() => {
 		getUsers();
-	},[]);
+	}, []);
+
 	const removeItem = (email: String) => {
 		axios({
 			method: 'DELETE',
-			url: `${Environment.API_URL}/api/keycloak/user/?username=`+email,
+			url: `${Environment.API_URL}/api/keycloak/user/?username=` + email,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -66,22 +66,23 @@ const UserManagement = ({navigation}: Props,props:any) => {
 			.catch((err: any) => {
 			});
 	};
+
 	const updateItem = (projectID: Number) => {
 		//	navigation.navigate("AddUser", {id: projectID});
 	};
 
 	const getLatestUserInfo = () => {
-		if (!isFocused || users.length ===0) {
+		if (!isFocused || users.length === 0) {
 			return (
 				<View style={styles.loadingContainer}>
 					<ActivityIndicator size="large" color="#d81e05"/>
 				</View>
 			);
 		} else {
-		return (
+			return (
 				<View>
-				<FlatList
-						style={{height:Dimensions.get('window').height-300}}
+					<FlatList
+						style={{height: Dimensions.get('screen').height - 300}}
 						keyExtractor={(item, index) => index.toString()}
 						data={users}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -107,7 +108,7 @@ const UserManagement = ({navigation}: Props,props:any) => {
 
 								}}>
 									<Text style={styles.text}>
-										Telephone: {item.Telephone}
+										Telephone: {item.telephone}
 									</Text>
 
 									<Text style={styles.text}>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('window').height-300,
+		height: Dimensions.get('screen').height - 300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

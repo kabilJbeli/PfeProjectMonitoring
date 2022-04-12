@@ -81,7 +81,7 @@ public class KeycloakController {
 
 		int status = result.getStatus();
 		
-		if (status == 201 || status == 200) {
+		if (status == 201 || status == 200 || status == 204) {
 			UsersResource userResources = keycloak.realm(env.getProperty("keycloak.realm")).users();
 			
 			userResources.list().forEach(user -> {
@@ -196,7 +196,7 @@ public class KeycloakController {
 
 		users.search(username).stream().forEach(user -> {
 			Response result = keycloak.realm(env.getProperty("keycloak.realm")).users().delete(user.getId());
-			if (result.getStatus() == 201 || result.getStatus() == 200) {
+			if (result.getStatus() == 201 || result.getStatus() == 200 || result.getStatus() == 204) {
 				Member member = memberService.findByKeycloakId(user.getId());
 				memberService.deleteMember(member);
 			}

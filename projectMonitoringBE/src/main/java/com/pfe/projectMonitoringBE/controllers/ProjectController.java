@@ -64,6 +64,16 @@ public class ProjectController {
 	}
 	
 	
+	@GetMapping("/getProjectsByClient")
+	public List<Project> findByClient(@RequestParam String email) {
+
+		return service.findByClient(email);
+
+	}
+	
+	
+	
+	
 	@GetMapping("/findByMember")
 	public List<Project> getProjectByMemberEmail(@RequestParam String email) {
 

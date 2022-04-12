@@ -1,14 +1,9 @@
 import * as React from 'react';
-import {Dimensions, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
 	LineChart,
 	BarChart,
-	PieChart,
-	ProgressChart,
-	ContributionGraph,
-	StackedBarChart
 } from "react-native-chart-kit";
-import Images from '../../assets/Images';
 
 const Dashboard = () => {
 	const data = {
@@ -120,7 +115,7 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 15,
 		paddingBottom: 0,
-		height: Dimensions.get('screen').height - 290
+		height: Dimensions.get('screen').height - 240
 	},
 
 });

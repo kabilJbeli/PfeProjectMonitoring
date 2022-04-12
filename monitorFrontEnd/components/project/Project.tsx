@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 
 import {useEffect, useState} from 'react';
@@ -9,11 +9,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProjectsList from './ProjectLists';
 import AddProjectComponent from './AddProjectComponent';
 import {SafeAreaView} from 'react-navigation';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import UpdateProjectScreen from "./updateProject";
 import {createStackNavigator} from "@react-navigation/stack";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ViewProjectInformation from "./viewProjectInformation";
 import {_retrieveData} from "../../utils";
 

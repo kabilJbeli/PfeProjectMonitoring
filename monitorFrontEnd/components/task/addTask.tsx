@@ -25,9 +25,11 @@ const AddTask = (props: any) => {
 			assignee: null,
 			reporter: null,
 			taskTitle: null,
-			taskDuration:null,
+			taskDuration: null,
 			taskDescription: null,
-			taskEstimation: null
+			taskEstimation: null,
+			isCreatedByClient: false,
+			client: null
 		}
 	};
 	const [userInfo, setUserInfo] = useState<any>(null);
@@ -53,11 +55,9 @@ const AddTask = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-
 				response.data.map((item: any) => {
 					priorityLocal.push({label: item.priorityTitle, value: item})
 				})
-				console.log(response.data)
 				setPriorities(priorityLocal);
 			})
 			.catch((err: any) => {
@@ -73,12 +73,14 @@ const AddTask = (props: any) => {
 			let parsedInfo = JSON.parse(info)
 			if (parsedInfo !== undefined) {
 				getTaskTypes();
-				console.log(parsedInfo)
 				getMember(parsedInfo.email);
 				setUserInfo(parsedInfo);
-				getUserSpecificProjects(parsedInfo);
+				if (parsedInfo.roles.includes('CLIENT')) {
+					getClientProjects(parsedInfo);
+				} else if (parsedInfo.roles.includes('MANAGER')) {
+					getUserSpecificProjects(parsedInfo);
+				}
 			}
-
 		});
 		getPriorities();
 	}, [props]);
@@ -130,6 +132,32 @@ const AddTask = (props: any) => {
 			});
 	};
 
+
+	const getClientProjects = (userInfoParam?: any) => {
+		// Update the document title using the broconwser API
+		const localProject: any = [];
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/project/getProjectsByClient?email=${userInfoParam.email}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				response.data.map((item: any) => {
+					localProject.push({
+						label: item.projectTitle, value: item
+					})
+				})
+				setProjects(localProject);
+			})
+			.catch((err: any) => {
+			});
+	};
+
+
 	const getMember = (email: string) => {
 		axios({
 			method: 'GET',
@@ -141,14 +169,19 @@ const AddTask = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log('response.data ========>', response.data)
-				setTask((prevState: any) => {
-					let task = Object.assign({}, prevState.task);
-					task.reporter = response.data;
-					return {task};
-				});
-
-
+				if (userInfo.roles.includes('CLIENT')) {
+					setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.client = response.data;
+						return {task};
+					});
+				} else {
+					setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.reporter = response.data;
+						return {task};
+					});
+				}
 			})
 			.catch((err: any) => {
 			});
@@ -218,7 +251,7 @@ const AddTask = (props: any) => {
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Create Task</Text>
 			</View>
-			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('window').height - 280, paddingBottom: 15}}>
+			<ScrollView scrollEnabled={true} style={{height: Dimensions.get('screen').height - 280, paddingBottom: 15}}>
 				<View style={styles.containerWrapper}>
 
 					<View style={{width: '100%', marginBottom: 15}}>

@@ -6,10 +6,10 @@ import {
 	Text,
 	View
 } from 'react-native';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
-import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
+import {_retrieveData, showToastWithGravity} from "../../utils";
 
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';

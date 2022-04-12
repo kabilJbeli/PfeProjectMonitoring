@@ -2,10 +2,9 @@ import * as React from 'react';
 import {
 	ActivityIndicator, Dimensions,
 	FlatList,
-	Pressable, SafeAreaView,
-	ScrollView,
+	Pressable,
 	StyleSheet,
-	Text, TextInput,
+	Text,
 	View,
 } from 'react-native';
 import axios from 'axios';
@@ -14,11 +13,10 @@ import Environment from '../../Environment';
 import {Project} from '../../models/Project';
 import {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconM from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
 import {Input} from 'react-native-elements';
-import {_retrieveData, _storeData, Props} from "../../utils";
+import {_retrieveData, _storeData} from "../../utils";
 import * as _ from 'lodash';
 
 const ProjectsList = (props: any) => {
@@ -296,7 +294,7 @@ const ProjectsList = (props: any) => {
 			return (
 				<View>
 					<FlatList
-						style={{height:Dimensions.get('window').height-300}}
+						style={{height:Dimensions.get('screen').height-300}}
 						keyExtractor={(item, index) => index.toString()}
 						data={projects}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -350,7 +348,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('window').height-300,
+		height: Dimensions.get('screen').height-300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

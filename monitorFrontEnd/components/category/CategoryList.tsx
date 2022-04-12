@@ -82,7 +82,7 @@ const CategoryList = () => {
             return (
                 <View>
                     <FlatList
-                        style={{height:Dimensions.get('window').height-300}}
+                        style={{height:Dimensions.get('screen').height-300}}
 
                         keyExtractor={(item, index) => index.toString()}
                         data={categories}
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
     loadingContainer: {
         display: 'flex',
-        height: Dimensions.get('window').height-300,
+        height: Dimensions.get('screen').height-300,
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',

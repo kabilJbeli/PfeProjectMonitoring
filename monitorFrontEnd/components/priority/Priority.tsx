@@ -1,6 +1,5 @@
 import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
 import {SafeAreaView, Text, View} from "react-native";
-import TaskList from "../task/TaskList";
 import * as React from "react";
 import PriorityList from "./PriorityList";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";

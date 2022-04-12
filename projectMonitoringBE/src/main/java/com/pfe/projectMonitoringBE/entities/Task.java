@@ -47,6 +47,28 @@ public class Task implements Serializable {
 
 	private Member reporter;
 
+	private Boolean isCreatedByClient;
+	
+	private Member client;
+	
+	public Boolean getIsCreatedByClient() {
+		return isCreatedByClient;
+	}
+
+	public void setIsCreatedByClient(Boolean isCreatedByClient) {
+		this.isCreatedByClient = isCreatedByClient;
+	}
+
+	@OneToOne
+	public Member getClient() {
+		return client;
+	}
+	
+
+	public void setClient(Member client) {
+		this.client = client;
+	}
+
 	@OneToOne
 	public Member getReporter() {
 		return reporter;

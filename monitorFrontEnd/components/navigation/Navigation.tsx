@@ -3,11 +3,10 @@ import {
 	createDrawerNavigator,
 	DrawerContentScrollView,
 	DrawerItem,
-	DrawerItemList,
 } from '@react-navigation/drawer';
 
 import Home from '../home/Home';
-import Category, {CategoryTabStatusNavigator} from '../category/CategoryList';
+import Category from '../category/CategoryList';
 import Dashboard from '../dashboard/Dashboard';
 import Project from '../project/Project';
 import Sprint from '../sprint/Sprint';

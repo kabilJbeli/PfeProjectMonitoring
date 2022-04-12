@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Input} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {useState} from "react";

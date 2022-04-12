@@ -40,8 +40,14 @@ public class ProjectService {
 		return repository.findByMember(email);
 	}
 	
+	
+	public  List<Project> findByClient(String email) {
+		return repository.findByClient(email);
+	}
+	
 	public List<Member> findProjectMembers(Integer id){
 		return repository.findProjectMembers(id);
 	}
+	
 	
 }
