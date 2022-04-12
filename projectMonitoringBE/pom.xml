@@ -68,7 +68,11 @@
 			<artifactId>keycloak-admin-client</artifactId>
 			<version>16.1.1</version>
 		</dependency>
-
+<dependency>
+    <groupId>com.google.firebase</groupId>
+    <artifactId>firebase-admin</artifactId>
+    <version>6.8.1</version>
+</dependency>
 	</dependencies>
 
 	<dependencyManagement>

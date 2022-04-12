@@ -1,7 +1,7 @@
 import {Image, KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, View} from "react-native";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useKeycloak} from "@react-keycloak/native";
-import {_retrieveData, _storeData} from "../../utils";
+import {_storeData} from "../../utils";
 import {Provider} from "react-redux";
 import {Store} from "../../redux/Store";
 import {NavigationContainer} from "@react-navigation/native";

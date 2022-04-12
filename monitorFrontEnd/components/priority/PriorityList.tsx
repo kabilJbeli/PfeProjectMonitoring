@@ -1,11 +1,6 @@
 import * as React from 'react';
-import {ActivityIndicator, Dimensions, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AddCategory from "../category/AddCategory";
-import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
-import Category from "../category/CategoryList";
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import AddPriority from "./addPriority";
+import {ActivityIndicator, Dimensions, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {useIsFocused} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
@@ -93,7 +88,7 @@ const [loading,setLoading] = useState(true);
 			return (
 				<View>
 					<FlatList
-						style={{height:Dimensions.get('window').height-300}}
+						style={{height:Dimensions.get('screen').height-300}}
 
 						keyExtractor={(item, index) => index.toString()}
 						data={priorities}
@@ -153,7 +148,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('window').height-300,
+		height: Dimensions.get('screen').height-300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

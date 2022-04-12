@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ActivityIndicator, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getFocusedRouteNameFromRoute, useIsFocused} from '@react-navigation/native';

@@ -20,6 +20,10 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 	@Query("SELECT  p FROM Project p INNER JOIN p.members m WHERE m.email=  ?1")	
     public List<Project> findByMember(String email);
 	
+	@Query("SELECT  p FROM Project p INNER JOIN p.client m WHERE m.email=  ?1")	
+    public List<Project> findByClient(String email);
+	
+	
 	@Query("SELECT  p.tasks FROM Project p INNER JOIN p.tasks m WHERE p.projectID=  ?1")	
     public List<Task> findProjectTasks(String projectID);
 	

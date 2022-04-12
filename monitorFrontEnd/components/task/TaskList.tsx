@@ -274,7 +274,7 @@ const TaskList = (props: any) => {
 						</ScrollView>
 					</View>
 					<FlatList
-						style={{height: Dimensions.get('window').height - 350}}
+						style={{height: Dimensions.get('screen').height - 350}}
 						keyExtractor={(item, index) => index.toString()}
 						data={tasks}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('window').height - 350,
+		height: Dimensions.get('screen').height - 350,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

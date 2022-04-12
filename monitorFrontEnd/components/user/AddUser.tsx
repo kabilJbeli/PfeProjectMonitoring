@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
 	Dimensions,
-	Pressable,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
@@ -39,29 +38,28 @@ const User = () => {
 	};
 	const [state, setState] = useState(defaultState);
 	const navigation = useNavigation();
-
+	const [disableBtn, setDisableBtn] = useState<boolean>(false)
 	const [emailValid, setEmailValid] = useState(false);
 	const checkEmail = (email: string) => {
 		setEmailValid(validator.isEmail(email));
 	};
-	let disableButton:boolean;
 
 	const addUser = () => {
-		disableButton=true;
+		setDisableBtn(true);
 		axios
 			.post(`${Environment.API_URL}/api/keycloak/user?username=${state.user.name}
 			&email=${state.user.email}&firstname=${state.user.name}&lastname=${state.user.lastName}
 			&password=${state.user.password}&role=${state.user.role}&address=${state.user.Address}&telephone=${state.user.Telephone}`, {})
 			.then((res: any) => {
-				disableButton=false;
+				setDisableBtn(false);
 				// @ts-ignore
 				navigation.navigate('UserManagement');
 				showToastWithGravity('User Successfully Added');
 				setState(defaultState);
 			}).catch((error: any) => {
-			disableButton=false;
 			showToastWithGravity('An Error Has occurred!!!');
 			console.error(error);
+			setDisableBtn(false);
 		});
 	};
 
@@ -76,6 +74,7 @@ const User = () => {
 			state.user.role === '';
 
 	};
+
 	return (
 		<SafeAreaView>
 			<View style={{
@@ -86,7 +85,11 @@ const User = () => {
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Add User </Text>
 			</View>
-			<ScrollView style={[{paddingRight: 15, height: '100%', backgroundColor: '#fff'},{height: Dimensions.get('screen').height -320}]}>
+			<ScrollView style={[{
+				paddingRight: 15,
+				height: '100%',
+				backgroundColor: '#fff'
+			}, {height: Dimensions.get('screen').height - 320}]}>
 				<View style={styles.container}>
 
 					<View style={{width: '100%'}}>
@@ -132,7 +135,7 @@ const User = () => {
 							leftIcon={<IconFontisto name="email" size={20} color={'#000'}/>}
 							inputContainerStyle={styles.InputContainerStyle}
 							leftIconContainerStyle={styles.LeftIconContainerStyle}
-							errorMessage={!emailValid?'Please verify the email address':''}
+							errorMessage={!emailValid ? 'Please verify the email address' : ''}
 							errorStyle={styles.ErrorStyle}
 							onChangeText={text =>
 								setState(prevState => {
@@ -226,8 +229,8 @@ const User = () => {
 					<View style={styles.columnDisplay}>
 
 						<TouchableOpacity
-							disabled={getButtonStatus()}
-							style={[styles.buttonWrapper, {opacity: getButtonStatus() ? 0.5 : 1}]}
+							disabled={getButtonStatus() || disableBtn}
+							style={[styles.buttonWrapper, {opacity: (getButtonStatus() || disableBtn) ? 0.5 : 1}]}
 							onPress={() => {
 								addUser();
 							}}>
@@ -236,7 +239,8 @@ const User = () => {
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[styles.cancelWrapper]} onPress={() => {
+							disabled={disableBtn}
+							style={[styles.cancelWrapper, {opacity: disableBtn ? 0.5 : 1}]} onPress={() => {
 							setState(defaultState);
 						}}>
 							<Text style={{textAlign: 'center', color: '#fff', fontWeight: '500'}}>
