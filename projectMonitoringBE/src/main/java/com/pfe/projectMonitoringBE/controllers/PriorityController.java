@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Priority;
 import com.pfe.projectMonitoringBE.interfaces.IPriority;
-import com.pfe.projectMonitoringBE.services.PriorityService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

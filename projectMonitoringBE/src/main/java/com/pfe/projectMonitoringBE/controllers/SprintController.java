@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.interfaces.ISprint;
-import com.pfe.projectMonitoringBE.services.SprintService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

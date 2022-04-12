@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.ITask;
-import com.pfe.projectMonitoringBE.services.TaskService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

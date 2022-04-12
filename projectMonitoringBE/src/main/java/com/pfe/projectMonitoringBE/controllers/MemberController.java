@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.interfaces.IMember;
-import com.pfe.projectMonitoringBE.services.MemberService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

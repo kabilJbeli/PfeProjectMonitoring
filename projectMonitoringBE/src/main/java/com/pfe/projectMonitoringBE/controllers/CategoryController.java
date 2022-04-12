@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Category;
 import com.pfe.projectMonitoringBE.interfaces.ICategory;
-import com.pfe.projectMonitoringBE.services.CategoryService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

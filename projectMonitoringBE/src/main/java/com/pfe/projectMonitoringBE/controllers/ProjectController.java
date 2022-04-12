@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
-import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.interfaces.IMember;
 import com.pfe.projectMonitoringBE.interfaces.IProject;
-import com.pfe.projectMonitoringBE.models.ProjectMembers;
-import com.pfe.projectMonitoringBE.models.SelectProjectMembers;
-import com.pfe.projectMonitoringBE.services.MemberService;
-import com.pfe.projectMonitoringBE.services.ProjectService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
