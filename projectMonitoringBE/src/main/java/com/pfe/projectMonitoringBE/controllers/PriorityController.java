@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Priority;
-import com.pfe.projectMonitoringBE.services.PriorityService;
+import com.pfe.projectMonitoringBE.interfaces.IPriority;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,7 +25,7 @@ import com.pfe.projectMonitoringBE.services.PriorityService;
 public class PriorityController {
 
 	@Autowired
-	private PriorityService service;
+	private IPriority service;
 
 	@GetMapping("/all")
 	public List<Priority> getAll() {

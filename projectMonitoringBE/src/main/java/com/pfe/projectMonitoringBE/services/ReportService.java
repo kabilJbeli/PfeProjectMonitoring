@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.entities.Report;
+import com.pfe.projectMonitoringBE.interfaces.IReport;
 import com.pfe.projectMonitoringBE.repositories.ReportRepository;
 
 @Service
-public class ReportService {
+public class ReportService implements IReport {
 
 	@Autowired
 	private ReportRepository repository;

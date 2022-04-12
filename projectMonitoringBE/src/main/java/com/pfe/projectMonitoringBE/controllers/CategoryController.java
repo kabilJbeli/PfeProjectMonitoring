@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Category;
-import com.pfe.projectMonitoringBE.services.CategoryService;
+import com.pfe.projectMonitoringBE.interfaces.ICategory;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,7 +25,7 @@ import com.pfe.projectMonitoringBE.services.CategoryService;
 public class CategoryController {
 
 	@Autowired
-	private CategoryService service;
+	private ICategory service;
 
 	@GetMapping("/all")
 	public List<Category> getAll() {

@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
+import com.pfe.projectMonitoringBE.interfaces.ITask;
 import com.pfe.projectMonitoringBE.repositories.TaskRepository;
 
 @Service
-public class TaskService {
+public class TaskService implements ITask {
 
 	@Autowired
 	private TaskRepository repository;

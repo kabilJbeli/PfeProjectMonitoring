@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
-import com.pfe.projectMonitoringBE.services.MemberService;
+import com.pfe.projectMonitoringBE.interfaces.IMember;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -27,7 +27,7 @@ import com.pfe.projectMonitoringBE.services.MemberService;
 public class MemberController {
 
 	@Autowired
-	private MemberService service;
+	private IMember service;
 
 	@GetMapping("/all")
 	public List<Member> getAll() {

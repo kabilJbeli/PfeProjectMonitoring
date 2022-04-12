@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskDuration;
-import com.pfe.projectMonitoringBE.services.TaskDurationService;
+import com.pfe.projectMonitoringBE.interfaces.ITaskDuration;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -28,7 +27,7 @@ public class TaskDurationController {
 
 
 	@Autowired
-	private TaskDurationService service;
+	private ITaskDuration service;
 
 	@GetMapping("/all")
 	public List<TaskDuration> getAll() {
