@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Priority;
 import com.pfe.projectMonitoringBE.entities.Project;
+import com.pfe.projectMonitoringBE.interfaces.IProject;
 import com.pfe.projectMonitoringBE.repositories.ProjectRepository;
 
 @Service
-public class ProjectService {
+public class ProjectService implements IProject {
 
 	@Autowired
 	private ProjectRepository repository;

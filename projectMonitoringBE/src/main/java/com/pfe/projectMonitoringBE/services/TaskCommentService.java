@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskComment;
+import com.pfe.projectMonitoringBE.interfaces.ITaskComment;
 import com.pfe.projectMonitoringBE.repositories.TaskCommentRepository;
 
 @Service
-public class TaskCommentService {
+public class TaskCommentService implements ITaskComment {
 	@Autowired
 	private TaskCommentRepository repository;
 	

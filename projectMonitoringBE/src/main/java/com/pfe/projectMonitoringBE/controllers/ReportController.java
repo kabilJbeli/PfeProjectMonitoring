@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Report;
+import com.pfe.projectMonitoringBE.interfaces.IReport;
 import com.pfe.projectMonitoringBE.services.ReportService;
 
 @RestController
@@ -25,7 +26,7 @@ import com.pfe.projectMonitoringBE.services.ReportService;
 public class ReportController {
 
 	@Autowired
-	private ReportService service;
+	private IReport service;
 
 	@GetMapping("/all")
 	public List<Report> getAll() {

@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.entities.Report;
 import com.pfe.projectMonitoringBE.entities.Sprint;
+import com.pfe.projectMonitoringBE.interfaces.ISprint;
 import com.pfe.projectMonitoringBE.repositories.SprintRepository;
 
 @Service
-public class SprintService {
+public class SprintService implements ISprint {
 
 	@Autowired
 	private SprintRepository repository;

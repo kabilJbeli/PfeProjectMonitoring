@@ -24,6 +24,8 @@ import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
 import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
+import com.pfe.projectMonitoringBE.interfaces.IMember;
+import com.pfe.projectMonitoringBE.interfaces.IProject;
 import com.pfe.projectMonitoringBE.models.ProjectMembers;
 import com.pfe.projectMonitoringBE.models.SelectProjectMembers;
 import com.pfe.projectMonitoringBE.services.MemberService;
@@ -35,10 +37,10 @@ import com.pfe.projectMonitoringBE.services.ProjectService;
 public class ProjectController {
 
 	@Autowired
-	private ProjectService service;
+	private IProject service;
 
 	@Autowired
-	private MemberService memberService;
+	private IMember memberService;
 
 	@GetMapping("/all")
 	public List<Project> getAll() {

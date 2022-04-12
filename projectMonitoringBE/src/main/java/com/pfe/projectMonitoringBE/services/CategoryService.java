@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.entities.Category;
+import com.pfe.projectMonitoringBE.interfaces.ICategory;
 import com.pfe.projectMonitoringBE.repositories.CategoryRepository;
 
 @Service
-public class CategoryService {
+public class CategoryService implements ICategory {
 
 	@Autowired
 	private CategoryRepository repository;

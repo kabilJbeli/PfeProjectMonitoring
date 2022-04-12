@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskDuration;
+import com.pfe.projectMonitoringBE.interfaces.ITaskDuration;
 import com.pfe.projectMonitoringBE.repositories.TaskDurationRepository;
 
 @Service
-public class TaskDurationService {
+public class TaskDurationService implements ITaskDuration {
 	@Autowired
 	private TaskDurationRepository repository;
 	

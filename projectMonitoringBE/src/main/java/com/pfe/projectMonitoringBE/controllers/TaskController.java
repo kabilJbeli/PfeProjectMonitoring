@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
+import com.pfe.projectMonitoringBE.interfaces.ITask;
 import com.pfe.projectMonitoringBE.services.TaskService;
 
 @RestController
@@ -27,7 +28,7 @@ import com.pfe.projectMonitoringBE.services.TaskService;
 public class TaskController {
 
 	@Autowired
-	private TaskService service;
+	private ITask service;
 
 	@GetMapping("/all")
 	public List<Task> getAll() {

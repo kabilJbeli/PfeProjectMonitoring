@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskComment;
+import com.pfe.projectMonitoringBE.interfaces.ITaskComment;
 import com.pfe.projectMonitoringBE.services.TaskCommentService;
 
 @RestController
@@ -27,7 +28,7 @@ import com.pfe.projectMonitoringBE.services.TaskCommentService;
 public class TaskCommentController {
 
 	@Autowired
-	private TaskCommentService service;
+	private ITaskComment service;
 
 	@GetMapping("/all")
 	public List<TaskComment> getAll() {

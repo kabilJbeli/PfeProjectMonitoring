@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Category;
+import com.pfe.projectMonitoringBE.interfaces.ICategory;
 import com.pfe.projectMonitoringBE.services.CategoryService;
 
 @RestController
@@ -25,7 +26,7 @@ import com.pfe.projectMonitoringBE.services.CategoryService;
 public class CategoryController {
 
 	@Autowired
-	private CategoryService service;
+	private ICategory service;
 
 	@GetMapping("/all")
 	public List<Category> getAll() {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Sprint;
+import com.pfe.projectMonitoringBE.interfaces.ISprint;
 import com.pfe.projectMonitoringBE.services.SprintService;
 
 @RestController
@@ -25,7 +26,7 @@ import com.pfe.projectMonitoringBE.services.SprintService;
 public class SprintController {
 
 	@Autowired
-	private SprintService service;
+	private ISprint service;
 
 	@GetMapping("/all")
 	public List<Sprint> getAll() {
