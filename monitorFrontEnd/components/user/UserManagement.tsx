@@ -117,7 +117,7 @@ const UserManagement = ({navigation}: Props, props: any) => {
 								</View>
 								<View style={styles.buttonWrapper}>
 									<Pressable
-										style={[styles.button, styles.delete]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.delete]}
 										onPress={() => {
 											removeItem(item.email);
 										}}>
@@ -131,7 +131,8 @@ const UserManagement = ({navigation}: Props, props: any) => {
 										</Text>
 									</Pressable>
 									<Pressable
-										style={[styles.button, styles.borderButton, styles.view]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
+
 										onPress={() => {
 											//updateItem(item.userID);
 										}}>

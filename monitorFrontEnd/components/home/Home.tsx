@@ -202,7 +202,7 @@ const Home = (props: any) => {
 					>
 						<View style={styles.iconWrapper}>
 
-							<IconE name="user" size={24} color={'#fff'}/>
+							<Icon name="account" size={26} color={'#fff'}/>
 						</View>
 
 						<Text style={styles.boxText}>Profile Screen</Text>

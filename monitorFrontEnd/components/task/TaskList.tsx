@@ -243,56 +243,56 @@ const TaskList = (props: any) => {
 								onPress={() => {
 									filterTasks('All')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'All' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'All' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>All</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('ToDo')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ToDo' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'ToDo' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>To Do</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('InProgress')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'InProgress' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'InProgress' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>In Progress</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Validating')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Validating' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Validating' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Validating</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Testing')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Testing' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Testing' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Testing</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('ReadyForRelease')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ReadyForRelease' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'ReadyForRelease' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Ready For Release</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Released')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Released' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Released' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Released</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Done')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Done' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Done' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Done</Text>
 							</Pressable>
 						</ScrollView>
@@ -354,7 +354,7 @@ const TaskList = (props: any) => {
 								<View style={styles.buttonWrapper}>
 
 									<Pressable
-										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.view]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
 										onPress={() => {
 											_storeData('taskInfo', JSON.stringify(item));
 											// @ts-ignore
