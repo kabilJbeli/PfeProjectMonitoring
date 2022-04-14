@@ -9,7 +9,7 @@ import {
 	Text,
 	View
 } from 'react-native';
-import { useIsFocused, useNavigation} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 import axios from "axios";
 import Environment from "../../Environment";
 import {useEffect, useState} from "react";
@@ -23,7 +23,6 @@ const TaskList = (props: any) => {
 	const [loading, setLoading] = useState(true);
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const navigation = useNavigation();
-	const isFocused = useIsFocused();
 
 	const getTasksByReporter = (email: string) => {
 		// Update the document title using the browser API
@@ -32,6 +31,29 @@ const TaskList = (props: any) => {
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/task/getTaskByReporter?email=${email}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setTasks(response.data);
+				setMainTasks(response.data);
+				setLoading(false);
+			})
+			.catch((err: any) => {
+				console.error(err);
+			});
+	};
+
+	const getTasksByClient = (email: string) => {
+		// Update the document title using the browser API
+		setLoading(true);
+
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/task/getClientTask?email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -77,6 +99,8 @@ const TaskList = (props: any) => {
 				getTasksByReporter(JSON.parse(info).email);
 			} else if (JSON.parse(info).roles.includes('EMPLOYEE')) {
 				getTasksByMember(JSON.parse(info).email);
+			}else if(JSON.parse(info).roles.includes('CLIENT')) {
+				getTasksByClient(JSON.parse(info).email);
 			}
 		});
 	}, [props]);
@@ -219,65 +243,65 @@ const TaskList = (props: any) => {
 								onPress={() => {
 									filterTasks('All')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'All' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'All' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>All</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('ToDo')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ToDo' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'ToDo' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>To Do</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('InProgress')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'InProgress' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'InProgress' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>In Progress</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Validating')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Validating' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Validating' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Validating</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Testing')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Testing' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Testing' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Testing</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('ReadyForRelease')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'ReadyForRelease' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'ReadyForRelease' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Ready For Release</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Released')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Released' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Released' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Released</Text>
 							</Pressable>
 							<Pressable
 								onPress={() => {
 									filterTasks('Done')
 								}}
-								style={[styles.filterPressable, {opacity: currentSelectedStatus === 'Done' ? 1 : 0.6}]}>
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.filterPressable, {opacity: currentSelectedStatus === 'Done' ? 1 : 0.6}]}>
 								<Text style={styles.pressableText}>Done</Text>
 							</Pressable>
 						</ScrollView>
 					</View>
 					<FlatList
-						style={{height: Dimensions.get('screen').height - 350}}
+						style={{height: Dimensions.get('screen').height - 390}}
 						keyExtractor={(item, index) => index.toString()}
 						data={tasks}
-						ItemSeparatorComponent={FlatListItemSeparator}
+					    ItemSeparatorComponent={FlatListItemSeparator}
 						initialNumToRender={tasks.length}
 						renderItem={({item}) => (
 							<View style={styles.project}>
@@ -330,7 +354,7 @@ const TaskList = (props: any) => {
 								<View style={styles.buttonWrapper}>
 
 									<Pressable
-										style={[styles.button, styles.borderButton, styles.view]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
 										onPress={() => {
 											_storeData('taskInfo', JSON.stringify(item));
 											// @ts-ignore

@@ -23,7 +23,7 @@ public class TaskDuration implements Serializable {
 	private Integer durationId;
 	private Integer duration;
 	private DurationType durationType;
-	private LocalDateTime creationDate = LocalDateTime.now();;
+	private LocalDateTime creationDate = LocalDateTime.now();
 	private Member loggedBy;
 
 	

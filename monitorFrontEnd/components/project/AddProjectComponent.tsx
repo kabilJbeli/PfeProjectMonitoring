@@ -1,5 +1,14 @@
 import * as React from 'react';
-import {ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+	ActivityIndicator,
+	Button,
+	Dimensions,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
@@ -136,7 +145,7 @@ const AddProjectComponent = (props: any) => {
 						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 							Add Project</Text>
 					</View>
-					<View style={styles.modalView}>
+					<ScrollView style={styles.modalView}>
 						<View style={{width: '100%'}}>
 							<Text>Project Title</Text>
 							<Input
@@ -314,7 +323,7 @@ const AddProjectComponent = (props: any) => {
 							</TouchableOpacity>
 
 						</View>
-					</View>
+					</ScrollView>
 				</View>
 			);
 		} else {
@@ -352,7 +361,8 @@ const styles = StyleSheet.create({
 		padding: 10,
 		opacity: 1,
 		width:'100%',
-marginTop:15
+marginTop:15,
+		marginBottom:30,
 	},
 	disabled: {
 		opacity: 0.5,
@@ -370,15 +380,16 @@ marginTop:15
 	modalView: {
 		backgroundColor: 'white',
 		padding: 15,
+
 		borderRadius: 0,
-		alignItems: 'center',
+		//alignItems: 'center',
 		shadowColor: '#fff',
 		borderColor: '#fff',
 		shadowOpacity: 0,
 		shadowRadius: 0,
 		elevation: 5,
 		width: '100%',
-		height: '100%',
+		height: Dimensions.get('screen').height - 290,
 	},
 	button: {
 		borderRadius: 0,

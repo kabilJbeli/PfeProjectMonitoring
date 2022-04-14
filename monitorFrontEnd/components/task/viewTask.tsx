@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ActivityIndicator, Dimensions, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import { useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
 import {useEffect, useState} from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -51,7 +51,7 @@ const ViewTask = (props: any) => {
 			durationType: null,
 			duration: null,
 			task: null,
-			loggedBy:null
+			loggedBy: null
 		}
 	});
 
@@ -152,7 +152,7 @@ const ViewTask = (props: any) => {
 		return returnedValue;
 	}
 
-	const getTaskDuration = (task:any) => {
+	const getTaskDuration = (task: any) => {
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/taskDuration/findTaskDurationByTasks?id=${task.taskID}`,
@@ -182,16 +182,15 @@ const ViewTask = (props: any) => {
 					} else if (item.durationType === 'Minute') {
 						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] + item.duration;
 					}
-					if(updatedConfigTime.loggedTime['Day'] >=5){
-						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] -5;
-						updatedConfigTime.loggedTime['Week']= updatedConfigTime.loggedTime['Week']+1;
-					}
-					else if(updatedConfigTime.loggedTime['Hour'] >= 8){
-						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour']-8;
-						updatedConfigTime.loggedTime['Day']= updatedConfigTime.loggedTime['Day'] +1;
-					}else if(updatedConfigTime.loggedTime['Minute'] >=60){
-						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] -60;
-						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour']+1;
+					if (updatedConfigTime.loggedTime['Day'] >= 5) {
+						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] - 5;
+						updatedConfigTime.loggedTime['Week'] = updatedConfigTime.loggedTime['Week'] + 1;
+					} else if (updatedConfigTime.loggedTime['Hour'] >= 8) {
+						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] - 8;
+						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] + 1;
+					} else if (updatedConfigTime.loggedTime['Minute'] >= 60) {
+						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] - 60;
+						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] + 1;
 					}
 
 				});
@@ -221,7 +220,6 @@ const ViewTask = (props: any) => {
 					durationType: loggedInTime.loggedInTime.durationType,
 					duration: loggedInTime.loggedInTime.duration,
 					task: JSON.parse(task),
-					loggedBy:member
 				}
 			});
 			getTaskDuration(JSON.parse(task));
@@ -239,8 +237,6 @@ const ViewTask = (props: any) => {
 			</View>)
 		}
 	}
-
-
 	const getMemberInformation = (email: string) => {
 		const localMemberData: any[] = [];
 		axios({
@@ -253,14 +249,20 @@ const ViewTask = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-
 				setMember(response.data);
+				setLoggedIntTime((prevState: any) => {
+					let loggedInTime = Object.assign({}, prevState.loggedInTime);
+					loggedInTime.loggedBy = response.data;
+					return {loggedInTime};
+				});
 			})
 			.catch((err: any) => {
 				console.error(err);
 			});
 
 	}
+
+
 
 	const getSelectedProjectMembers = (projectId: number) => {
 		const localMemberData: any[] = [];
@@ -321,7 +323,7 @@ const ViewTask = (props: any) => {
 						durationType: null,
 						duration: null,
 						task: response.data,
-						loggedBy:member
+						loggedBy: member
 					}
 				});
 				getSelectedProjectMembers(response.data.project.projectID);
@@ -415,7 +417,7 @@ const ViewTask = (props: any) => {
 						durationType: null,
 						duration: null,
 						task: taskInfo,
-						loggedBy:member
+						loggedBy: member
 					}
 				});
 				setComment('');
@@ -450,60 +452,60 @@ const ViewTask = (props: any) => {
 	const loggedIn = (props: any): any => {
 		let returnedValue: any = (<View></View>);
 
-if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
-	returnedValue = (<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
-		<View style={{width: '33%'}}>
-			<Text style={{marginTop: -20}}>Logged In Time</Text>
-			<Input
-				style={{minHeight: 30, height: 52, fontSize: 18, lineHeight: 1}}
+		if (userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
+			returnedValue = (<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
+				<View style={{width: '33%'}}>
+					<Text style={{marginTop: -20}}>Logged In Time</Text>
+					<Input
+						style={{minHeight: 30, height: 52, fontSize: 18, lineHeight: 1}}
 
-				autoCompleteType={false}
-				keyboardType="numeric"
-				onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
-					let loggedInTime = Object.assign({}, prevState.loggedInTime);
-					loggedInTime.duration = value
-					return {loggedInTime};
-				})}
-				value={loggedInTime.loggedInTime.duration}
-			/>
-		</View>
-		<View style={{width: '33%'}}>
-			<Dropdown
-				style={{minHeight: 35, height: 52}}
-				label={'Logged In Time'}
-				data={loggedInTimeByValue.loggedInTime}
-				onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
-					let loggedInTime = Object.assign({}, prevState.loggedInTime);
-					loggedInTime.durationType = value;
-					return {loggedInTime};
-				})}
-				value={loggedInTime.loggedInTime.durationType}
-			/>
-		</View>
-		<View style={{width: '25%'}}>
-			<Pressable
-				disabled={loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null
+						autoCompleteType={false}
+						keyboardType="numeric"
+						onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
+							let loggedInTime = Object.assign({}, prevState.loggedInTime);
+							loggedInTime.duration = value
+							return {loggedInTime};
+						})}
+						value={loggedInTime.loggedInTime.duration}
+					/>
+				</View>
+				<View style={{width: '33%'}}>
+					<Dropdown
+						style={{minHeight: 35, height: 52}}
+						label={'Logged In Time'}
+						data={loggedInTimeByValue.loggedInTime}
+						onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
+							let loggedInTime = Object.assign({}, prevState.loggedInTime);
+							loggedInTime.durationType = value;
+							return {loggedInTime};
+						})}
+						value={loggedInTime.loggedInTime.durationType}
+					/>
+				</View>
+				<View style={{width: '25%'}}>
+					<Pressable
+						disabled={loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null
 
-				}
-				style={[styles.button, {
-					height: 52,
-					alignItems: 'center',
-					justifyContent: "center",
-					opacity: loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null ? 0.5 : 1
-				}]}
-				onPress={() => {
-					setLogInTime()
-				}}>
-				<Text style={{color: '#fff', textAlign: 'center'}}>Login duration</Text>
-			</Pressable>
-		</View>
-	</View>);
-}
+						}
+						style={[styles.button, {
+							height: 52,
+							alignItems: 'center',
+							justifyContent: "center",
+							opacity: loggedInTime.loggedInTime.duration === null || loggedInTime.loggedInTime.durationType === null ? 0.5 : 1
+						}]}
+						onPress={() => {
+							setLogInTime()
+						}}>
+						<Text style={{color: '#fff', textAlign: 'center'}}>Login duration</Text>
+					</Pressable>
+				</View>
+			</View>);
+		}
 		return returnedValue;
 	}
 
 	const setLogInTime = () => {
-		console.log('loggedInTime.loggedInTime =======================> ',loggedInTime.loggedInTime)
+		console.log('loggedInTime.loggedInTime =======================> ', loggedInTime.loggedInTime)
 		axios({
 			method: 'POST',
 			url: `${Environment.API_URL}/api/taskDuration/add`,
@@ -520,7 +522,7 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 						durationType: null,
 						duration: null,
 						task: taskInfo,
-						loggedBy:member
+						loggedBy: member
 					}
 				})
 				getTaskInformationWs(taskInfo);
@@ -551,7 +553,7 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 						durationType: loggedInTime.loggedInTime.durationType,
 						duration: loggedInTime.loggedInTime.duration,
 						task: response.data,
-						loggedBy:member
+						loggedBy: member
 					}
 				});
 				getSelectedProjectMembers(response.data.project.projectID);
@@ -563,6 +565,13 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 			});
 	}
 
+	const getAssigneeName = (): string => {
+		let returnedValue: string = '';
+		if (taskInfo?.assignee?.name && taskInfo?.assignee?.lastName) {
+			returnedValue = taskInfo?.assignee?.name + ' ' + taskInfo?.assignee?.lastName;
+		}
+		return returnedValue;
+	}
 
 	const getTaskInformation = (): any => {
 		if (taskInfo !== undefined && taskInfo.taskID) {
@@ -637,7 +646,7 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 						fontWeight: 'normal'
 					}}><Text style={{
 						fontWeight: 'bold'
-					}}>Assignee:</Text> {taskInfo?.assignee?.name + ' ' + taskInfo?.assignee?.lastName}</Text>
+					}}>Assignee:</Text> {getAssigneeName()}</Text>
 				</View>
 
 				<View style={styles.viewWrapper}>
@@ -654,16 +663,16 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 					}}>Estimated Time:</Text> {taskInfo?.taskEstimation}/H</Text>
 				</View>
 
-				<View style={{marginTop:15}}>
+				<View style={{marginTop: 15}}>
 					<Text style={{
 						fontWeight: 'bold'
 					}}>Logged In Time</Text>
 					<View style={styles.viewWrapper}>
 
-					<Text>{getLoggedTime?.loggedTime.Week} Week</Text>
-					<Text>{getLoggedTime?.loggedTime.Day} Day</Text>
-					<Text>{getLoggedTime?.loggedTime.Hour} Hour</Text>
-					<Text>{getLoggedTime?.loggedTime.Minute} Minutes</Text>
+						<Text>{getLoggedTime?.loggedTime.Week} Week</Text>
+						<Text>{getLoggedTime?.loggedTime.Day} Day</Text>
+						<Text>{getLoggedTime?.loggedTime.Hour} Hour</Text>
+						<Text>{getLoggedTime?.loggedTime.Minute} Minutes</Text>
 
 					</View>
 				</View>
@@ -675,7 +684,7 @@ if(userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
 				</View>
 
 				<View style={styles.viewWrapper}>
-					<View style={{width: '100%',marginTop:15}}>
+					<View style={{width: '100%', marginTop: 15}}>
 						{loggedIn(props)}
 					</View>
 				</View>

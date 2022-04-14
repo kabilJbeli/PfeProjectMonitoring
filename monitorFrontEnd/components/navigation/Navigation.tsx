@@ -14,13 +14,11 @@ import Task from '../task/TaskList';
 import User from '../user/AddUser';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconE from 'react-native-vector-icons/FontAwesome';
-
-
 import IconS from 'react-native-vector-icons/SimpleLineIcons';
+import IconFeather from 'react-native-vector-icons/Feather'
 
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
-import IconFeather from 'react-native-vector-icons/Feather'
 
 import {
 	CategoryStack,

@@ -23,6 +23,17 @@ const ViewProjectInformation = (props: any) => {
 	const navigation = useNavigation();
 	const [assignedEmployees, setAssignedEmployees] = useState<any>([]);
 	const [selectedEmployees, setSelectedEmployees] = useState<any>([]);
+	const [userInfo, setUserInfo] = useState<any>(null);
+
+
+	useEffect(() => {
+		_retrieveData('userInfo').then((info: any) => {
+			let parsedInfo = JSON.parse(info)
+			if (parsedInfo !== undefined) {
+				setUserInfo(parsedInfo);
+			}
+		});
+	}, [props]);
 
 	const getEmployees = () => {
 		return new Promise((resolve, reject) => {
@@ -167,6 +178,7 @@ const ViewProjectInformation = (props: any) => {
 
 	const getNextDisplayedProjectStatusLabel = (currentStatus: string): string => {
 		let nextProjectStatus: any;
+		if(userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')){
 		switch (currentStatus) {
 			case 'Created': {
 				nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
@@ -211,7 +223,7 @@ const ViewProjectInformation = (props: any) => {
 				break;
 			}
 		}
-
+		}
 		return nextProjectStatus;
 	}
 
@@ -345,6 +357,22 @@ const ViewProjectInformation = (props: any) => {
 		</View>);
 	}
 
+	const getAssignProjectMembers = ():any=>{
+		let returnedValue=(<View></View>);
+
+		if(userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')){
+			returnedValue = (	<View>
+				<Text style={{marginTop: 15, fontWeight: 'bold'}}>Assign Project Members:</Text>
+
+				<View
+				>
+					{getMultipleSelect()}
+				</View>
+			</View>)
+		}
+		return returnedValue;
+	}
+
 	const getProjectInfoDisplay = () => {
 		if (projectInfo) {
 			return (<View>
@@ -433,14 +461,8 @@ const ViewProjectInformation = (props: any) => {
 							</Text>
 						</View>
 					</View>
-					<View>
-						<Text style={{marginTop: 15, fontWeight: 'bold'}}>Assign Project Members:</Text>
 
-						<View
-						>
-							{getMultipleSelect()}
-						</View>
-					</View>
+					{getAssignProjectMembers()}
 
 				</View>
 

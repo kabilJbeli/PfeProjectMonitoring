@@ -45,6 +45,18 @@ public class TaskController {
 	}
 	
 
+	
+	@GetMapping("/getTaskCreatedByClient")
+	public List<Task> getTaskCreatedByClient(@RequestParam String email) {
+		return service.getTaskCreatedByClient(email);
+	}
+	
+	@GetMapping("/getClientTask")
+	public List<Task> getClientTask(@RequestParam String email) {
+		return service.getClientTask(email);
+	}
+
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
 		try {
