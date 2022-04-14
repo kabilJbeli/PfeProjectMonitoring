@@ -95,7 +95,7 @@ const CategoryList = () => {
                                 </Text>
                                 <View style={styles.buttonWrapper}>
                                     <Pressable
-                                        style={[styles.button, styles.delete]}
+                                        style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
                                         onPress={() => {
                                             removeItem(item.categoryID);
                                         }}>
@@ -109,7 +109,7 @@ const CategoryList = () => {
                                         </Text>
                                     </Pressable>
                                     <Pressable
-                                        style={[styles.button, styles.borderButton, styles.update]}
+                                        style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
                                         onPress={() => {
                                             //updateItem(item.projectID);
                                         }}>

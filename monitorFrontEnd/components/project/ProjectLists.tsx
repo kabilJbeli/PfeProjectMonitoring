@@ -31,15 +31,15 @@ const ProjectsList = (props: any) => {
 	useEffect(() => {
 		if (loading) {
 			_retrieveData('userInfo').then((info: any) => {
-				console.log('userInfo Called')
 				let parsedInfo = JSON.parse(info)
 				if (parsedInfo !== undefined && loading) {
 					setUserInfo(parsedInfo);
-
 					if (parsedInfo?.roles.includes('ADMINISTRATOR')) {
 						getAllProjects(parsedInfo);
-					} else {
+					} else if(parsedInfo?.roles.includes('MANAGER') || parsedInfo?.roles.includes('EMPLOYEE')) {
 						getUserSpecificProjects(parsedInfo);
+					} else if (parsedInfo?.roles.includes('CLIENT')){
+						getClientProjects(parsedInfo);
 					}
 				}
 
@@ -71,10 +71,31 @@ const ProjectsList = (props: any) => {
 			});
 	};
 
+	const getClientProjects = (userInfoParam?: any) => {
+		// Update the document title using the broconwser API
+
+		if (loading) {
+			axios({
+				method: 'GET',
+				url: `${Environment.API_URL}/api/project/getProjectsByClient?email=${userInfoParam.email}`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+			})
+				.then(response => {
+					setProjects(response.data);
+					setSearchedProject(response.data);
+				})
+				.catch((err: any) => {
+				});
+			setTimeout(() => setLoading(false), 1000);
+		}
+	};
 
 	const getUserSpecificProjects = (userInfoParam?: any) => {
 		// Update the document title using the broconwser API
-
 		if (loading) {
 			axios({
 				method: 'POST',
@@ -110,8 +131,11 @@ const ProjectsList = (props: any) => {
 				setLoading(true);
 				if (userInfo?.roles.includes('ADMINISTRATOR')) {
 					getAllProjects(userInfo);
-				} else {
+				} else if(userInfo?.roles.includes('MANAGER') || userInfo?.roles.includes('EMPLOYEE')) {
 					getUserSpecificProjects(userInfo);
+				} else if (userInfo?.roles.includes('CLIENT')){
+					getClientProjects(userInfo);
+
 				}
 			})
 			.catch((err: any) => {
@@ -231,7 +255,7 @@ const ProjectsList = (props: any) => {
 			returnedActionElements = (
 				<View style={{width: '100%', flexDirection: 'row'}}>
 					<Pressable
-						style={[styles.button, styles.delete]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
 						onPress={() => {
 							removeItem(item.projectID);
 						}}>
@@ -245,7 +269,7 @@ const ProjectsList = (props: any) => {
 						</Text>
 					</Pressable>
 					<Pressable
-						style={[styles.button, styles.borderButton, styles.update]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
 						onPress={() => {
 							updateItem(item.projectID);
 						}}>
@@ -265,7 +289,7 @@ const ProjectsList = (props: any) => {
 			returnedActionElements = (
 				<View style={{width: '100%', flexDirection: 'row'}}>
 					<Pressable
-						style={[styles.button, styles.borderButton, styles.view,{width:'100%'}]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.view,{width:'100%'}]}
 						onPress={() => {
 							viewProject(item.projectID);
 						}}>

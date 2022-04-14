@@ -17,14 +17,8 @@ const KeycloakLogin = () => {
 	const [token, setToken] = useState<any>(null);
 
 	const getUserInfo = () => {
-
-		console.log('Authenticated====================> ', keycloak?.authenticated)
-		console.log('Roles=======================>', keycloak?.realmAccess?.roles);
-
-
 		if (keycloak?.token) {
 			let decodedJwtData: any = jwt_decode(keycloak?.token)
-			console.log('decodes Token=====================>   ', decodedJwtData);
 			_storeData('userRoles', JSON.stringify(decodedJwtData.realm_access.roles));
 			let userInfo = {
 				firstName: decodedJwtData.given_name,
@@ -37,9 +31,7 @@ const KeycloakLogin = () => {
 			}
 			if (token === null) {
 				setToken(keycloak?.token);
-
 			}
-
 
 			_storeData('token', JSON.stringify(keycloak?.token));
 			_storeData('refreshToken', JSON.stringify(keycloak?.refreshToken));
@@ -57,7 +49,6 @@ const KeycloakLogin = () => {
 			_storeData('token', '');
 			_storeData('userInfo', '');
 			_storeData('refreshToken', '');
-
 			setToken(null);
 		}).catch(err => {
 			console.error('Logout Error: ', err)
@@ -89,7 +80,8 @@ const KeycloakLogin = () => {
 								/>
 							</View>
 							<Pressable
-								style={styles.loginButton}
+								style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, styles.loginButton]}
+
 								onPress={() => keycloak?.login().then(val => {
 								})}>
 								<Text style={styles.loginButtonText}>Login To Proceed</Text>

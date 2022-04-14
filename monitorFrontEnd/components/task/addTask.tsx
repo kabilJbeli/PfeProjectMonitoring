@@ -69,7 +69,6 @@ const AddTask = (props: any) => {
 
 	useEffect(() => {
 		_retrieveData('userInfo').then((info: any) => {
-			console.log('userInfo Called')
 			let parsedInfo = JSON.parse(info)
 			if (parsedInfo !== undefined) {
 				getTaskTypes();
@@ -87,6 +86,7 @@ const AddTask = (props: any) => {
 
 
 	const createTask = () => {
+		console.log('task.task ==========================>',task.task);
 		axios
 			.post(`${Environment.API_URL}/api/task/add`, task.task)
 			.then((res: any) => {
@@ -173,15 +173,16 @@ const AddTask = (props: any) => {
 					setTask((prevState: any) => {
 						let task = Object.assign({}, prevState.task);
 						task.client = response.data;
-						return {task};
-					});
-				} else {
-					setTask((prevState: any) => {
-						let task = Object.assign({}, prevState.task);
-						task.reporter = response.data;
+						task.isCreatedByClient=true;
 						return {task};
 					});
 				}
+
+				setTask((prevState: any) => {
+					let task = Object.assign({}, prevState.task);
+					task.reporter = response.data;
+					return {task};
+				});
 			})
 			.catch((err: any) => {
 			});
@@ -234,13 +235,64 @@ const AddTask = (props: any) => {
 
 	}
 
-	const getButtonStatus = (): boolean => {
-		return task.task.project === null || task.task.assignee === null || task.task.priority === null ||
-			task.task.taskDescription === null || task.task.taskTitle === null || task.task.taskEstimation === null ||
-			task.task.project === '' || task.task.assignee === '' || task.task.priority === '' ||
-			task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === ''
+	const getButtonStatus = (): boolean | undefined => {
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			return task.task.project === null || task.task.assignee === null || task.task.priority === null ||
+				task.task.taskDescription === null || task.task.taskTitle === null || task.task.taskEstimation === null ||
+				task.task.project === '' || task.task.assignee === '' || task.task.priority === '' ||
+				task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === '';
+		} else if (userInfo && userInfo.roles && userInfo.roles.includes('CLIENT')) {
+			return task.task.project === null || task.task.priority === null ||
+				task.task.taskDescription === null || task.task.taskTitle === null || task.task.taskEstimation === null ||
+				task.task.project === '' || task.task.priority === '' ||
+				task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === '';
+		}
 	}
 
+	const getAssigneeDropdown = (): any => {
+		let returnedDropDown: any = (<View></View>);
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			returnedDropDown = (<View style={{width: '100%', marginBottom: 15}}>
+				<Dropdown
+					style={{width: '100%'}}
+					label={'Assignee'}
+					disabled={members.length === 0 ? true : false}
+					data={members}
+					onChangeText={(value: any) => setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.assignee = value;
+						return {task};
+					})}
+					value={task.task?.assignee || null}
+				/>
+			</View>);
+
+		}
+		return returnedDropDown;
+	}
+
+
+	const getSprintDropdown = (): any => {
+		let returnedDropDown: any = (<View></View>);
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			returnedDropDown = (<View style={{width: '100%', marginBottom: 15}}>
+				<Dropdown
+					style={{width: '100%'}}
+					disabled={sprints.length === 0 ? true : false}
+					label={'Sprint (optional)'}
+					data={sprints}
+					onChangeText={(value: any) => setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.sprint = value;
+						return {task};
+					})}
+					value={task.task?.sprint || null}
+				/>
+			</View>);
+
+		}
+		return returnedDropDown;
+	}
 	return (
 		<SafeAreaView style={{backgroundColor: '#fff', height: '100%'}}>
 			<View style={{
@@ -334,37 +386,10 @@ const AddTask = (props: any) => {
 						/>
 					</View>
 
-					<View style={{width: '100%', marginBottom: 15}}>
-						<Dropdown
-							style={{width: '100%'}}
-							label={'Assignee'}
-							disabled={members.length === 0 ? true : false}
-							data={members}
-							onChangeText={(value: any) => setTask((prevState: any) => {
-								let task = Object.assign({}, prevState.task);
-								task.assignee = value;
-								return {task};
-							})}
-							value={task.task?.assignee || null}
-						/>
-					</View>
+					{getAssigneeDropdown()}
 
 
-					<View style={{width: '100%', marginBottom: 15}}>
-						<Dropdown
-							style={{width: '100%'}}
-							disabled={sprints.length === 0 ? true : false}
-
-							label={'Sprint (optional)'}
-							data={sprints}
-							onChangeText={(value: any) => setTask((prevState: any) => {
-								let task = Object.assign({}, prevState.task);
-								task.sprint = value;
-								return {task};
-							})}
-							value={task.task?.sprint || null}
-						/>
-					</View>
+					{getSprintDropdown()}
 
 
 					<View style={{width: '100%'}}>

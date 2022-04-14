@@ -89,7 +89,7 @@ const User = () => {
 				paddingRight: 15,
 				height: '100%',
 				backgroundColor: '#fff'
-			}, {height: Dimensions.get('screen').height - 320}]}>
+			}, {height: Dimensions.get('screen').height - 300}]}>
 				<View style={styles.container}>
 
 					<View style={{width: '100%'}}>

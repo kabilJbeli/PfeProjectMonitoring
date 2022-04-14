@@ -9,7 +9,7 @@ import {
 	Text,
 	View
 } from 'react-native';
-import { useIsFocused, useNavigation} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 import axios from "axios";
 import Environment from "../../Environment";
 import {useEffect, useState} from "react";
@@ -23,7 +23,6 @@ const TaskList = (props: any) => {
 	const [loading, setLoading] = useState(true);
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const navigation = useNavigation();
-	const isFocused = useIsFocused();
 
 	const getTasksByReporter = (email: string) => {
 		// Update the document title using the browser API
@@ -32,6 +31,29 @@ const TaskList = (props: any) => {
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/task/getTaskByReporter?email=${email}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setTasks(response.data);
+				setMainTasks(response.data);
+				setLoading(false);
+			})
+			.catch((err: any) => {
+				console.error(err);
+			});
+	};
+
+	const getTasksByClient = (email: string) => {
+		// Update the document title using the browser API
+		setLoading(true);
+
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/task/getClientTask?email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -77,6 +99,8 @@ const TaskList = (props: any) => {
 				getTasksByReporter(JSON.parse(info).email);
 			} else if (JSON.parse(info).roles.includes('EMPLOYEE')) {
 				getTasksByMember(JSON.parse(info).email);
+			}else if(JSON.parse(info).roles.includes('CLIENT')) {
+				getTasksByClient(JSON.parse(info).email);
 			}
 		});
 	}, [props]);
@@ -274,10 +298,10 @@ const TaskList = (props: any) => {
 						</ScrollView>
 					</View>
 					<FlatList
-						style={{height: Dimensions.get('screen').height - 350}}
+						style={{height: Dimensions.get('screen').height - 390}}
 						keyExtractor={(item, index) => index.toString()}
 						data={tasks}
-						ItemSeparatorComponent={FlatListItemSeparator}
+					    ItemSeparatorComponent={FlatListItemSeparator}
 						initialNumToRender={tasks.length}
 						renderItem={({item}) => (
 							<View style={styles.project}>
@@ -330,7 +354,7 @@ const TaskList = (props: any) => {
 								<View style={styles.buttonWrapper}>
 
 									<Pressable
-										style={[styles.button, styles.borderButton, styles.view]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.view]}
 										onPress={() => {
 											_storeData('taskInfo', JSON.stringify(item));
 											// @ts-ignore

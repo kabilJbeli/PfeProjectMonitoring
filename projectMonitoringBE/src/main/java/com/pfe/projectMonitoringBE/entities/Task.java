@@ -90,6 +90,7 @@ public class Task implements Serializable {
 	@Column(name = "TASKDURATION")
 	private Set<TaskDuration> taskDuration;
 
+	
 	@Column(name = "TASKESTIMATION")
 	private Integer taskEstimation;
 

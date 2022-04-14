@@ -1,36 +1,33 @@
 import * as React from 'react';
 import {ActivityIndicator, Dimensions, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
 
-
-
-const PriorityList = (props:any) => {
+const PriorityList = (props: any) => {
 	const [priorities, setPriorities] = useState<any[]>([]);
-const [loading,setLoading] = useState(true);
+	const [loading, setLoading] = useState(true);
 	const getPriorities = () => {
 		setLoading(true);
-			// Update the document title using the browser API
-				axios({
-					method: 'GET',
-					url: `${Environment.API_URL}/api/priority/all`,
-					headers: {
-						'Content-Type': 'application/json',
-						useQueryString: false,
-					},
-					params: {},
-				})
-					.then(response => {
-						console.log(response.data)
-						setPriorities(response.data);
-						setLoading(false);
-					})
-					.catch((err: any) => {
-						console.error(err);
+		// Update the document title using the browser API
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/priority/all`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				console.log(response.data)
+				setPriorities(response.data);
+				setLoading(false);
+			})
+			.catch((err: any) => {
+				console.error(err);
 
-					});
+			});
 	};
 
 	useEffect(() => {
@@ -48,11 +45,10 @@ const [loading,setLoading] = useState(true);
 			params: {},
 		})
 			.then((response: any) => {
-				useEffect(() => {
-					getPriorities();
-				}, [props]);
+				getPriorities();
 			})
 			.catch((err: any) => {
+				console.error(err)
 			});
 	};
 
@@ -71,11 +67,6 @@ const [loading,setLoading] = useState(true);
 			/>
 		);
 	};
-	const isFocused = useIsFocused();
-
-
-
-
 
 	const getLatestPriorities = () => {
 		if (loading) {
@@ -88,7 +79,7 @@ const [loading,setLoading] = useState(true);
 			return (
 				<View>
 					<FlatList
-						style={{height:Dimensions.get('screen').height-300}}
+						style={{height: Dimensions.get('screen').height - 300}}
 
 						keyExtractor={(item, index) => index.toString()}
 						data={priorities}
@@ -101,7 +92,7 @@ const [loading,setLoading] = useState(true);
 								</Text>
 								<View style={styles.buttonWrapper}>
 									<Pressable
-										style={[styles.button, styles.delete]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
 										onPress={() => {
 											removeItem(item.priorityID);
 										}}>
@@ -115,7 +106,7 @@ const [loading,setLoading] = useState(true);
 										</Text>
 									</Pressable>
 									<Pressable
-										style={[styles.button, styles.borderButton, styles.update]}
+										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
 										onPress={() => {
 											//updateItem(item.priorityID);
 										}}>
@@ -136,7 +127,7 @@ const [loading,setLoading] = useState(true);
 			);
 		}
 	};
-return getLatestPriorities();
+	return getLatestPriorities();
 };
 export default PriorityList;
 
@@ -148,7 +139,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('screen').height-300,
+		height: Dimensions.get('screen').height - 300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',

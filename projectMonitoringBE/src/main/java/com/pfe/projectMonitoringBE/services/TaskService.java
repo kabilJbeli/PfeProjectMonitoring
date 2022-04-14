@@ -39,6 +39,18 @@ public class TaskService implements ITask {
 	public List<Task> getTaskByMember(String email) {
 	return	repository.getTaskByMember(email);
 	}
+
+	@Override
+	public List<Task> getTaskCreatedByClient(String email) {
+		// TODO Auto-generated method stub
+		return repository.getTaskCreatedByClient(email);
+	}
+
+	@Override
+	public List<Task> getClientTask(String email) {
+		// TODO Auto-generated method stub
+		return repository.getClientTask(email);
+	}
 	
 	
 	

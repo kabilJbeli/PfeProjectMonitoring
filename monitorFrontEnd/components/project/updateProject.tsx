@@ -1,5 +1,15 @@
 import * as React from 'react';
-import {ActivityIndicator, Button, Pressable, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+	ActivityIndicator,
+	Button,
+	Dimensions,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconM from 'react-native-vector-icons/MaterialIcons';
@@ -165,7 +175,7 @@ const UpdateProjectScreen = (props: any) => {
 						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 							Update Project</Text>
 					</View>
-					<View style={styles.modalView}>
+					<ScrollView style={styles.modalView}>
 						<View style={{width:'100%',alignItems:'flex-start',marginBottom:15}}>
 							<Pressable
 								style={{width: 80, flexDirection: 'row'}}
@@ -363,7 +373,7 @@ const UpdateProjectScreen = (props: any) => {
 								</Text>
 							</TouchableOpacity>
 						</View>
-					</View>
+					</ScrollView>
 				</View>
 			);
 
@@ -396,7 +406,8 @@ const styles = StyleSheet.create({
 		padding: 10,
 		opacity: 1,
 		width:'100%',
-		marginTop:15
+		marginTop:15,
+		marginBottom:30
 	},
 	disabled: {
 		opacity: 0.5,
@@ -416,14 +427,14 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		padding: 15,
 		borderRadius: 0,
-		alignItems: 'center',
+		//alignItems: 'center',
 		shadowColor: '#fff',
 		borderColor: '#fff',
 		shadowOpacity: 0,
 		shadowRadius: 0,
 		elevation: 5,
 		width: '100%',
-		height: '100%',
+		height: Dimensions.get('screen').height - 250,
 	},
 	button: {
 		borderRadius: 0,
