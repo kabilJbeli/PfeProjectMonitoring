@@ -21,7 +21,7 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 
 import {
-	CategoryStack,
+	CategoryStack, ClientTaskStackUtil,
 	DashboardStack,
 	HomeStatusStack, PriorityStack, ProfileStack,
 	ProjectStack,
@@ -32,6 +32,7 @@ import {
 
 import {_retrieveData, _storeData} from "../../utils";
 import {useEffect, useState} from "react";
+import {ClientTaskStack} from "../task/ClientTask";
 
 
 const CustomDrawerContent = (props: any) => {
@@ -206,8 +207,6 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					{...props}
 				/>
 
-
-
 				<Drawer.Screen
 					name={'Project'}
 					component={ProjectStack}
@@ -349,6 +348,21 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					}}
 					{...props}
 				/>
+
+				<Drawer.Screen
+					name={'ClientTask'}
+					component={ClientTaskStackUtil}
+					options={{
+						drawerLabel: 'Clients Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
 				<Drawer.Screen
 					name={'Profile'}
 					component={ProfileStack}
@@ -437,7 +451,7 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					name={'Task'}
 					component={TaskStack}
 					options={{
-						drawerLabel: 'Task',
+						drawerLabel: 'My Tasks',
 						title: 'task',
 						swipeEnabled: false,
 						headerShown: false,

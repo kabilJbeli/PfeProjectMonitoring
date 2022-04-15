@@ -16,28 +16,35 @@ public class TaskService implements ITask {
 
 	@Autowired
 	private TaskRepository repository;
-	
+
+	@Override
 	public void createOrUpdateTask(Task task) {
 		repository.save(task);
 	}
 
+	@Override
 	public Task findTask(int idTask) {
 		return repository.findById(idTask).get();
 	}
 
+	@Override
 	public List<Task> getAllTask() {
 		return repository.findAll();
 	}
 
+	@Override
 	public void deleteTask(Task task) {
 		repository.delete(task);
 	}
-	
+
+	@Override
 	public List<Task> getTaskByReporter(String email) {
-	return	repository.getTaskByReporter(email);
+		return repository.getTaskByReporter(email);
 	}
+
+	@Override
 	public List<Task> getTaskByMember(String email) {
-	return	repository.getTaskByMember(email);
+		return repository.getTaskByMember(email);
 	}
 
 	@Override
@@ -51,9 +58,5 @@ public class TaskService implements ITask {
 		// TODO Auto-generated method stub
 		return repository.getClientTask(email);
 	}
-	
-	
-	
-	
-	
+
 }

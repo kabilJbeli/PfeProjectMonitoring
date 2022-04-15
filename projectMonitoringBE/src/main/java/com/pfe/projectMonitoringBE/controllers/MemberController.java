@@ -88,4 +88,5 @@ public class MemberController {
 	public List<Member> findManagers() {
 		return service.findmanagers();
 	}
+	
 }

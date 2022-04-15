@@ -14,19 +14,23 @@ public class ReportService implements IReport {
 
 	@Autowired
 	private ReportRepository repository;
-	
+
+	@Override
 	public void createOrUpdateReport(Report report) {
 		repository.save(report);
 	}
 
+	@Override
 	public Report findReport(int idReport) {
 		return repository.findById(idReport).get();
 	}
 
+	@Override
 	public List<Report> getAllReport() {
 		return repository.findAll();
 	}
 
+	@Override
 	public void deleteReport(Report report) {
 		repository.delete(report);
 	}

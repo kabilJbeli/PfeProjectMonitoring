@@ -15,19 +15,23 @@ public class PriorityService implements IPriority {
 
 	@Autowired
 	private PriorityRepository repository;
-	
+
+	@Override
 	public void createOrUpdatePriority(Priority priority) {
 		repository.save(priority);
 	}
 
+	@Override
 	public Priority findPriority(int idPriority) {
 		return repository.findById(idPriority).get();
 	}
 
+	@Override
 	public List<Priority> getAllPriority() {
 		return repository.findAll();
 	}
 
+	@Override
 	public void deletePriority(Priority priority) {
 		repository.delete(priority);
 	}

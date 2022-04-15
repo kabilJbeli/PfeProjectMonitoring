@@ -182,16 +182,42 @@ const ViewTask = (props: any) => {
 					} else if (item.durationType === 'Minute') {
 						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] + item.duration;
 					}
-					if (updatedConfigTime.loggedTime['Day'] >= 5) {
-						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] - 5;
-						updatedConfigTime.loggedTime['Week'] = updatedConfigTime.loggedTime['Week'] + 1;
-					} else if (updatedConfigTime.loggedTime['Hour'] >= 8) {
-						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] - 8;
-						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] + 1;
-					} else if (updatedConfigTime.loggedTime['Minute'] >= 60) {
-						updatedConfigTime.loggedTime['Minute'] = updatedConfigTime.loggedTime['Minute'] - 60;
-						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] + 1;
+
+					if (updatedConfigTime.loggedTime['Minute'] % 60 === 0) {
+						let opValue = updatedConfigTime.loggedTime['Minute'] / 60;
+
+						updatedConfigTime.loggedTime['Minute'] = 0;
+						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] + opValue;
+					} else if (updatedConfigTime.loggedTime['Minute'] % 60 !== 0 && updatedConfigTime.loggedTime['Minute'] / 60 >= 1) {
+						let restOfOpt = updatedConfigTime.loggedTime['Minute'] % 60;
+						let optValue = (updatedConfigTime.loggedTime['Minute'] - restOfOpt) / 60;
+						updatedConfigTime.loggedTime['Minute'] = restOfOpt;
+						updatedConfigTime.loggedTime['Hour'] = updatedConfigTime.loggedTime['Hour'] + optValue;
 					}
+
+					if (updatedConfigTime.loggedTime['Hour'] % 8 === 0) {
+						let opValue = updatedConfigTime.loggedTime['Hour'] / 8;
+						updatedConfigTime.loggedTime['Hour'] = 0;
+						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] + opValue;
+					} else if (updatedConfigTime.loggedTime['Hour'] % 8 !== 0 && updatedConfigTime.loggedTime['Hour'] / 8 >= 1) {
+						let restOfOpt = updatedConfigTime.loggedTime['Hour'] % 8;
+						let optValue = (updatedConfigTime.loggedTime['Hour'] - restOfOpt) / 8;
+						updatedConfigTime.loggedTime['Hour'] = restOfOpt;
+
+						updatedConfigTime.loggedTime['Day'] = updatedConfigTime.loggedTime['Day'] + optValue;
+					}
+
+					if (updatedConfigTime.loggedTime['Day'] % 5 === 0) {
+						let optValue = updatedConfigTime.loggedTime['Day'] / 5;
+						updatedConfigTime.loggedTime['Day'] = 0;
+						updatedConfigTime.loggedTime['Week'] = updatedConfigTime.loggedTime['Week'] + optValue;
+					} else if (updatedConfigTime.loggedTime['Day'] % 5 !== 0 && updatedConfigTime.loggedTime['Day'] / 5 >= 1) {
+						let restOfOpt = updatedConfigTime.loggedTime['Day'] % 5;
+						let optValue = (updatedConfigTime.loggedTime['Day'] - restOfOpt) / 5;
+						updatedConfigTime.loggedTime['Day'] = restOfOpt;
+						updatedConfigTime.loggedTime['Week'] = updatedConfigTime.loggedTime['Week'] + optValue;
+					}
+
 
 				});
 
@@ -261,7 +287,6 @@ const ViewTask = (props: any) => {
 			});
 
 	}
-
 
 
 	const getSelectedProjectMembers = (projectId: number) => {

@@ -12,6 +12,7 @@ import {MainTaskStack} from "../task/Task";
 import {UserTabNavigator} from "../user/User";
 import {PriorityTabStatusNavigator} from "../priority/Priority";
 import {CategoryTabStatusNavigator} from "../category/Category";
+import {ClientTaskStack} from "../task/ClientTask";
 
 const Stack = createStackNavigator();
 
@@ -248,6 +249,35 @@ export const TaskStack = ({navigation}: any,props:any) => {
 		</Stack.Navigator>
 	);
 };
+
+export const ClientTaskStackUtil = ({navigation}: any,props:any) => {
+	return (
+		<Stack.Navigator initialRouteName="ClientTaskStack">
+			<Stack.Screen
+				name="ClientTaskStack"
+				component={ClientTaskStack}
+				options={{
+					title: 'Clients Task Management', //Set Header Title
+					headerLeft: () => (
+						<NavigationDrawerStructure navigationProps={navigation}/>
+					),
+					headerStyle: {
+						backgroundColor: '#262626', //Set Header color
+					},
+					headerTintColor: '#fff', //Set Header text color
+					headerTitleStyle: {
+						fontWeight: 'bold', //Set Header text style
+					},
+				}}
+				{...props}
+
+			/>
+		</Stack.Navigator>
+	);
+};
+
+
+
 
 export const UserStack = ({navigation}: Props,props:any) => {
 	return (

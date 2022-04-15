@@ -15,19 +15,23 @@ public class SprintService implements ISprint {
 
 	@Autowired
 	private SprintRepository repository;
-	
+
+	@Override
 	public void createOrUpdateSprint(Sprint sprint) {
 		repository.save(sprint);
 	}
 
+	@Override
 	public Sprint findSprint(int idSprint) {
 		return repository.findById(idSprint).get();
 	}
 
+	@Override
 	public List<Sprint> getAllSprint() {
 		return repository.findAll();
 	}
 
+	@Override
 	public void deleteSprint(Sprint sprint) {
 		repository.delete(sprint);
 	}
