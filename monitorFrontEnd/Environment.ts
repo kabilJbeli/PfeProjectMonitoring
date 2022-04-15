@@ -1,4 +1,4 @@
 export default {
-  API_URL: 'https://hungry-wasp-36.loca.lt',
-  KEYCLOAK_URL:'http://44c0-197-23-249-117.ngrok.io'
+  API_URL: 'http://10.0.2.2:8083',
+  KEYCLOAK_URL:'http://10.0.2.2:8080'
 };

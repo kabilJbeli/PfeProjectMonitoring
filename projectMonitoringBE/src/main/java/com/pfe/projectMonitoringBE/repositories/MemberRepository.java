@@ -19,8 +19,7 @@ public interface MemberRepository  extends JpaRepository<Member, Integer> {
 	public Member findBykeycloakId(String keycloakId);
 	
 	@Query("SELECT m FROM Member m WHERE m.email = ?1")	
-	public Member findByEmail(String email);
-	
+	public Member findByEmail(String email);	
 
 
 }

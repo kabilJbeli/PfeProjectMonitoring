@@ -86,7 +86,7 @@ const Home = (props: any) => {
 
 	const getSprintAndTaskConditionalRendering = (): any => {
 		let returnedValue: any = (<></>);
-		if (member && member.role !== 'ADMINISTRATOR') {
+			if (userInfo && (userInfo.roles.includes('EMPLOYEE') ||  userInfo.roles.includes('CLIENT') ||  userInfo.roles.includes('MANAGER'))) {
 			returnedValue = (<>
 				<View style={styles.box}>
 					<Pressable
@@ -125,9 +125,9 @@ const Home = (props: any) => {
 	}
 
 
-	const getAddUserConditionalRendering = ():any => {
+	const getAddUserConditionalRendering=():any => {
 		let returnedValue:any=(<></>);
-		if (member && member.role == "ADMINISTRATOR") {
+		if (userInfo && userInfo.roles.includes("ADMINISTRATOR")) {
 			returnedValue = (<View style={styles.box}>
 				<Pressable
 					onPress={() => {
@@ -141,15 +141,13 @@ const Home = (props: any) => {
 					<Text style={styles.boxText}>Users Screen</Text>
 				</Pressable>
 			</View>);
-
 		}
-
 		return returnedValue;
 	}
 
 	const getConditionalProjectRendering = ():any=>{
 		let returnedValue:any=(<></>);
-		if(member && member.role !== 'EMPLOYEE'){
+		if(userInfo && !userInfo.roles.includes('EMPLOYEE')){
 			returnedValue =(<View style={styles.box}>
 				<Pressable
 					onPress={() => {
@@ -189,7 +187,6 @@ const Home = (props: any) => {
 				</View>
 				{getConditionalProjectRendering()}
 				{getAddUserConditionalRendering()}
-
 				{getSprintAndTaskConditionalRendering()}
 
 				<View style={styles.box}>

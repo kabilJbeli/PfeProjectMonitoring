@@ -37,6 +37,7 @@ import com.pfe.projectMonitoringBE.interfaces.IMember;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/keycloak")
 public class KeycloakController {
+	
 	@Autowired
 	private Environment env;
 

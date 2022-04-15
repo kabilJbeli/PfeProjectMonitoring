@@ -14,24 +14,28 @@ import com.pfe.projectMonitoringBE.repositories.TaskCommentRepository;
 public class TaskCommentService implements ITaskComment {
 	@Autowired
 	private TaskCommentRepository repository;
-	
-	
+
+	@Override
 	public void createOrUpdateTaskComment(TaskComment taskComment) {
 		repository.save(taskComment);
 	}
 
+	@Override
 	public TaskComment findTaskComment(int idTaskComment) {
 		return repository.findById(idTaskComment).get();
 	}
 
+	@Override
 	public List<TaskComment> getAllTaskComments() {
 		return repository.findAll();
 	}
-	
+
+	@Override
 	public List<TaskComment> getCommentByTaskComment(Task task) {
 		return repository.getCommentByTask(task);
 	}
 
+	@Override
 	public void deleteTaskComment(TaskComment taskComment) {
 		repository.delete(taskComment);
 	}

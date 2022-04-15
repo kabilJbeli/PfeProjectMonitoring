@@ -25,7 +25,6 @@ import com.pfe.projectMonitoringBE.interfaces.ITaskDuration;
 @RequestMapping(value = "/taskDuration")
 public class TaskDurationController {
 
-
 	@Autowired
 	private ITaskDuration service;
 
@@ -63,9 +62,6 @@ public class TaskDurationController {
 
 		}
 	}
-
-	
-
 	
 	@DeleteMapping("/delete/{id}")
 	public void deleteTask(@PathVariable Integer id) {
@@ -77,7 +73,6 @@ public class TaskDurationController {
 		} catch (NoSuchElementException e) {
 
 		}
-	}
-	
+	}	
 	
 }
