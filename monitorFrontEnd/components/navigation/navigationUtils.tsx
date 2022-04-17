@@ -9,9 +9,9 @@ import Sprint from '../sprint/Sprint';
 import {Props} from "../../utils";
 import ProfileInformation from "../profile/profileInformation";
 import {MainTaskStack} from "../task/Task";
-import {UserTabNavigator} from "../user/User";
-import {PriorityTabStatusNavigator} from "../priority/Priority";
-import {CategoryTabStatusNavigator} from "../category/Category";
+import {MainUserStack, UserTabNavigator} from "../user/User";
+import {MainPriorityStack, PriorityTabStatusNavigator} from "../priority/Priority";
+import {CategoryTabStatusNavigator, MainCategoryStack} from "../category/Category";
 import {ClientTaskStack} from "../task/ClientTask";
 
 const Stack = createStackNavigator();
@@ -125,7 +125,7 @@ export const CategoryStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="Category">
 			<Stack.Screen
 				name="Category"
-				component={CategoryTabStatusNavigator}
+				component={MainCategoryStack}
 				options={{
 					title: 'Task Category Management', //Set Header Title
 					headerLeft: () => (
@@ -152,7 +152,7 @@ export const PriorityStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="Priority">
 			<Stack.Screen
 				name="Priority"
-				component={PriorityTabStatusNavigator}
+				component={MainPriorityStack}
 				options={{
 					title: 'Priority Management', //Set Header Title
 					headerLeft: () => (
@@ -284,7 +284,7 @@ export const UserStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="UserManagement">
 			<Stack.Screen
 				name="UserManagement"
-				component={UserTabNavigator}
+				component={MainUserStack}
 				options={{
 					title: 'User Management', //Set Header Title
 					headerLeft: () => (

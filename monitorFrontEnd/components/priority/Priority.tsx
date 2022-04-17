@@ -5,7 +5,36 @@ import PriorityList from "./PriorityList";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AddPriority from "./addPriority";
+import {updateCategoryComponent} from "../category/updateCategory";
+import {Category} from "../category/Category";
+import {createStackNavigator} from "@react-navigation/stack";
+import {updatePriorityComponent} from "./updatePriority";
+const Stack = createStackNavigator();
 
+
+export const MainPriorityStack = (props: any) => {
+	return (
+		<Stack.Navigator initialRouteName="Priority"
+
+		>
+			<Stack.Screen name="Priority" component={Priority}
+						  {...props}
+						  options={{
+							  headerShown: false,
+						  }}
+			/>
+			<Stack.Screen name="updatePriority" component={updatePriorityComponent}
+						  {...props}
+						  options={{
+							  title: 'Update Priority',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+		</Stack.Navigator>
+	);
+}
 
 const priorityTabStatus = createMaterialTopTabNavigator();
 

@@ -51,6 +51,17 @@ public class Task implements Serializable {
 	
 	private Member client;
 	
+	private Boolean isClientTaskValidated;
+		
+	@Column(columnDefinition="Boolean default false")
+	public Boolean getIsClientTaskValidated() {
+		return isClientTaskValidated;
+	}
+
+	public void setIsClientTaskValidated(Boolean isClientTaskValidated) {
+		this.isClientTaskValidated = isClientTaskValidated;
+	}
+
 	public Boolean getIsCreatedByClient() {
 		return isCreatedByClient;
 	}

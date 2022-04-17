@@ -5,6 +5,9 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {ViewClientTaskComponent} from "./ViewClientTaskTask";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import UserManagement from "../user/UserManagement";
+import {ClientTaskListComponent} from "./ClientTaskList";
+import {useState} from "react";
 
 const taskTabStatus = createMaterialTopTabNavigator();
 
@@ -35,7 +38,7 @@ export const ClientTaskStack = (props: any) => {
 	);
 }
 
-export const ClientTaskTabStatusNavigator = (props:any) => {
+export const ClientTaskTabStatusNavigator = (props: any) => {
 	return (
 		<taskTabStatus.Navigator
 			initialRouteName="ClientTask"
@@ -77,11 +80,12 @@ const getTabBarVisibility = (route: any) => {
 
 export const ClientTaskComponent = (props: any) => {
 	const isFocused = useIsFocused();
-
 	return (
 		<SafeAreaView>
+
 			<View>
-				<Text>Client Tasks</Text>
+				{isFocused ? <ClientTaskListComponent   {...props}
+				/> : <Text>''</Text>}
 			</View>
 		</SafeAreaView>
 	);

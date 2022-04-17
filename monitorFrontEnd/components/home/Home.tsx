@@ -76,9 +76,6 @@ const Home = (props: any) => {
 	}
 	const logout = () => {
 		keycloak?.logout().then(response => {
-			_storeData('token', '');
-			_storeData('userInfo', '');
-			_storeData('refreshToken', '');
 		}).catch(err => {
 			console.error('Logout Error: ', err)
 		})
@@ -86,7 +83,7 @@ const Home = (props: any) => {
 
 	const getSprintAndTaskConditionalRendering = (): any => {
 		let returnedValue: any = (<></>);
-			if (userInfo && (userInfo.roles.includes('EMPLOYEE') ||  userInfo.roles.includes('CLIENT') ||  userInfo.roles.includes('MANAGER'))) {
+		if (userInfo && (userInfo.roles.includes('EMPLOYEE') || userInfo.roles.includes('CLIENT') || userInfo.roles.includes('MANAGER'))) {
 			returnedValue = (<>
 				<View style={styles.box}>
 					<Pressable
@@ -125,30 +122,60 @@ const Home = (props: any) => {
 	}
 
 
-	const getAddUserConditionalRendering=():any => {
-		let returnedValue:any=(<></>);
+	const getAddUserConditionalRendering = (): any => {
+		let returnedValue: any = (<></>);
 		if (userInfo && userInfo.roles.includes("ADMINISTRATOR")) {
-			returnedValue = (<View style={styles.box}>
-				<Pressable
-					onPress={() => {
-						gotTo('User');
-					}}
-					style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.btn]}
-				>
-					<View style={styles.iconWrapper}>
-						<IconFeather name="user-plus" size={25} color={'#fff'}/>
+			returnedValue = (
+				<>
+					<View style={styles.box}>
+						<Pressable
+							onPress={() => {
+								gotTo('Category');
+							}}
+							style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.btn]}
+						>
+							<View style={styles.iconWrapper}>
+								<Icon name="animation" size={25} color={'#fff'}/>
+							</View>
+							<Text style={styles.boxText}>Category Screen</Text>
+						</Pressable>
 					</View>
-					<Text style={styles.boxText}>Users Screen</Text>
-				</Pressable>
-			</View>);
+					<View style={styles.box}>
+						<Pressable
+							onPress={() => {
+								gotTo('Priority');
+							}}
+							style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.btn]}
+						>
+							<View style={styles.iconWrapper}>
+								<Icon name="animation" size={25} color={'#fff'}/>
+							</View>
+							<Text style={styles.boxText}>Priorities Screen</Text>
+						</Pressable>
+					</View>
+					<View style={styles.box}>
+						<Pressable
+							onPress={() => {
+								gotTo('User');
+							}}
+							style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.btn]}
+						>
+							<View style={styles.iconWrapper}>
+								<IconFeather name="user-plus" size={25} color={'#fff'}/>
+							</View>
+							<Text style={styles.boxText}>Users Screen</Text>
+						</Pressable>
+					</View>
+				</>
+			);
 		}
 		return returnedValue;
 	}
 
-	const getConditionalProjectRendering = ():any=>{
-		let returnedValue:any=(<></>);
-		if(userInfo && !userInfo.roles.includes('EMPLOYEE')){
-			returnedValue =(<View style={styles.box}>
+	const getConditionalProjectRendering = (): any => {
+		let returnedValue: any = (<></>);
+		if (userInfo && !userInfo.roles.includes('EMPLOYEE')) {
+			returnedValue = (<View style={styles.box}>
 				<Pressable
 					onPress={() => {
 						gotTo('Project');
@@ -169,7 +196,7 @@ const Home = (props: any) => {
 	}
 
 
-	const getConditionalDisplay = ():any=>{
+	const getConditionalDisplay = (): any => {
 		return (<ScrollView style={styles.scrollView}>
 			<View style={styles.boxWrapper}>
 				<View style={styles.box}>
@@ -206,7 +233,22 @@ const Home = (props: any) => {
 					</Pressable>
 				</View>
 			</View>
+			{/*
+					<View style={styles.boxWrapper}>
+				<View style={styles.logoutBox}>
+					<Pressable
+						onPress={() => {
+							logout();
+						}}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.logoutBtn]}
 
+					>
+						<Text style={styles.logoutText}>Logout</Text>
+
+					</Pressable>
+				</View>
+			</View>
+ */}
 		</ScrollView>)
 
 	}
@@ -249,14 +291,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: "space-between",
 		marginTop: 15,
-		flexWrap:'wrap',
-		width:'100%'
+		flexWrap: 'wrap',
+		width: '100%'
 	},
 	box: {
 		width: '50%',
 		padding: 15,
-		display:'flex',
-		flexDirection:'column',
+		display: 'flex',
+		flexDirection: 'column',
 
 	},
 	logoutBox: {
@@ -268,7 +310,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		padding: 15,
 		justifyContent: 'center',
-		height:'auto',
+		height: 'auto',
 	},
 	boxText: {
 		color: '#fff',
@@ -284,7 +326,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	logoutText: {
-		paddingLeft: 15,
+		color: '#fff',
 		fontSize: 18
 	},
 	iconWrapper: {

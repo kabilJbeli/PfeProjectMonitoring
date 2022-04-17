@@ -3,10 +3,29 @@ import {ActivityIndicator, Dimensions, FlatList, Pressable, StyleSheet, Text, Vi
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
+import { ModalButton } from "../modal/Button";
+import {Modal} from "../modal/modal";
+import {useNavigation} from "@react-navigation/native";
 
 const PriorityList = (props: any) => {
+	const navigation = useNavigation();
+
 	const [priorities, setPriorities] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [message,setMessage]= useState<string>('');
+	const [isModalVisible,setModalVisible]  = useState(false);
+	const [titleMessage,setTitleMessage]= useState<string>('');
+	const [isRemoveModalVisible, setModalRemoveVisible] = useState(false);
+	const [priorityId, setPriorityId] = useState<any>('');
+
+
+	const handleRemoveModal = (isVisible: boolean) => {
+		setModalRemoveVisible(isVisible);
+	}
+
+	const handleModal = (isVisible:boolean) =>{
+		setModalVisible(isVisible);
+	}
 	const getPriorities = () => {
 		setLoading(true);
 		// Update the document title using the browser API
@@ -46,14 +65,22 @@ const PriorityList = (props: any) => {
 		})
 			.then((response: any) => {
 				getPriorities();
+				handleModal(true);
+				setMessage("Priority removed with success");
+				setTitleMessage("Success")
 			})
 			.catch((err: any) => {
+				handleModal(true);
+				setTitleMessage("Warning")
+
+				setMessage("Can't remove this priority as it's attached to other tasks");
 				console.error(err)
 			});
 	};
 
 	const updateItem = (priorityID: Number) => {
-		// navigation.navigate('Home', {id: projectID});
+		// @ts-ignore
+		navigation.navigate('updatePriority', {id: priorityID});
 	};
 
 	const FlatListItemSeparator = () => {
@@ -68,6 +95,13 @@ const PriorityList = (props: any) => {
 		);
 	};
 
+	const RemoveProjectHandler = () => {
+		handleRemoveModal(false);
+
+		setTimeout(() => {
+			removeItem(priorityId);
+		}, 500);
+	}
 	const getLatestPriorities = () => {
 		if (loading) {
 			return (
@@ -78,6 +112,35 @@ const PriorityList = (props: any) => {
 		} else {
 			return (
 				<View>
+					<Modal isVisible={isModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={titleMessage} />
+							<Modal.Body>
+								<Text style={styles.textModal}>{message}</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<ModalButton title="I understand" onPress={()=>handleModal(false)} />
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
+
+
+					<Modal isVisible={isRemoveModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={"Warning"}/>
+							<Modal.Body>
+								<Text style={styles.textModal}>Are you sure you want to remove this priority?</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Cancel"  onPress={() => handleRemoveModal(false)}/>
+								</View>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Yes" color="#1f9683" onPress={() => RemoveProjectHandler()}/>
+								</View>
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
 					<FlatList
 						style={{height: Dimensions.get('screen').height - 300}}
 
@@ -91,10 +154,12 @@ const PriorityList = (props: any) => {
 									Priority Title : {item.priorityTitle}
 								</Text>
 								<View style={styles.buttonWrapper}>
+
 									<Pressable
 										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
 										onPress={() => {
-											removeItem(item.priorityID);
+											setPriorityId(item.priorityID);
+											handleRemoveModal(true);
 										}}>
 										<Text
 											style={{
@@ -108,7 +173,7 @@ const PriorityList = (props: any) => {
 									<Pressable
 										style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
 										onPress={() => {
-											//updateItem(item.priorityID);
+											updateItem(item.priorityID);
 										}}>
 										<Text
 											style={{
@@ -246,5 +311,9 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 10,
 		textAlign: 'center'
+	},
+	textModal:{
+		textAlign:"center",
+		fontSize:18
 	}
 });

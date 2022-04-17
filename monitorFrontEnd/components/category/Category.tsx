@@ -5,8 +5,38 @@ import CategoryList from "./CategoryList";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AddCategory from "./AddCategory";
+import {createStackNavigator} from "@react-navigation/stack";
+import ViewTask from "../task/viewTask";
+import {TaskTabStatusNavigator} from "../task/Task";
+import {updateCategoryComponent} from "./updateCategory";
 
 const categoryTabStatus = createMaterialTopTabNavigator();
+
+const Stack = createStackNavigator();
+
+export const MainCategoryStack = (props: any) => {
+	return (
+		<Stack.Navigator initialRouteName="Category"
+
+		>
+			<Stack.Screen name="Category" component={Category}
+						  {...props}
+						  options={{
+							  headerShown: false,
+						  }}
+			/>
+			<Stack.Screen name="updateCategory" component={updateCategoryComponent}
+						  {...props}
+						  options={{
+							  title: 'Update Category',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+		</Stack.Navigator>
+	);
+}
 
 export const CategoryTabStatusNavigator = () => {
 	return (

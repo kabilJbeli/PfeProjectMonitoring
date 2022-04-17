@@ -1,16 +1,32 @@
 import * as React from 'react';
 import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
+import {useIsFocused, useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
 import {Props} from "../../utils";
 import {Dimensions} from 'react-native';
+import {Modal} from "../modal/modal";
+import {ModalButton} from "../modal/Button";
 
 
-const UserManagement = ({navigation}: Props, props: any) => {
+const UserManagement = ( props: any) => {
+	const navigation = useNavigation();
+
 	const [users, setUsers] = useState<any[]>([]);
+	const [message,setMessage]= useState<string>('');
+	const [isModalVisible,setModalVisible]  = useState(false);
+	const [titleMessage,setTitleMessage]= useState<string>('');
+	const [isRemoveModalVisible, setModalRemoveVisible] = useState(false);
+	const [userId, setUserId] = useState<any>('');
 
+
+	const handleRemoveModal = (isVisible: boolean) => {
+		setModalRemoveVisible(isVisible);
+	}
+	const handleModal = (isVisible:boolean) =>{
+		setModalVisible(isVisible);
+	}
 	const [loading, setLoading] = useState(true);
 	const isFocused = useIsFocused();
 
@@ -62,14 +78,30 @@ const UserManagement = ({navigation}: Props, props: any) => {
 			.then((response: any) => {
 				setLoading(true);
 				getUsers();
+				handleModal(true);
+				setTitleMessage("Success");
+				setMessage("User removed with success");
 			})
 			.catch((err: any) => {
+				handleModal(true);
+				setTitleMessage("Warning");
+				setMessage("Can't remove this user as it's attached to other entities");
+				console.error(err);
 			});
 	};
 
-	const updateItem = (projectID: Number) => {
-		//	navigation.navigate("AddUser", {id: projectID});
+	const updateItem = (userID: Number) => {
+		// @ts-ignore
+		navigation.navigate("updateUser", {id: userID});
 	};
+
+	const RemoveProjectHandler = () => {
+		handleRemoveModal(false);
+
+		setTimeout(() => {
+			removeItem(userId);
+		}, 500);
+	}
 
 	const getLatestUserInfo = () => {
 		if (!isFocused || users.length === 0) {
@@ -81,6 +113,35 @@ const UserManagement = ({navigation}: Props, props: any) => {
 		} else {
 			return (
 				<View>
+					<Modal isVisible={isModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={titleMessage} />
+							<Modal.Body>
+								<Text style={styles.textModal}>{message}</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<ModalButton title="I understand" onPress={()=>handleModal(false)} />
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
+
+					<Modal isVisible={isRemoveModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={"Warning"}/>
+							<Modal.Body>
+								<Text style={styles.textModal}>Are you sure you want to remove this user?</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Cancel"  onPress={() => handleRemoveModal(false)}/>
+								</View>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Yes" color="#1f9683" onPress={() => RemoveProjectHandler()}/>
+								</View>
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
+
 					<FlatList
 						style={{height: Dimensions.get('screen').height - 300}}
 						keyExtractor={(item, index) => index.toString()}
@@ -119,7 +180,8 @@ const UserManagement = ({navigation}: Props, props: any) => {
 									<Pressable
 										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.delete]}
 										onPress={() => {
-											removeItem(item.email);
+											setUserId(item.email);
+											handleRemoveModal(true);
 										}}>
 										<Text
 											style={{
@@ -134,7 +196,7 @@ const UserManagement = ({navigation}: Props, props: any) => {
 										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
 
 										onPress={() => {
-											//updateItem(item.userID);
+											updateItem(item.userID);
 										}}>
 										<Text
 											style={{
@@ -275,5 +337,9 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 10,
 		textAlign: 'center'
+	},
+	textModal:{
+		textAlign:"center",
+		fontSize:18
 	}
 });
