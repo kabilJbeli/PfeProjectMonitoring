@@ -16,6 +16,6 @@ keycloak.init({
 	checkLoginIframe: true,
 	checkLoginIframeInterval: 1,
 	enableLogging:true
-})
+});
 
 export default keycloak;

@@ -29,6 +29,7 @@ const AddTask = (props: any) => {
 			taskDescription: null,
 			taskEstimation: null,
 			isCreatedByClient: false,
+			isClientTaskValidated:false,
 			client: null
 		}
 	};
@@ -169,20 +170,22 @@ const AddTask = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				if (userInfo.roles.includes('CLIENT')) {
+				if (response.data.role ==='CLIENT') {
 					setTask((prevState: any) => {
 						let task = Object.assign({}, prevState.task);
 						task.client = response.data;
 						task.isCreatedByClient=true;
+						task.isClientTaskValidated=false;
 						return {task};
 					});
 				}
-
-				setTask((prevState: any) => {
-					let task = Object.assign({}, prevState.task);
-					task.reporter = response.data;
-					return {task};
-				});
+				if (response.data.role ==='MANAGER') {
+					setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.reporter = response.data;
+						return {task};
+					});
+				}
 			})
 			.catch((err: any) => {
 			});
@@ -243,9 +246,9 @@ const AddTask = (props: any) => {
 				task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === '';
 		} else if (userInfo && userInfo.roles && userInfo.roles.includes('CLIENT')) {
 			return task.task.project === null || task.task.priority === null ||
-				task.task.taskDescription === null || task.task.taskTitle === null || task.task.taskEstimation === null ||
+				task.task.taskDescription === null || task.task.taskTitle === null ||
 				task.task.project === '' || task.task.priority === '' ||
-				task.task.taskDescription === '' || task.task.taskTitle === '' || task.task.taskEstimation === '';
+				task.task.taskDescription === '' || task.task.taskTitle === ''
 		}
 	}
 
@@ -291,6 +294,30 @@ const AddTask = (props: any) => {
 			</View>);
 
 		}
+		return returnedDropDown;
+	}
+	const getEstimatedtTime = ():any=>{
+		let returnedDropDown: any = (<View></View>);
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			returnedDropDown = (<View style={{width: '100%'}}>
+			<Text>Estimated Time in hours</Text>
+			<Input
+				leftIcon={<Ionicons name="time" size={20} color={'#000'}/>}
+				inputContainerStyle={styles.InputContainerStyle}
+				leftIconContainerStyle={styles.LeftIconContainerStyle}
+				errorStyle={styles.ErrorStyle}
+				onChangeText={(text: string) =>
+					setTask((prevState: any) => {
+						let task = Object.assign({}, prevState.task);
+						task.taskEstimation = text;
+						return {task};
+					})
+				}
+				value={task.task?.taskEstimation}
+				keyboardType="numeric"
+				autoCompleteType={false}
+			/>
+		</View>);}
 		return returnedDropDown;
 	}
 	return (
@@ -391,26 +418,8 @@ const AddTask = (props: any) => {
 
 					{getSprintDropdown()}
 
+					{getEstimatedtTime()}
 
-					<View style={{width: '100%'}}>
-						<Text>Estimated Time in hours</Text>
-						<Input
-							leftIcon={<Ionicons name="time" size={20} color={'#000'}/>}
-							inputContainerStyle={styles.InputContainerStyle}
-							leftIconContainerStyle={styles.LeftIconContainerStyle}
-							errorStyle={styles.ErrorStyle}
-							onChangeText={(text: string) =>
-								setTask((prevState: any) => {
-									let task = Object.assign({}, prevState.task);
-									task.taskEstimation = text;
-									return {task};
-								})
-							}
-							value={task.task?.taskEstimation}
-							keyboardType="numeric"
-							autoCompleteType={false}
-						/>
-					</View>
 					<View style={{width: '100%'}}>
 						<TouchableOpacity
 							style={[styles.buttonCreate, {opacity: getButtonStatus() ? 0.5 : 1}]}

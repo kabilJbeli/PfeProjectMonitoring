@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
 import Environment from "../../Environment";
 import {showToastWithGravity} from "../../utils";
+import {useNavigation} from "@react-navigation/native";
 
 const AddPriority = () => {
 	const defaultState = {
@@ -14,6 +15,7 @@ const AddPriority = () => {
 		}
 	};
 	const [state,setPriority] = useState(defaultState);
+	const navigation = useNavigation();
 
 	const addPriority = ()=>{
 		axios
@@ -21,6 +23,8 @@ const AddPriority = () => {
 			.then((res: any) => {
 				showToastWithGravity('Priority Successfully Added');
 				setPriority(defaultState);
+				// @ts-ignore
+				navigation.navigate('Priority');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
 			console.error(error);

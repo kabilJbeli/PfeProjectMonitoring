@@ -18,6 +18,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Input} from 'react-native-elements';
 import {_retrieveData, _storeData} from "../../utils";
 import * as _ from 'lodash';
+import {Modal} from "../modal/modal";
+import {ModalButton} from "../modal/Button";
 
 const ProjectsList = (props: any) => {
 	const navigation = useNavigation();
@@ -26,7 +28,20 @@ const ProjectsList = (props: any) => {
 	const [searchedProjectName, setSearchedProjectName] = useState<string>('');
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [message, setMessage] = useState<string>('');
+	const [isModalVisible, setModalVisible] = useState(false);
+	const [isRemoveModalVisible, setModalRemoveVisible] = useState(false);
 
+	const [titleMessage, setTitleMessage] = useState<string>('');
+	const [projectId, setProjectId] = useState<any>('');
+
+	const handleRemoveModal = (isVisible: boolean) => {
+		setModalRemoveVisible(isVisible);
+	}
+
+	const handleModal = (isVisible: boolean) => {
+		setModalVisible(isVisible);
+	}
 
 	useEffect(() => {
 		if (loading) {
@@ -36,9 +51,9 @@ const ProjectsList = (props: any) => {
 					setUserInfo(parsedInfo);
 					if (parsedInfo?.roles.includes('ADMINISTRATOR')) {
 						getAllProjects(parsedInfo);
-					} else if(parsedInfo?.roles.includes('MANAGER') || parsedInfo?.roles.includes('EMPLOYEE')) {
+					} else if (parsedInfo?.roles.includes('MANAGER') || parsedInfo?.roles.includes('EMPLOYEE')) {
 						getUserSpecificProjects(parsedInfo);
-					} else if (parsedInfo?.roles.includes('CLIENT')){
+					} else if (parsedInfo?.roles.includes('CLIENT')) {
 						getClientProjects(parsedInfo);
 					}
 				}
@@ -129,21 +144,28 @@ const ProjectsList = (props: any) => {
 		})
 			.then((response: any) => {
 				setLoading(true);
+				handleModal(true);
+				setTitleMessage("Success");
+				setMessage("Project removed with success");
 				if (userInfo?.roles.includes('ADMINISTRATOR')) {
 					getAllProjects(userInfo);
-				} else if(userInfo?.roles.includes('MANAGER') || userInfo?.roles.includes('EMPLOYEE')) {
+				} else if (userInfo?.roles.includes('MANAGER') || userInfo?.roles.includes('EMPLOYEE')) {
 					getUserSpecificProjects(userInfo);
-				} else if (userInfo?.roles.includes('CLIENT')){
+				} else if (userInfo?.roles.includes('CLIENT')) {
 					getClientProjects(userInfo);
-
 				}
 			})
 			.catch((err: any) => {
+				setTitleMessage("Warning");
+				handleModal(true);
+
+				setMessage("Can't remove this project as it's attached to other entities");
+				console.error(err);
 			});
 	};
 
 	const updateItem = (projectID: Number) => {
-		_storeData('updatedProjectId', projectID.toString()).then((res)=>{
+		_storeData('updatedProjectId', projectID.toString()).then((res) => {
 			// @ts-ignore
 			setTimeout(() => navigation.navigate('updateProject'), 100);
 		});
@@ -157,7 +179,7 @@ const ProjectsList = (props: any) => {
 	};
 
 
-	const filterProjects = (text:any) =>{
+	const filterProjects = (text: any) => {
 		setSearchedProjectName(text);
 		if (text.trim() !== '') {
 			setProjects(
@@ -205,7 +227,7 @@ const ProjectsList = (props: any) => {
 			case 'Created': {
 				projectStatus = 'Created';
 
-				returnedValue = (<View style={[styles.created,styles.status]}>
+				returnedValue = (<View style={[styles.created, styles.status]}>
 					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
 				</View>)
 				break;
@@ -213,7 +235,7 @@ const ProjectsList = (props: any) => {
 			case 'InProgress': {
 				projectStatus = 'In Progress';
 
-				returnedValue = (<View style={[styles.inprogress,styles.status]}>
+				returnedValue = (<View style={[styles.inprogress, styles.status]}>
 					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
 				</View>)
 				break;
@@ -221,7 +243,7 @@ const ProjectsList = (props: any) => {
 			case 'Released': {
 				projectStatus = 'Released';
 
-				returnedValue = (<View style={[styles.released,styles.status]}>
+				returnedValue = (<View style={[styles.released, styles.status]}>
 					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
 				</View>)
 				break;
@@ -229,7 +251,7 @@ const ProjectsList = (props: any) => {
 			case 'Finished': {
 				projectStatus = 'Finished';
 
-				returnedValue = (<View style={[styles.finished,styles.status]}>
+				returnedValue = (<View style={[styles.finished, styles.status]}>
 					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
 				</View>)
 				break;
@@ -237,7 +259,7 @@ const ProjectsList = (props: any) => {
 			default: {
 				projectStatus = 'Created';
 
-				returnedValue = (<View style={[styles.created,styles.status]}>
+				returnedValue = (<View style={[styles.created, styles.status]}>
 					<Text style={{color: '#fff', textAlign: 'center'}}>{projectStatus}</Text>
 				</View>)
 				break;
@@ -255,9 +277,10 @@ const ProjectsList = (props: any) => {
 			returnedActionElements = (
 				<View style={{width: '100%', flexDirection: 'row'}}>
 					<Pressable
-						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.button, styles.delete]}
 						onPress={() => {
-							removeItem(item.projectID);
+							setProjectId(item.projectID);
+							handleRemoveModal(true);
 						}}>
 						<Text
 							style={{
@@ -269,7 +292,7 @@ const ProjectsList = (props: any) => {
 						</Text>
 					</Pressable>
 					<Pressable
-						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.button, styles.borderButton, styles.update]}
 						onPress={() => {
 							updateItem(item.projectID);
 						}}>
@@ -289,7 +312,7 @@ const ProjectsList = (props: any) => {
 			returnedActionElements = (
 				<View style={{width: '100%', flexDirection: 'row'}}>
 					<Pressable
-						style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.view,{width:'100%'}]}
+						style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.button, styles.borderButton, styles.view, {width: '100%'}]}
 						onPress={() => {
 							viewProject(item.projectID);
 						}}>
@@ -307,6 +330,15 @@ const ProjectsList = (props: any) => {
 		}
 		return returnedActionElements;
 	}
+
+	const RemoveProjectHandler = () => {
+		handleRemoveModal(false);
+
+		setTimeout(() => {
+			removeItem(projectId);
+
+		}, 500);
+	}
 	const getLatestProjectInfo = () => {
 		if (loading) {
 			return (
@@ -317,8 +349,36 @@ const ProjectsList = (props: any) => {
 		} else {
 			return (
 				<View>
+					<Modal isVisible={isModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={titleMessage}/>
+							<Modal.Body>
+								<Text style={styles.textModal}>{message}</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<ModalButton title="I understand" onPress={() => handleModal(false)}/>
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
+
+					<Modal isVisible={isRemoveModalVisible}>
+						<Modal.Container>
+							<Modal.Header title={"Warning"}/>
+							<Modal.Body>
+								<Text style={styles.textModal}>Are you sure you want to remove this project?</Text>
+							</Modal.Body>
+							<Modal.Footer>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Cancel"  onPress={() => handleRemoveModal(false)}/>
+								</View>
+								<View style={{width: '50%',alignItems:"center"}}>
+									<ModalButton title="Yes" color="#1f9683" onPress={() => RemoveProjectHandler()}/>
+								</View>
+							</Modal.Footer>
+						</Modal.Container>
+					</Modal>
 					<FlatList
-						style={{height:Dimensions.get('screen').height-300}}
+						style={{height: Dimensions.get('screen').height - 300}}
 						keyExtractor={(item, index) => index.toString()}
 						data={projects}
 						ItemSeparatorComponent={FlatListItemSeparator}
@@ -372,7 +432,7 @@ const styles = StyleSheet.create({
 	},
 	loadingContainer: {
 		display: 'flex',
-		height: Dimensions.get('screen').height-300,
+		height: Dimensions.get('screen').height - 300,
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',
@@ -479,18 +539,22 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 10,
 		textAlign: 'center',
-		minWidth:100
+		minWidth: 100
 	},
-	created:{
+	created: {
 		backgroundColor: '#6e6e6e',
 	},
-	inprogress:{
+	inprogress: {
 		backgroundColor: '#f59c10',
 	},
-	released:{
+	released: {
 		backgroundColor: '#9aae0c',
 	},
-	finished:{
+	finished: {
 		backgroundColor: '#23ab96',
+	},
+	textModal: {
+		textAlign: "center",
+		fontSize: 18
 	}
 });

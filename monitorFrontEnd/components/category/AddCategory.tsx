@@ -6,6 +6,7 @@ import {useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
 import {showToastWithGravity} from "../../utils";
+import {useNavigation} from "@react-navigation/native";
 
 const AddCategory = () => {
 	const defaultState = {
@@ -14,6 +15,7 @@ const AddCategory = () => {
 		},
 	};
 	const [state, setState] = useState(defaultState);
+	const navigation = useNavigation();
 
 
 	const getButtonStatus = (): boolean => {
@@ -27,6 +29,9 @@ const AddCategory = () => {
 			.then((res: any) => {
 				showToastWithGravity('Task Category Successfully Added');
 				setState(defaultState);
+
+				// @ts-ignore
+				navigation.navigate('Category');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
 			console.error(error);

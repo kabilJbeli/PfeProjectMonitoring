@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -65,7 +66,7 @@ public class TaskComment {
 		this.creationDate = creationDate;
 	}
 	
-	@OneToOne
+	@ManyToOne
 	@JsonBackReference
 	public Task getTask() {
 		return task;

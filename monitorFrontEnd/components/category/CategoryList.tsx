@@ -1,14 +1,29 @@
 import * as React from 'react';
 import {ActivityIndicator, Dimensions, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
+import {useIsFocused, useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
+import {Modal} from "../modal/modal";
+import {ModalButton} from "../modal/Button";
 
 const CategoryList = () => {
+    const navigation = useNavigation();
+
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [message,setMessage]= useState<string>('');
+    const [isModalVisible,setModalVisible]  = useState(false);
+    const [titleMessage,setTitleMessage]= useState<string>('');
+    const [isRemoveModalVisible, setModalRemoveVisible] = useState(false);
+    const [categoryId, setCategoryId] = useState<any>('');
 
+    const handleModal = (isVisible:boolean) =>{
+        setModalVisible(isVisible);
+    }
+    const handleRemoveModal = (isVisible: boolean) => {
+        setModalRemoveVisible(isVisible);
+    }
     const getCategories = () => {
         useEffect(() => {
             // Update the document title using the browser API
@@ -48,12 +63,21 @@ const CategoryList = () => {
             .then((response: any) => {
                 setLoading(true);
                 getCategories();
+                handleModal(true);
+                setTitleMessage("Success");
+                setMessage("Category removed with success");
             })
             .catch((err: any) => {
+                handleModal(true);
+                setTitleMessage("Warning");
+                setMessage("Can't remove this category as it's attached to other tasks");
+                console.error(err);
             });
     };
-    const updateItem = (projectID: Number) => {
-        // navigation.navigate('Home', {id: projectID});
+
+    const updateItem = (categoryID: Number) => {
+        // @ts-ignore
+        navigation.navigate('updateCategory', {id: categoryID});
     };
     getCategories();
 
@@ -70,6 +94,13 @@ const CategoryList = () => {
     };
     const isFocused = useIsFocused();
 
+    const RemoveProjectHandler = () => {
+        handleRemoveModal(false);
+
+        setTimeout(() => {
+            removeItem(categoryId);
+        }, 500);
+    }
 
     const getLatestCategories = () => {
         if (loading) {
@@ -81,6 +112,34 @@ const CategoryList = () => {
         } else {
             return (
                 <View>
+                    <Modal isVisible={isModalVisible}>
+                    <Modal.Container>
+                        <Modal.Header title={titleMessage} />
+                        <Modal.Body>
+                            <Text style={styles.textModal}>{message}</Text>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <ModalButton title="I understand" onPress={()=>handleModal(false)} />
+                        </Modal.Footer>
+                    </Modal.Container>
+                </Modal>
+
+                    <Modal isVisible={isRemoveModalVisible}>
+                        <Modal.Container>
+                            <Modal.Header title={"Warning"}/>
+                            <Modal.Body>
+                                <Text style={styles.textModal}>Are you sure you want to remove this category?</Text>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <View style={{width: '50%',alignItems:"center"}}>
+                                    <ModalButton title="Cancel"  onPress={() => handleRemoveModal(false)}/>
+                                </View>
+                                <View style={{width: '50%',alignItems:"center"}}>
+                                    <ModalButton title="Yes" color="#1f9683" onPress={() => RemoveProjectHandler()}/>
+                                </View>
+                            </Modal.Footer>
+                        </Modal.Container>
+                    </Modal>
                     <FlatList
                         style={{height:Dimensions.get('screen').height-300}}
 
@@ -97,7 +156,8 @@ const CategoryList = () => {
                                     <Pressable
                                         style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.delete]}
                                         onPress={() => {
-                                            removeItem(item.categoryID);
+                                            setCategoryId(item.categoryID);
+                                            handleRemoveModal(true);
                                         }}>
                                         <Text
                                             style={{
@@ -111,7 +171,7 @@ const CategoryList = () => {
                                     <Pressable
                                         style={({pressed}) => [{opacity: pressed ? 1 : 0.85},styles.button, styles.borderButton, styles.update]}
                                         onPress={() => {
-                                            //updateItem(item.projectID);
+                                           updateItem(item.categoryID);
                                         }}>
                                         <Text
                                             style={{
@@ -251,5 +311,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 10,
         textAlign: 'center'
+    },
+    textModal:{
+        textAlign:"center",
+        fontSize:18
     }
 });

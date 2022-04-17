@@ -20,4 +20,11 @@ public interface ITask {
 	public List<Task> getTaskCreatedByClient(String email);
 
 	public List<Task> getClientTask(String email);
+
+	public List<Task> getAllPendingTasksCreatedByClient(String email);
+
+	public List<Task> getSpecificClientPendingTasks(String managerEmail, String clientEmail);
+
+	public List<Task> getRiskyTask();
+
 }

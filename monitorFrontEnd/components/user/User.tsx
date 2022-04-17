@@ -6,8 +6,37 @@ import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs
 import {Props} from "../../utils";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import User from "./AddUser";
+import {createStackNavigator} from "@react-navigation/stack";
+import {updateCategoryComponent} from "../category/updateCategory";
+import {Category} from "../category/Category";
+import {updateUserComponent} from "./updateUser";
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
+
+export const MainUserStack = (props: any) => {
+	return (
+		<Stack.Navigator initialRouteName="UserManagement"
+
+		>
+			<Stack.Screen name="UserManagement" component={UserComponent}
+						  {...props}
+						  options={{
+							  headerShown: false,
+						  }}
+			/>
+			<Stack.Screen name="updateUser" component={updateUserComponent}
+						  {...props}
+						  options={{
+							  title: 'Update User',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+		</Stack.Navigator>
+	);
+}
 
 export const UserTabNavigator = ({navigation}: Props) => {
 	return (

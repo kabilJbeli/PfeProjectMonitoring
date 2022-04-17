@@ -38,25 +38,22 @@ public class TaskController {
 	public List<Task> getTaskByReporter(@RequestParam String email) {
 		return service.getTaskByReporter(email);
 	}
-	
+
 	@GetMapping("/getTaskByMember")
 	public List<Task> getTaskByMember(@RequestParam String email) {
 		return service.getTaskByMember(email);
 	}
-	
 
-	
 	@GetMapping("/getTaskCreatedByClient")
 	public List<Task> getTaskCreatedByClient(@RequestParam String email) {
 		return service.getTaskCreatedByClient(email);
 	}
-	
+
 	@GetMapping("/getClientTask")
 	public List<Task> getClientTask(@RequestParam String email) {
 		return service.getClientTask(email);
 	}
 
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
 		try {
@@ -82,9 +79,8 @@ public class TaskController {
 		}
 	}
 
-	
 	@PutMapping("/changeTaskStatus")
-	public ResponseEntity<Task> updateTask(@RequestParam Integer id,@RequestParam TaskStatus status) {
+	public ResponseEntity<Task> updateTask(@RequestParam Integer id, @RequestParam TaskStatus status) {
 		try {
 			Task task = service.findTask(id);
 			task.setTaskStatus(status);
@@ -96,7 +92,6 @@ public class TaskController {
 		}
 	}
 
-	
 	@DeleteMapping("/delete/{id}")
 	public void deleteTask(@PathVariable Integer id) {
 		try {
@@ -108,5 +103,25 @@ public class TaskController {
 
 		}
 	}
+
+	@GetMapping("/getSpecificClientPendingTasks")
+	public List<Task> getSpecificClientPendingTasks(@RequestParam String managerEmail,
+			@RequestParam String clientEmail) {
+		return service.getSpecificClientPendingTasks(managerEmail, clientEmail);
+		
+	}
+
+	@GetMapping("/getAllPendingTasksCreatedByClient")
+	public List<Task> getAllPendingTasksCreatedByClient(@RequestParam String email) {
+
+		return service.getAllPendingTasksCreatedByClient(email);
+		
+	}
 	
+	@GetMapping("/getriskeyTask")
+	public List<Task> getriskeyTask() {
+
+		return service.getRiskyTask();
+		
+	}
 }
