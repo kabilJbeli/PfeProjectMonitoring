@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Project;
+import com.pfe.projectMonitoringBE.interfaces.IEmail;
 import com.pfe.projectMonitoringBE.interfaces.IMember;
 import com.pfe.projectMonitoringBE.interfaces.IProject;
 
@@ -34,6 +35,10 @@ public class ProjectController {
 
 	@Autowired
 	private IMember memberService;
+	
+
+	@Autowired
+	private IEmail emailService;
 
 	@GetMapping("/all")
 	public List<Project> getAll() {
@@ -79,6 +84,11 @@ public class ProjectController {
 	@PostMapping("/add")
 	public void addProject(@RequestBody Project project) {
 		service.createOrUpdateProject(project);
+		
+		emailService.sendSimpleMessage(project.getProjectManager().getEmail(), "New Project", "You have been assigned as a project manager in a new project: "+project.getProjectTitle());
+	
+		emailService.sendSimpleMessage(project.getClient().getEmail(), "New Projectl", "You have been assigned as a client in a new project: "+project.getProjectTitle());
+
 	}
 
 	@PutMapping("/update/{id}")
@@ -109,13 +119,18 @@ public class ProjectController {
 	@PostMapping("/assignMembersToProject")
 	public Project assignProjectMembers(@RequestBody Set<Member> members,@RequestParam Integer projectId) {
 		
-		Project searchedProject = null;
+		Project searchedProject = service.findProject(projectId);
 		try {
-			 searchedProject = service.findProject(projectId);			
 			if (searchedProject.getProjectID() != null) {
 				
 				searchedProject.setMembers(members);
 				service.createOrUpdateProject(searchedProject);
+				members.forEach(member  -> {
+					
+					emailService.sendSimpleMessage(member.getEmail(), "New Project", "You have been assigned as an employee in a new project: "+searchedProject.getProjectTitle());
+	
+				});
+
 			}
 		} catch (NoSuchElementException e) {
 
@@ -125,12 +140,12 @@ public class ProjectController {
 	
 	@GetMapping("/changeProjectStatus")
 	public Project changeProjectStatus(@RequestParam Integer projectId,@RequestParam ProjectStatus projectStatus) {
-		Project searchedProject = null;
+		Project searchedProject = service.findProject(projectId);
 		try {
-			 searchedProject = service.findProject(projectId);			
 			if (searchedProject.getProjectID() != null) {
 				searchedProject.setProjectStatus(projectStatus);
 				service.createOrUpdateProject(searchedProject);
+				emailService.sendSimpleMessage(searchedProject.getProjectManager().getEmail(), "Project Status Changed", "You have changed the "+searchedProject.getProjectTitle()+" project status to: "+projectStatus);
 			}
 		} catch (NoSuchElementException e) {
 

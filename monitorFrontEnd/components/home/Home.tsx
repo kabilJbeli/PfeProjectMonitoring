@@ -33,7 +33,6 @@ const Home = (props: any) => {
 
 
 	const getMemberInformation = (email: string) => {
-		const localMemberData: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/member/getMemberByEmail?email=${email}`,

@@ -436,7 +436,7 @@ const ViewProjectInformation = (props: any) => {
 
 					<View style={{marginTop: 15}}>
 						<Text>
-							<Text style={{fontWeight: 'bold'}}>Number of sprints:</Text> {projectInfo.sprint.length}
+							<Text style={{fontWeight: 'bold'}}>Number of sprints:</Text> {projectInfo.sprint?.length || 0}
 						</Text>
 						<Text>
 							<Text style={{fontWeight: 'bold'}}>Current sprint:</Text>

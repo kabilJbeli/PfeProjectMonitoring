@@ -1,4 +1,4 @@
 export default {
-  API_URL: 'https://dull-panther-17.loca.lt',
-  KEYCLOAK_URL:'http://6c54-196-186-143-131.ngrok.io'
+  API_URL: 'http://10.0.2.2:8083',
+  KEYCLOAK_URL:'http://10.0.2.2:8080'
 };

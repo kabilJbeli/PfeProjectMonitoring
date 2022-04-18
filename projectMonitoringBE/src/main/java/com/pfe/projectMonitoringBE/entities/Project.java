@@ -163,6 +163,7 @@ public class Project implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "project")
+	@JsonBackReference
 	public Set<Sprint> getSprint() {
 		return sprint;
 	}

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
+import com.pfe.projectMonitoringBE.interfaces.IEmail;
 import com.pfe.projectMonitoringBE.interfaces.ITask;
 
 @RestController
@@ -28,6 +29,9 @@ public class TaskController {
 
 	@Autowired
 	private ITask service;
+
+	@Autowired
+	private IEmail emailService;
 
 	@GetMapping("/all")
 	public List<Task> getAll() {
@@ -67,12 +71,29 @@ public class TaskController {
 	@PostMapping("/add")
 	public void addTask(@RequestBody Task task) {
 		service.createOrUpdateTask(task);
+		if (task.getIsCreatedByClient()) {
+			emailService.sendSimpleMessage(task.getProject().getProjectManager().getEmail(), "Client Task",
+					task.getProject().getProjectTitle()
+							+ " Client has created a new task that requires your validation, Task Summary: "
+							+ task.getTaskTitle());
+		} else {
+			if (task.getAssignee() != null && task.getAssignee().getName() != null) {
+				emailService.sendSimpleMessage(task.getAssignee().getEmail(), "New Task",
+						"You have been assigned  a new task for the " + task.getProject().getProjectTitle()
+								+ " project, Task Summary: " + task.getTaskTitle());
+			}
+		}
 	}
 
 	@PutMapping("/update")
 	public void updateTask(@RequestBody Task task) {
 		try {
 			service.createOrUpdateTask(task);
+			if (task.getAssignee() != null && task.getAssignee().getName() != null) {
+				emailService.sendSimpleMessage(task.getAssignee().getEmail(), "New Task",
+						"You have been assigned  a new task for the " + task.getProject().getProjectTitle()
+								+ " project, Task Summary: " + task.getTaskTitle());
+			}
 
 		} catch (NoSuchElementException e) {
 
@@ -85,6 +106,16 @@ public class TaskController {
 			Task task = service.findTask(id);
 			task.setTaskStatus(status);
 			service.createOrUpdateTask(task);
+
+			if (task.getAssignee() != null && task.getAssignee().getName() != null) {
+				emailService.sendSimpleMessage(task.getReporter().getEmail(), "Task Status Changed",
+						task.getAssignee().getEmail() + " has changed the task '" + task.getTaskTitle()
+								+ "' status to  " + task.getTaskStatus());
+
+				emailService.sendSimpleMessage(task.getAssignee().getEmail(), "Task Status Changed",
+						"You  have changed the task '" + task.getTaskTitle() + "' status to  " + task.getTaskStatus());
+			}
+			
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 
 		} catch (NoSuchElementException e) {
@@ -108,20 +139,20 @@ public class TaskController {
 	public List<Task> getSpecificClientPendingTasks(@RequestParam String managerEmail,
 			@RequestParam String clientEmail) {
 		return service.getSpecificClientPendingTasks(managerEmail, clientEmail);
-		
+
 	}
 
 	@GetMapping("/getAllPendingTasksCreatedByClient")
 	public List<Task> getAllPendingTasksCreatedByClient(@RequestParam String email) {
 
 		return service.getAllPendingTasksCreatedByClient(email);
-		
+
 	}
-	
+
 	@GetMapping("/getriskeyTask")
 	public List<Task> getriskeyTask() {
 
 		return service.getRiskyTask();
-		
+
 	}
 }

@@ -5,7 +5,7 @@ import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Image, TouchableOpacity, View} from 'react-native';
 import Dashboard from '../dashboard/Dashboard';
-import Sprint from '../sprint/Sprint';
+import Sprint, {MainSprintStack} from '../sprint/Sprint';
 import {Props} from "../../utils";
 import ProfileInformation from "../profile/profileInformation";
 import {MainTaskStack} from "../task/Task";
@@ -203,7 +203,7 @@ export const SprintStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="Sprint">
 			<Stack.Screen
 				name="Sprint"
-				component={Sprint}
+				component={MainSprintStack}
 				options={{
 					title: 'Sprint Management', //Set Header Title
 					headerLeft: () => (

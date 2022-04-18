@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.interfaces.ISprint;
+import com.pfe.projectMonitoringBE.models.SprintModel;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -26,6 +28,13 @@ public class SprintController {
 
 	@Autowired
 	private ISprint service;
+	
+	
+	
+	@GetMapping("/getSprintByStatus")
+	public SprintModel getSprintByStatus(@RequestParam String email) {
+		return service.getSprintByStatus(email);
+	}
 
 	@GetMapping("/all")
 	public List<Sprint> getAll() {

@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -25,7 +27,7 @@ public class SprintStatus implements Serializable {
 	private Integer sprintStatusID;
 	
 	@Column(name = "SPRINTTYPETITLE")
-	private Integer sprintStatusTitle;
+	private String sprintStatusTitle;
 
 	
 	
@@ -33,6 +35,7 @@ public class SprintStatus implements Serializable {
 	
 	
 	@OneToMany(mappedBy = "status")
+	@JsonIgnore
 	public Set<Sprint> getSprint() {
 		return sprint;
 	}
@@ -51,11 +54,11 @@ public class SprintStatus implements Serializable {
 		this.sprintStatusID = sprintStatusID;
 	}
 
-	public Integer getSprintStatusTitle() {
+	public String getSprintStatusTitle() {
 		return sprintStatusTitle;
 	}
 
-	public void setSprintStatusTitle(Integer sprintStatusTitle) {
+	public void setSprintStatusTitle(String sprintStatusTitle) {
 		this.sprintStatusTitle = sprintStatusTitle;
 	}
 	
