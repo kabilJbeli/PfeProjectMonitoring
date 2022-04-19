@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dimensions, FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import {_retrieveData, _storeData} from "../../utils";
@@ -50,175 +50,187 @@ const SprintList = (props: any) => {
 			}
 
 		});
-
 	}, [props])
 
-	return (<View style={{padding:15}}>
-		<Pressable style={{	backgroundColor: '#45b1b1',padding:15,marginBottom:15}} onPress={() => {
-			// @ts-ignore
-			navigation.navigate('addSprint')
-		}}>
-			<Text style={{	color: '#fff',textAlign:'center'}}>Create New Sprint</Text>
+	return (<View style={{padding: 15}}>
+		<Pressable
+			style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, {
+				backgroundColor: '#45b1b1',
+				padding: 15,
+				marginBottom: 15
+			}]}
+			onPress={() => {
+				// @ts-ignore
+				navigation.navigate('addSprint')
+			}}>
+			<Text style={{color: '#fff', textAlign: 'center'}}>Create New Sprint</Text>
 		</Pressable>
-		<View>
-		<Text>Current Sprints:</Text>
-			<FlatList
-				style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height*0.7}}
-				keyExtractor={(item, index) => index.toString()}
-				data={sprints?.currentSprints || []}
-				ItemSeparatorComponent={FlatListItemSeparator}
-				initialNumToRender={sprints?.currentSprints?.length || 0}
-				renderItem={({item}) => (
-					<View style={styles.project}>
-						<View style={[
-							{
-								flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
-								paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
-							}
-						]}>
-							<Text style={styles.text}>
-								{item.sprintTitle}
-							</Text>
-							<View
-								style={[styles.status, {
-									backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
-										'#00a3cc' : item.taskStatus === 'Validating' ?
-											'#c83c1c' : item.taskStatus === 'Testing' ?
-												'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
-													'#45b1b1' : item.taskStatus === 'Released' ?
-														'#23ab96' : '#23ab96'
+		<ScrollView style={{height: Dimensions.get('screen').height - 250}}>
+			<View>
+				<Text>Current Sprints:</Text>
+				<FlatList
+					style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.65}}
+					keyExtractor={(item, index) => index.toString()}
+					data={sprints?.currentSprints || []}
+					ItemSeparatorComponent={FlatListItemSeparator}
+					initialNumToRender={sprints?.currentSprints?.length || 0}
+					renderItem={({item}) => (
+						<View style={styles.project}>
+							<View style={[
+								{
+									flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
+									paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+								}
+							]}>
+								<Text style={styles.text}>
+									{item.sprintTitle}
+								</Text>
+								<View
+									style={[styles.status, {
+										backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
+											'#00a3cc' : item.taskStatus === 'Validating' ?
+												'#c83c1c' : item.taskStatus === 'Testing' ?
+													'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
+														'#45b1b1' : item.taskStatus === 'Released' ?
+															'#23ab96' : '#23ab96'
 
-								}]}>
+									}]}>
+									<Text style={{
+										color: '#fff',
+										textAlign: 'center'
+									}}>{item.sprintTypes}</Text>
+								</View>
+							</View>
+							<View style={{paddingLeft: 15, paddingRight: 15, marginBottom: 5,
+								flexDirection: 'row',
+								justifyContent: 'space-between'}}>
 								<Text style={{
-									color: '#fff',
-									textAlign: 'center'
-								}}>{item.sprintTypes}</Text>
+									fontWeight: 'bold'
+								}}>Status: {item.status}</Text>
+
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Project: {item.project.projectTitle}</Text>
+							</View>
+							<View style={{
+								paddingLeft: 15,
+								paddingRight: 15,
+								marginBottom: 15,
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Sprint Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Sprint End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
+							</View>
+							<View style={styles.buttonWrapper}>
+								<Pressable
+									style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, styles.button, styles.borderButton, styles.view]}
+									onPress={() => {
+										_storeData('sprintInfo', JSON.stringify(item));
+										// @ts-ignore
+										navigation.navigate('viewSprint');
+									}}>
+									<Text
+										style={{
+											textAlign: 'center',
+											color: '#fff',
+											fontWeight: '500',
+										}}>
+										View Sprint Information
+									</Text>
+								</Pressable>
 							</View>
 						</View>
-						<View style={{paddingLeft: 15, paddingRight: 15, marginBottom: 5}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Status: {item.status?.sprintStatusTitle}</Text>
-						</View>
-						<View style={{
-							paddingLeft: 15,
-							paddingRight: 15,
-							marginBottom: 15,
-							flexDirection: 'row',
-							justifyContent: 'space-between'
-						}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Sprint Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Sprint End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
-						</View>
-						<View style={styles.buttonWrapper}>
-							<Pressable
-								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
-								onPress={() => {
-									_storeData('sprintInfo', JSON.stringify(item));
-									// @ts-ignore
-									navigation.navigate('viewSprint');
-								}}>
-								<Text
-									style={{
-										textAlign: 'center',
+					)}
+				/>
+			</View>
+
+			<View>
+				<Text>Previous Sprints:</Text>
+				<FlatList
+					style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.65}}
+					keyExtractor={(item, index) => index.toString()}
+					data={sprints?.previousSprints || []}
+					ItemSeparatorComponent={FlatListItemSeparator}
+					initialNumToRender={sprints?.previousSprints?.length || 0}
+					renderItem={({item}) => (
+						<View style={styles.project}>
+							<View style={[
+								{
+									flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
+									paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+								}
+							]}>
+								<Text style={styles.text}>
+									{item.sprintTitle}
+								</Text>
+								<View
+									style={[styles.status, {
+										backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
+											'#00a3cc' : item.taskStatus === 'Validating' ?
+												'#c83c1c' : item.taskStatus === 'Testing' ?
+													'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
+														'#45b1b1' : item.taskStatus === 'Released' ?
+															'#23ab96' : '#23ab96'
+
+									}]}>
+									<Text style={{
 										color: '#fff',
-										fontWeight: '500',
-									}}>
-									View Sprint Information
-								</Text>
-							</Pressable>
-						</View>
-					</View>
-				)}
-			/>
-		</View>
-
-		<View>
-			<Text>Previous Sprints:</Text>
-			<FlatList
-				style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height*0.7}}
-				keyExtractor={(item, index) => index.toString()}
-				data={sprints?.previousSprints || []}
-				ItemSeparatorComponent={FlatListItemSeparator}
-				initialNumToRender={sprints?.previousSprints?.length || 0}
-				renderItem={({item}) => (
-					<View style={styles.project}>
-						<View style={[
-							{
-								flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
-								paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
-							}
-						]}>
-							<Text style={styles.text}>
-								{item.sprintTitle}
-							</Text>
-							<View
-								style={[styles.status, {
-									backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
-										'#00a3cc' : item.taskStatus === 'Validating' ?
-											'#c83c1c' : item.taskStatus === 'Testing' ?
-												'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
-													'#45b1b1' : item.taskStatus === 'Released' ?
-														'#23ab96' : '#23ab96'
-
-								}]}>
+										textAlign: 'center'
+									}}>                                {item.sprintTypes}
+									</Text>
+								</View>
+							</View>
+							<View style={{paddingLeft: 15, paddingRight: 15, marginBottom: 5}}>
 								<Text style={{
-									color: '#fff',
-									textAlign: 'center'
-								}}>								{item.sprintTypes}
-								</Text>
+									fontWeight: 'bold'
+								}}>Summary: {item.status?.sprintStatusTitle}</Text>
+							</View>
+							<View style={{
+								paddingLeft: 15,
+								paddingRight: 15,
+								marginBottom: 15,
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
+							</View>
+							<View style={styles.buttonWrapper}>
+								<Pressable
+									style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, styles.button, styles.borderButton, styles.view]}
+									onPress={() => {
+										_storeData('sprintInfo', JSON.stringify(item));
+										// @ts-ignore
+										navigation.navigate('viewSprint');
+									}}>
+									<Text
+										style={{
+											textAlign: 'center',
+											color: '#fff',
+											fontWeight: '500',
+										}}>
+										View Sprint Information
+									</Text>
+								</Pressable>
 							</View>
 						</View>
-						<View style={{paddingLeft: 15, paddingRight: 15, marginBottom: 5}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Summary: {item.status?.sprintStatusTitle}</Text>
-						</View>
-						<View style={{
-							paddingLeft: 15,
-							paddingRight: 15,
-							marginBottom: 15,
-							flexDirection: 'row',
-							justifyContent: 'space-between'
-						}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
-						</View>
-						<View style={styles.buttonWrapper}>
-							<Pressable
-								style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
-								onPress={() => {
-									_storeData('sprintInfo', JSON.stringify(item));
-									// @ts-ignore
-									navigation.navigate('viewSprint');
-								}}>
-								<Text
-									style={{
-										textAlign: 'center',
-										color: '#fff',
-										fontWeight: '500',
-									}}>
-									View Sprint Information
-								</Text>
-							</Pressable>
-						</View>
-					</View>
-				)}
-			/>
+					)}
+				/>
 
-		</View>
+			</View>
+		</ScrollView>
 	</View>);
 };
 export default SprintList;
-
 
 
 const styles = StyleSheet.create({

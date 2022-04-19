@@ -1,15 +1,10 @@
 import * as React from 'react';
-import {Pressable, SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, Text, View} from 'react-native';
 import {createStackNavigator} from "@react-navigation/stack";
 import ViewTask from "../task/viewTask";
-import {TaskTabStatusNavigator} from "../task/Task";
 import CreateSprint from "./addSprint";
-import {useIsFocused, useNavigation} from "@react-navigation/native";
-import ProjectsList from "../project/ProjectLists";
+import {useIsFocused} from "@react-navigation/native";
 import SprintList from "./SprintList";
-import axios from "axios";
-import Environment from "../../Environment";
-import {useState} from "react";
 import ViewSprint from "./viewSprint";
 
 const Stack = createStackNavigator();
@@ -38,6 +33,14 @@ export const MainSprintStack = (props: any) => {
 						  {...props}
 						  options={{
 							  title: 'Sprint Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+			/>
+			<Stack.Screen name="viewTask" component={ViewTask}
+						  {...props}
+						  options={{
+							  title: 'Task Information',
 							  presentation: 'card',
 							  headerShown: false
 						  }}

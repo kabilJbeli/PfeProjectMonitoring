@@ -312,6 +312,7 @@ const ViewTask = (props: any) => {
 	}
 
 	const updateTask = (task: any) => {
+		console.log(task)
 		axios({
 			method: 'PUT',
 			url: `${Environment.API_URL}/api/task/update`,
@@ -484,7 +485,7 @@ const ViewTask = (props: any) => {
 					<Input
 						style={{minHeight: 30, height: 52, fontSize: 18, lineHeight: 1}}
 
-						autoCompleteType={false}
+						autoCompleteType={true}
 						keyboardType="numeric"
 						onChangeText={(value: any) => setLoggedIntTime((prevState: any) => {
 							let loggedInTime = Object.assign({}, prevState.loggedInTime);

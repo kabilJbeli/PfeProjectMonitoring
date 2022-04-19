@@ -75,7 +75,7 @@ const ViewProjectInformation = (props: any) => {
 
 			_retrieveData('updatedProjectId').then((projectID: string) => {
 				getProjectInfo(projectID);
-				showToastWithGravity('Project ID Retrieved Successfully');
+				showToastWithGravity('Project Information Retrieved Successfully');
 			}).catch(err => {
 				showToastWithGravity('ERR Project ID ' + err);
 			});
@@ -142,7 +142,7 @@ const ViewProjectInformation = (props: any) => {
 
 				setSelectedEmployees(selectedMembers);
 				setAssignedEmployees(members);
-				showToastWithGravity('Project Information Retrieved Successfully');
+				showToastWithGravity('Project Status Changed Successfully');
 			})
 			.catch((err: any) => {
 				showToastWithGravity(err);

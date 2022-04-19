@@ -1,5 +1,15 @@
 import * as React from 'react';
-import {Button, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+	Button,
+	Dimensions,
+	Pressable,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
@@ -12,6 +22,7 @@ import {_retrieveData, showToastWithGravity} from "../../utils";
 import Moment from "moment";
 import DatePicker from "react-native-date-picker";
 import {Input} from "react-native-elements";
+import SectionedMultiSelect from "react-native-sectioned-multi-select";
 
 const CreateSprint = (props: any) => {
 	const navigation = useNavigation();
@@ -21,17 +32,22 @@ const CreateSprint = (props: any) => {
 			task: [],
 			sprintTypes: '',
 			sprintTitle: '',
-			sprintStartDate: null,
-			sprintEndDate: null,
+			sprintStartDate: new Date(),
+			sprintEndDate: new Date(),
 			status: 'Created'
 		}
 	};
+
+	const [tasks,setTasks] = useState<any[]>([]);
+	const [selectedTasks, setSelectedTasks] = useState<any>([]);
+
+	const [assignedTasks,setAssignedTasks]= useState<any>([]);
+
 	const getButtonStatus = (): boolean => {
 		return (
 			sprint.sprint.sprintTitle === '' ||
 			sprint.sprint.sprintTypes === '' ||
 			sprint.sprint.project === null ||
-			sprint.sprint.task.length === 0 ||
 			sprint.sprint.sprintStartDate === null ||
 			sprint.sprint.sprintEndDate === null
 		);
@@ -88,6 +104,121 @@ const CreateSprint = (props: any) => {
 		});
 	}
 
+	const getTasks = (projectID:number) => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any[]>(`${Environment.API_URL}/api/task/getUnassignedSprintTasks?projectID=${projectID}`, {})
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+
+	}
+
+
+	const onConfirm = () => {
+		if(assignedTasks[0] && assignedTasks[0].children){
+			setSprint((prevState: any) => {
+				let sprint = Object.assign({}, prevState.sprint);
+				sprint.task = assignedTasks[0].children;
+				return {sprint};
+			});
+		}
+	}
+
+	const onSelectionsChange = (selectedArray: any) => {
+		const retrievedTasks: any[] = [{
+			name: 'Tasks',
+			taskID: 0,
+			children: []
+		}];
+		for (let taskID of selectedArray) {
+			let task = tasks[0].children.find((item: any) => item.taskID === taskID);
+			retrievedTasks[0].children.push(task);
+		}
+		setAssignedTasks(retrievedTasks);
+		setSelectedTasks(selectedArray);
+
+	}
+
+	const getMultipleSelect = () => {
+		return (<View style={{marginTop: 15}}>
+			<SectionedMultiSelect
+				disabled={tasks.length ===0}
+				items={tasks}
+				IconRenderer={Icon}
+				uniqueKey="taskID"
+				subKey="children"
+				selectText="Choose Sprint Tasks..."
+				searchPlaceholderText="Search for a task"
+				onSelectedItemsChange={onSelectionsChange}
+				selectedItems={selectedTasks}
+				displayKey="name"
+				chipsPosition="bottom"
+				selectChildren={true}
+				onConfirm={onConfirm}
+				expandDropDowns={true}
+				showDropDowns={false}
+				styles={{
+					chipsWrapper:{
+						borderStyle:'dashed',
+						padding:10,
+						borderColor:'#b4b4ba',
+						borderWidth:2,
+						backgroundColor:'#fff'
+					},
+					selectToggle:{
+						backgroundColor:'#fff',
+						padding:15,
+						marginBottom:15,
+						opacity: tasks.length ===0 ? 0.5 : 1,
+					},
+					chipText: {
+						maxWidth: Dimensions.get('screen').width - 90,
+						fontSize: 16
+					},
+					chipContainer: {
+						backgroundColor: '#00a3cc'
+					},
+					itemText: {
+						color: 'black'
+					},
+					selectedItemText: {
+						color: 'blue',
+					},
+					subItemText: {
+						color: 'black'
+					},
+					item: {
+						paddingHorizontal: 10
+					},
+					subItem: {
+						paddingHorizontal: 10
+					},
+					selectedItem: {
+						backgroundColor: 'rgba(0,0,0,0.1)'
+					},
+					selectedSubItem: {
+						backgroundColor: 'rgba(0,0,0,0.1)'
+					},
+					selectedSubItemText: {
+						color: 'blue',
+					},
+					scrollView: {paddingHorizontal: 0}
+				}}
+				colors={{
+					primary: '#00a3cc',
+					success: '#00a3cc',
+					chipColor: '#fff',
+				}}
+				hideChipRemove={true}
+			/>
+
+		</View>);
+	}
+
 	useEffect(() => {
 		_retrieveData('userInfo').then((info: any) => {
 			let parsedInfo = JSON.parse(info)
@@ -95,6 +226,9 @@ const CreateSprint = (props: any) => {
 				getUserSpecificProjects(parsedInfo);
 			}
 		});
+
+
+
 	}, [props]);
 	return (
 		<SafeAreaView>
@@ -127,6 +261,25 @@ const CreateSprint = (props: any) => {
 							onChangeText={(value: any) => setSprint((prevState: any) => {
 								let sprint = Object.assign({}, prevState.sprint);
 								sprint.project = value;
+
+								getTasks(value.projectID).then((data: any) => {
+									const tasks: any[] = [{
+										name: 'Tasks',
+										taskID: 0,
+										children: []
+									}];
+
+									if (data) {
+										data.map((item: any) => {
+											item.name = item.project.projectTitle.trim().replace(' ','_') + '-' + item.taskID+' ('+item.taskTitle+')';
+											tasks[0].children.push(item);
+										});
+										setTasks(tasks);
+									}
+								}).catch(error => {
+									console.error(`HTTP error: ${error.name} => ${error.message}`);
+									throw "fail request at: GET /projectStatus";
+								});
 								return {sprint};
 							})}
 							value={sprint.sprint?.project || null}
@@ -161,7 +314,9 @@ const CreateSprint = (props: any) => {
 								setSprint((prevState: any) => {
 									let sprint = Object.assign({}, prevState.sprint);
 									sprint.sprintTitle = text;
+									console.log(sprint)
 									return {sprint};
+
 								})
 							}
 							value={sprint.sprint.sprintTitle}
@@ -194,17 +349,16 @@ const CreateSprint = (props: any) => {
 							onConfirm={(startDate: any) => {
 								setOpen(false);
 								setDate(startDate);
+								setSprint((prevState: any) => {
+									let sprint = Object.assign({}, prevState.sprint);
+									sprint.sprintStartDate = startDate;
+									return {sprint};
+								})
 							}}
 							onCancel={() => {
 								setOpen(false);
 							}}
-							onDateChange={(chosenDate: Date) =>
-								setSprint((prevState: any) => {
-									let sprint = Object.assign({}, prevState.sprint);
-									sprint.sprintStartDate = chosenDate;
-									return {sprint};
-								})
-							}
+
 
 						/>
 					</View>
@@ -233,18 +387,26 @@ const CreateSprint = (props: any) => {
 							onConfirm={(endDate: any) => {
 								setOpenEndDate(false);
 								setExpectedEndDate(endDate);
+								setSprint((prevState: any) => {
+									let sprint = Object.assign({}, prevState.sprint);
+									sprint.sprintEndDate = endDate;
+									console.log(sprint)
+									return {sprint};
+								})
 							}}
 							onCancel={() => {
 								setOpenEndDate(false);
 							}}
-							onDateChange={(chosenEndDate: Date) =>
-								setSprint((prevState: any) => {
-									let sprint = Object.assign({}, prevState.sprint);
-									sprint.sprintEndDate = chosenEndDate;
-									return {sprint};
-								})
-							}
+
 						/>
+					</View>
+					<View style={{marginBottom: 10}}>
+						<Text style={{marginBottom: 0, fontWeight: 'bold'}}>Assign Tasks To Sprint:</Text>
+
+						<View
+						>
+							{getMultipleSelect()}
+						</View>
 					</View>
 
 					<View style={styles.columnDisplay}>
@@ -267,7 +429,8 @@ const CreateSprint = (props: any) => {
 							style={styles.cancelWrapper}
 							onPress={() => {
 								setSprint(defaultState);
-
+								// @ts-ignore
+								navigation.navigate('sprint');
 							}}>
 							<Text
 								style={{
@@ -275,11 +438,13 @@ const CreateSprint = (props: any) => {
 									color: '#fff',
 									fontWeight: '500',
 								}}>
-								Reset
+								Cancel
 							</Text>
 						</TouchableOpacity>
 
 					</View>
+
+
 				</View>
 
 			</View>
