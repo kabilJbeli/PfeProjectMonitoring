@@ -6,6 +6,7 @@ import axios from "axios";
 import Environment from "../../Environment";
 import {Modal} from "../modal/modal";
 import {ModalButton} from "../modal/Button";
+import {_storeData} from "../../utils";
 
 const CategoryList = () => {
     const navigation = useNavigation();
@@ -76,6 +77,8 @@ const CategoryList = () => {
     };
 
     const updateItem = (categoryID: Number) => {
+        _storeData('categoryID', JSON.stringify(categoryID));
+
         // @ts-ignore
         navigation.navigate('updateCategory', {id: categoryID});
     };

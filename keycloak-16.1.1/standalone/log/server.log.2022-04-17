@@ -1,0 +1,1 @@
+2022-04-17 16:53:20,692 WARN  [org.keycloak.events] (default task-26) type=LOGIN_ERROR, realmId=projectMonitoring, clientId=null, userId=null, ipAddress=127.0.0.1, error=expired_code, restart_after_timeout=true, authSessionParentId=9936e225-abef-42be-b2ee-4bf6f65e622a, authSessionTabId=arqwPaoKNG4

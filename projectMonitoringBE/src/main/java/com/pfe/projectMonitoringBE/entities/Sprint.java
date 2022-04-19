@@ -9,10 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pfe.projectMonitoringBE.Enums.SprintTypes;
 
 @Entity
@@ -36,9 +39,6 @@ public class Sprint implements Serializable {
 	@Column(name = "SPRINTTITLE")
 	private String sprintTitle;
 	
-	@Column(name = "SPRINTPERIOD")
-	private String sprintPeriod;
-	
 	@Column(name = "SPRINTSTARTDATE")
 	private LocalDateTime sprintStartDate;
 	
@@ -57,14 +57,6 @@ public class Sprint implements Serializable {
 
 	public void setSprintTitle(String sprintTitle) {
 		this.sprintTitle = sprintTitle;
-	}
-
-	public String getSprintPeriod() {
-		return sprintPeriod;
-	}
-
-	public void setSprintPeriod(String sprintPeriod) {
-		this.sprintPeriod = sprintPeriod;
 	}
 
 	public LocalDateTime getSprintStartDate() {
@@ -109,7 +101,7 @@ public class Sprint implements Serializable {
 		this.task = task;
 	}
 
-	@OneToOne
+	@ManyToOne
 	public Project getProject() {
 		return project;
 	}

@@ -33,7 +33,6 @@ const Home = (props: any) => {
 
 
 	const getMemberInformation = (email: string) => {
-		const localMemberData: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/member/getMemberByEmail?email=${email}`,
@@ -121,7 +120,27 @@ const Home = (props: any) => {
 		return returnedValue;
 	}
 
+const getClientTaskScreen = ():any=>{
+	let returnedValue=(<></>);
+	if (userInfo &&  userInfo.roles.includes('MANAGER')) {
 
+		returnedValue = (<View style={styles.box}>
+			<Pressable
+				onPress={() => {
+					gotTo('ClientTask');
+				}}
+				style={({pressed}) => [{opacity: pressed ? 1 : 0.85}, styles.btn]}
+			>
+				<View style={styles.iconWrapper}>
+					<Icon name="ticket-outline" size={25} color={'#fff'}/>
+				</View>
+
+				<Text style={styles.boxText}>Client Tasks Screen</Text>
+			</Pressable>
+		</View>);
+	}
+	return returnedValue;
+}
 	const getAddUserConditionalRendering = (): any => {
 		let returnedValue: any = (<></>);
 		if (userInfo && userInfo.roles.includes("ADMINISTRATOR")) {
@@ -215,7 +234,7 @@ const Home = (props: any) => {
 				{getConditionalProjectRendering()}
 				{getAddUserConditionalRendering()}
 				{getSprintAndTaskConditionalRendering()}
-
+				{getClientTaskScreen()}
 				<View style={styles.box}>
 					<Pressable
 						onPress={() => {

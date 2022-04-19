@@ -6,6 +6,7 @@ import Environment from "../../Environment";
 import { ModalButton } from "../modal/Button";
 import {Modal} from "../modal/modal";
 import {useNavigation} from "@react-navigation/native";
+import {_storeData} from "../../utils";
 
 const PriorityList = (props: any) => {
 	const navigation = useNavigation();
@@ -79,6 +80,8 @@ const PriorityList = (props: any) => {
 	};
 
 	const updateItem = (priorityID: Number) => {
+		_storeData('priorityID', JSON.stringify(priorityID));
+
 		// @ts-ignore
 		navigation.navigate('updatePriority', {id: priorityID});
 	};

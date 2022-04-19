@@ -19,7 +19,7 @@ export const MainUserStack = (props: any) => {
 		<Stack.Navigator initialRouteName="UserManagement"
 
 		>
-			<Stack.Screen name="UserManagement" component={UserComponent}
+			<Stack.Screen name="UserManagement" component={UserTabNavigator}
 						  {...props}
 						  options={{
 							  headerShown: false,

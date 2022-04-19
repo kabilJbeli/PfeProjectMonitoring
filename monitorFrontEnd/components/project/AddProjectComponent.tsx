@@ -24,10 +24,10 @@ import {useNavigation} from "@react-navigation/native";
 
 
 const AddProjectComponent = (props: any) => {
-	const [date, setDate] = useState(new Date());
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [clients, setClients] = useState<any[]>([]);
 	const [projectManagers, setProjectManagers] = useState<any[]>([]);
+	const [date, setDate] = useState(new Date());
 
 	const [expectedEndDate, setExpectedEndDate] = useState(new Date());
 	const [open, setOpen] = useState(false);

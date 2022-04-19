@@ -57,6 +57,11 @@ export const ViewClientTaskComponent = (props: any) => {
 		})
 			.then(response => {
 				setMember(response.data);
+				setTask((prevState: any) => {
+					let task = Object.assign({}, prevState.task);
+					task.reporter = response.data;
+					return {task};
+				});
 			})
 			.catch((err: any) => {
 				console.error(err);
