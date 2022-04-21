@@ -2,6 +2,7 @@ package com.pfe.projectMonitoringBE.interfaces;
 
 import java.util.List;
 
+import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 
 public interface ITask {
@@ -27,4 +28,9 @@ public interface ITask {
 
 	public List<Task> getRiskyTask();
 
+	public List<Task> getUnassignedSprintTasks(Integer projectID);
+	
+	
+	
+	public List<Task> findByTaskStatus(TaskStatus taskStatus,Integer sprintID);
 }

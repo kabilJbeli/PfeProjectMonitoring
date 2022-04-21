@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
@@ -7,6 +7,7 @@ import Environment from "../../Environment";
 import {_retrieveData, showToastWithGravity} from "../../utils";
 import {Input} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import IconM from "react-native-vector-icons/MaterialIcons";
 
 export const updateCategoryComponent = (props: any) => {
 	const defaultState = {
@@ -78,6 +79,19 @@ const	getCategoryInfo = (categoryID:any)=>{
 					Update Category</Text>
 			</View>
 			<View style={styles.modalView}>
+				<View style={{paddingBottom: 15}}>
+					<View>
+						<Pressable
+							style={{width: 80, flexDirection: 'row'}}
+							onPress={() => {
+								navigation.goBack();
+							}}
+						><IconM name='arrow-back' size={20} color={'#000'}/>
+							<Text style={{paddingLeft: 10, fontWeight: 'bold'}}
+							>Go Back</Text>
+						</Pressable>
+					</View>
+				</View>
 				<View style={{width: '100%'}}>
 					<Text>Task Category Title</Text>
 					<Input
@@ -182,7 +196,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		padding: 15,
 		borderRadius: 0,
-		alignItems: 'center',
+		//alignItems: 'center',
 		shadowColor: '#fff',
 		borderColor: '#fff',
 		shadowOpacity: 0,

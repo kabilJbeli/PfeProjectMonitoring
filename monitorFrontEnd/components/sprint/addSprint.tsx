@@ -240,7 +240,8 @@ const CreateSprint = (props: any) => {
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Create Sprint</Text>
 			</View>
-			<View style={{padding: 15}}>
+
+			<ScrollView style={{padding: 15,height:Dimensions.get('screen').height-250}}>
 				<View>
 					<Pressable
 						style={{width: 80, flexDirection: 'row'}}
@@ -447,7 +448,7 @@ const CreateSprint = (props: any) => {
 
 				</View>
 
-			</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };

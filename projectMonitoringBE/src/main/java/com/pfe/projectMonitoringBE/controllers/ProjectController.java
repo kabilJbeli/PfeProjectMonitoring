@@ -34,8 +34,7 @@ public class ProjectController {
 	private IProject service;
 
 	@Autowired
-	private IMember memberService;
-	
+	private IMember memberService;	
 
 	@Autowired
 	private IEmail emailService;

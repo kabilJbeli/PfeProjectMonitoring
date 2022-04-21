@@ -143,8 +143,9 @@ public class Project implements Serializable {
 		this.projectStatus = projectStatus;
 	}
 
-	@JsonBackReference
+	
 	@OneToMany(mappedBy = "project")
+	@JsonIgnore
 	public Set<Task> getTasks() {
 		return tasks;
 	}

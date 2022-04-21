@@ -1,4 +1,4 @@
 export default {
-  API_URL: 'http://10.0.2.2:8083',
-  KEYCLOAK_URL:'http://10.0.2.2:8080'
+  API_URL: 'https://chatty-pig-96.loca.lt',
+  KEYCLOAK_URL:'http://7b7f-197-14-49-34.ngrok.io'
 };

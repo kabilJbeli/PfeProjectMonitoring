@@ -10,6 +10,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RoleScopeResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -37,7 +38,7 @@ import com.pfe.projectMonitoringBE.interfaces.IMember;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/keycloak")
 public class KeycloakController {
-	
+
 	@Autowired
 	private Environment env;
 
@@ -77,38 +78,39 @@ public class KeycloakController {
 		List<UserRepresentation> userRepresentations = keycloak.realm(env.getProperty("keycloak.realm")).users().list();
 
 		int status = result.getStatus();
-		
+
 		if (status == 201 || status == 200 || status == 204) {
 			UsersResource userResources = keycloak.realm(env.getProperty("keycloak.realm")).users();
-			
+
 			userResources.list().forEach(user -> {
-				if(user.getEmail() != null && user.getEmail().equalsIgnoreCase(userRepresentation.getEmail())== true) {
+				if (user.getEmail() != null
+						&& user.getEmail().equalsIgnoreCase(userRepresentation.getEmail()) == true) {
 					userRepresentation.setId(user.getId());
 				}
-				
-			} );
-			
+
+			});
+
 			UserResource userResource = keycloak.realm(env.getProperty("keycloak.realm")).users()
 					.get(userRepresentation.getId());
 
 			Member member = new Member();
 			try {
-			UserRepresentation user = userResource.toRepresentation();
-			member.setKeycloakId(user.getId());
-			assignRoles(user.getId(), Arrays.asList(role.name()));
-			userResource.sendVerifyEmail();
-			member.setEmail(email);
-			member.setName(firstname);
-			member.setLastName(lastname);
-			member.setRole(role);
-			member.setTelephone(telephone);
-			member.setAddress(address);
-			memberService.createOrUpdateMember(member);
-			}catch (NotFoundException e) {
+				UserRepresentation user = userResource.toRepresentation();
+				member.setKeycloakId(user.getId());
+				assignRoles(user.getId(), Arrays.asList(role.name()));
+				userResource.sendVerifyEmail();
+				member.setEmail(email);
+				member.setName(firstname);
+				member.setLastName(lastname);
+				member.setRole(role);
+				member.setTelephone(telephone);
+				member.setAddress(address);
+				memberService.createOrUpdateMember(member);
+			} catch (NotFoundException e) {
 				System.out.println(e);
-		    }
+			}
 		}
-		
+
 		return new ResponseEntity<>(HttpStatus.valueOf(result.getStatus()));
 	}
 
@@ -181,6 +183,51 @@ public class KeycloakController {
 			userResource.update(userRepresentation);
 
 			return ResponseEntity.ok().body(userRepresentation);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@GetMapping("/updateRole")
+	public ResponseEntity<UserRepresentation> updateRole(@RequestParam String username, @RequestParam Roles role) {
+		Keycloak keycloak = getKeycloakInstance();
+		Optional<UserRepresentation> user = keycloak.realm(env.getProperty("keycloak.realm")).users().search(username)
+				.stream().filter(u -> u.getUsername().equals(username)).findFirst();
+		if (user.isPresent()) {
+			UserRepresentation userRepresentation = user.get();
+			UserResource userResource = keycloak.realm(env.getProperty("keycloak.realm")).users()
+					.get(userRepresentation.getId());
+
+			/*assignRoles(userRepresentation.getId(), Arrays.asList(role.name()));*/
+
+			return ResponseEntity.ok().body(userRepresentation);
+
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@GetMapping("/updatePassword")
+	public ResponseEntity<UserRepresentation> updatePassword(@RequestParam String username,
+			@RequestParam String newPassword) {
+		Keycloak keycloak = getKeycloakInstance();
+		Optional<UserRepresentation> user = keycloak.realm(env.getProperty("keycloak.realm")).users().search(username)
+				.stream().filter(u -> u.getUsername().equals(username)).findFirst();
+		if (user.isPresent()) {
+			UserRepresentation userRepresentation = user.get();
+			UserResource userResource = keycloak.realm(env.getProperty("keycloak.realm")).users()
+					.get(userRepresentation.getId());
+
+			CredentialRepresentation credentials = new CredentialRepresentation();
+			credentials.setType(CredentialRepresentation.PASSWORD);
+			credentials.setValue(newPassword);
+			credentials.setTemporary(false);
+
+			userRepresentation.setCredentials(Arrays.asList(credentials));
+
+			userResource.update(userRepresentation);
+			return ResponseEntity.ok().body(userRepresentation);
+
 		} else {
 			return ResponseEntity.badRequest().build();
 		}

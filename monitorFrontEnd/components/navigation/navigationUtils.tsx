@@ -7,7 +7,7 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import Dashboard from '../dashboard/Dashboard';
 import Sprint, {MainSprintStack} from '../sprint/Sprint';
 import {Props} from "../../utils";
-import ProfileInformation from "../profile/profileInformation";
+import ProfileInformation, {MainProfileStack} from "../profile/profileInformation";
 import {MainTaskStack} from "../task/Task";
 import {MainUserStack, UserTabNavigator} from "../user/User";
 import {MainPriorityStack, PriorityTabStatusNavigator} from "../priority/Priority";
@@ -312,7 +312,7 @@ export const ProfileStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="ProfileInformation">
 			<Stack.Screen
 				name="ProfileInformation"
-				component={ProfileInformation}
+				component={MainProfileStack}
 				options={{
 					title: 'Profile Information', //Set Header Title
 					headerLeft: () => (

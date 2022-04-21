@@ -134,7 +134,6 @@ const getTabBarVisibility = (route: any) => {
 
 export const TaskComponent = (props: any) => {
 	const isFocused = useIsFocused();
-
 	return (
 		<SafeAreaView>
 			<View>
@@ -146,8 +145,7 @@ export const TaskComponent = (props: any) => {
 					<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 						Task List</Text>
 				</View>
-				{isFocused ? <TaskList   {...props}
-			/> : <Text>''</Text>}</View>
+				{isFocused ? <TaskList  {...props}/> : <Text>''</Text>}</View>
 		</SafeAreaView>
 	);
 };

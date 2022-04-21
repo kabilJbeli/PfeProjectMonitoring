@@ -204,6 +204,7 @@ public class Task implements Serializable {
 	}
 
 	@ManyToOne
+	@JsonBackReference
 	public Sprint getSprint() {
 		return sprint;
 	}

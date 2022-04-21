@@ -4,7 +4,7 @@ import {useIsFocused, useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
-import {Props} from "../../utils";
+import {_storeData, Props} from "../../utils";
 import {Dimensions} from 'react-native';
 import {Modal} from "../modal/modal";
 import {ModalButton} from "../modal/Button";
@@ -91,6 +91,8 @@ const UserManagement = ( props: any) => {
 	};
 
 	const updateItem = (userID: Number) => {
+
+
 		// @ts-ignore
 		navigation.navigate("updateUser", {id: userID});
 	};
@@ -196,6 +198,8 @@ const UserManagement = ( props: any) => {
 										style={({pressed}) => [{opacity: pressed ? 1 : 0.8},styles.button, styles.borderButton, styles.view]}
 
 										onPress={() => {
+											_storeData('memberInfo', JSON.stringify(item));
+											console.log(item)
 											updateItem(item.userID);
 										}}>
 										<Text
