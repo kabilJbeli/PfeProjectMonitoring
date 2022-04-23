@@ -130,7 +130,7 @@ const ProfileInformation = (props: any) => {
 
 				<View style={{paddingHorizontal: 15, padding: 10, flexDirection: 'row', justifyContent: 'flex-start'}}>
 					<Text style={{fontWeight: 'bold', paddingRight: 5}}>Current Role:</Text>
-					<Text>{member?.address || ''}</Text>
+					<Text>{member?.role || ''}</Text>
 				</View>
 
 				<View style={{paddingHorizontal: 15, padding: 10, flexDirection: 'row', justifyContent: 'flex-start'}}>

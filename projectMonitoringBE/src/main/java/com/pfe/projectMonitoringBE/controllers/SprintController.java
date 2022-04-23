@@ -49,13 +49,12 @@ public class SprintController {
 	public SprintModel getClientSprintByStatus(@RequestParam String email) {
 		return service.getClientSprintByStatus(email);
 	}
-	
+
 	@GetMapping("/getEmployeeSprintByStatus")
 	public SprintModel getEmployeeSprintByStatus(@RequestParam String email) {
 		return service.getEmployeeSprintByStatus(email);
 	}
-	
-	
+
 	@GetMapping("/all")
 	public List<Sprint> getAll() {
 		return service.getAllSprint();
@@ -73,11 +72,12 @@ public class SprintController {
 
 	@PostMapping("/add")
 	public void addSprint(@RequestBody Sprint sprint) {
-		
-		Period period = Period.between(sprint.getSprintStartDate().toLocalDate(), sprint.getSprintEndDate().toLocalDate());
-		
+
+		Period period = Period.between(sprint.getSprintStartDate().toLocalDate(),
+				sprint.getSprintEndDate().toLocalDate());
+
 		sprint.setPeriod(period.getDays());
-		
+
 		service.createOrUpdateSprint(sprint);
 
 		sprint.getTask().forEach(task -> {
@@ -120,39 +120,45 @@ public class SprintController {
 	public List<SprintStats> getCurrentSprintStats(@RequestParam Integer sprintID) {
 		List<Task> tasks = service.getTasksBySprintId(sprintID);
 		List<SprintStats> sprintStats = new ArrayList<SprintStats>();
-		
-		
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.ToDo,sprintID), TaskStatus.ToDo)
-					);
-			
-			
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.Done,sprintID), TaskStatus.Done)
-					);
-			
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.InProgress,sprintID), TaskStatus.InProgress)
-					);
-			
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.ReadyForRelease,sprintID), TaskStatus.ReadyForRelease)
-					);
-			
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.Released,sprintID), TaskStatus.Released)
-					);
-		
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.Testing,sprintID), TaskStatus.Testing)
-					);
-			
-			sprintStats.add(
-					service.calculation(serviceTask.findByTaskStatus(TaskStatus.Validating,sprintID), TaskStatus.Validating)
-					);
-		
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ToDo, sprintID), TaskStatus.ToDo));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Done, sprintID), TaskStatus.Done));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.InProgress, sprintID),
+				TaskStatus.InProgress));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ReadyForRelease, sprintID),
+				TaskStatus.ReadyForRelease));
+
+		sprintStats.add(
+				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Released, sprintID), TaskStatus.Released));
+
+		sprintStats.add(
+				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Testing, sprintID), TaskStatus.Testing));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Validating, sprintID),
+				TaskStatus.Validating));
+
 		return sprintStats;
 
+	}
+
+	@GetMapping("/getCurrentSprintByProject")
+	public List<Sprint> getProjectCurrentSprint(@RequestParam Integer projectID) {
+		return service.getProjectCurrentSprint(projectID);
+	}
+	
+	@GetMapping("/getProjectCurrentSprintByEndAndStartDates")
+	public ResponseEntity<Sprint> getProjectCurrentSprintByEndAndStartDates(@RequestParam Integer projectID) {
+		
+		try {
+			Sprint sprint = service.getProjectCurrentSprintByEndAndStartDates(projectID);
+			return new ResponseEntity<Sprint>(sprint, HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Sprint>(HttpStatus.NOT_FOUND);
+		}
+		
 	}
 
 }

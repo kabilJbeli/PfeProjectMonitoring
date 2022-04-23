@@ -1,5 +1,5 @@
 import {getFocusedRouteNameFromRoute, useIsFocused} from "@react-navigation/native";
-import {SafeAreaView, Text, View} from "react-native";
+import {ActivityIndicator, SafeAreaView, Text, View} from "react-native";
 import * as React from "react";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {createStackNavigator} from "@react-navigation/stack";
@@ -9,6 +9,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import {_retrieveData} from "../../utils";
 import AddTask from "./addTask";
 import TaskList from "./TaskList";
+import myPendingTasks from "./myPendingTasks";
 
 const taskTabStatus = createMaterialTopTabNavigator();
 
@@ -34,15 +35,24 @@ export const MainTaskStack = (props: any) => {
 						  }}
 
 			/>
+			<Stack.Screen name="myPendingTasks" component={myPendingTasks}
+						  {...props}
+						  options={{
+							  title: 'Consult My Pending Task Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
 		</Stack.Navigator>
 	);
 }
 
-const getTabRoleBasedDisplay =(props:any)=>{
+const getTabRoleBasedDisplay = (props: any) => {
 
 	const [userInfo, setUserInfo] = useState<any>(null);
 
-	let taskTabNavigatorContent:any=(<taskTabStatus.Navigator
+	let taskTabNavigatorContent: any = (<taskTabStatus.Navigator
 		initialRouteName="Task"
 		screenOptions={{
 			tabBarShowLabel: false,
@@ -72,7 +82,7 @@ const getTabRoleBasedDisplay =(props:any)=>{
 		});
 	}, [props]);
 
-	if(userInfo && userInfo.roles.includes('MANAGER') || userInfo &&  userInfo.roles.includes('CLIENT')){
+	if (userInfo && userInfo.roles.includes('MANAGER') || userInfo && userInfo.roles.includes('CLIENT')) {
 		taskTabNavigatorContent = (
 			<taskTabStatus.Navigator
 				initialRouteName="Task"
@@ -119,7 +129,7 @@ const getTabRoleBasedDisplay =(props:any)=>{
 	return taskTabNavigatorContent;
 }
 
-export const TaskTabStatusNavigator = (props:any) => {
+export const TaskTabStatusNavigator = (props: any) => {
 	return getTabRoleBasedDisplay(props)
 };
 
@@ -134,6 +144,28 @@ const getTabBarVisibility = (route: any) => {
 
 export const TaskComponent = (props: any) => {
 	const isFocused = useIsFocused();
+	const [userInfo, setUserInfo] = useState<any>({});
+
+	useEffect(() => {
+		_retrieveData('userInfo').then((info: any) => {
+			//setUserInfo(JSON.parse(info));
+		});
+	}, [props]);
+
+	const getTakListTitle = (): any => {
+		if (userInfo && !userInfo.roles) {
+			return (<View style={{
+				height: 150, justifyContent: 'center', alignItems: 'center',
+			}}>
+				<ActivityIndicator size="large" color="#fff"/>
+			</View>);
+		} else if (userInfo && userInfo.roles && userInfo.roles.includes('EMPLOYEE')) {
+			return 'My Tasks';
+		} else {
+			return 'Task List';
+		}
+	}
+
 	return (
 		<SafeAreaView>
 			<View>
@@ -143,7 +175,9 @@ export const TaskComponent = (props: any) => {
 
 				}}>
 					<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
-						Task List</Text>
+						{/*{getTakListTitle()}*/}
+						Task List
+					</Text>
 				</View>
 				{isFocused ? <TaskList  {...props}/> : <Text>''</Text>}</View>
 		</SafeAreaView>

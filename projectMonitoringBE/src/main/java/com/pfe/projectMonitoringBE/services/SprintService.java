@@ -24,12 +24,13 @@ public class SprintService implements ISprint {
 
 	@Autowired
 	private SprintRepository repository;
+	private Sprint currentSsprint = null;
 
 	@Override
 	public void createOrUpdateSprint(Sprint sprint) {
 		repository.save(sprint);
 	}
-	
+
 	@Override
 	public void saveAll(List<? extends Sprint> sprint) {
 		repository.saveAll(sprint);
@@ -135,5 +136,25 @@ public class SprintService implements ISprint {
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
 		return transformedSprint;
+	}
+
+	@Override
+	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID) {
+		List<Sprint> sprints = repository.getProjectCurrentSprint(projectID);
+		LocalDateTime dateTime = LocalDateTime.now();
+		this.currentSsprint=null;
+		sprints.forEach(sprint -> {
+			if (dateTime.isAfter(sprint.getSprintStartDate()) && dateTime.isBefore(sprint.getSprintEndDate())) {
+				this.currentSsprint = sprint;
+			}
+		});
+		return currentSsprint;
+
+	}
+
+	@Override
+	public List<Sprint> getProjectCurrentSprint(Integer projectID) {
+		return repository.getProjectCurrentSprint(projectID);
+
 	}
 }

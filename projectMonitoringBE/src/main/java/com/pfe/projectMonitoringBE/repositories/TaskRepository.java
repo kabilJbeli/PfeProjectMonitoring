@@ -29,8 +29,8 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 	@Query("SELECT  t FROM Task t INNER JOIN t.project p WHERE t.isCreatedByClient=true AND t.isClientTaskValidated=false AND p.projectManager.email= ?1")
 	public List<Task> getAllPendingTasksCreatedByClient(String email);
 
-	@Query("SELECT  t FROM Task t INNER JOIN t.project p WHERE t.isCreatedByClient=true AND t.isClientTaskValidated=false AND p.projectManager.email= ?1 AND p.client.email= ?2")
-	public List<Task> getSpecificClientPendingTasks(String managerEmail, String clientEmail);
+	@Query("SELECT  t FROM Task t INNER JOIN t.project p WHERE t.isCreatedByClient=true AND t.isClientTaskValidated=false AND p.client.email= ?1")
+	public List<Task> getSpecificClientPendingTasks(String clientEmail);
 
 	@Query("SELECT  t FROM Task t WHERE t.taskStatus in ( 0, 1)")
 	public List<Task> getTaskstatus();

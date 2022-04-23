@@ -23,7 +23,7 @@ import {Text} from 'react-native-elements';
 import {
 	CategoryStack, ClientTaskStackUtil,
 	DashboardStack,
-	HomeStatusStack, PriorityStack, ProfileStack,
+	HomeStatusStack, MyPendingTasksUtil, PriorityStack, ProfileStack,
 	ProjectStack,
 	SprintStack,
 	TaskStack,
@@ -32,6 +32,7 @@ import {
 
 import {_retrieveData, _storeData} from "../../utils";
 import {useEffect, useState} from "react";
+import myPendingTasks from "../task/myPendingTasks";
 
 
 const CustomDrawerContent = (props: any) => {
@@ -558,11 +559,26 @@ const getRoleBasedDrawerNavigator = (props: any, userInfo: any): any => {
 					}}
 					{...props}
 				/>
+
 				<Drawer.Screen
 					name={'Task'}
 					component={TaskStack}
 					options={{
 						drawerLabel: 'Task',
+						title: 'task',
+						swipeEnabled: false,
+						headerShown: false,
+						drawerIcon: ({focused, size}) => (
+							<Icon name="ticket-outline" size={22} color={'#262626'}/>
+						),
+					}}
+					{...props}
+				/>
+				<Drawer.Screen
+					name={'myPendingTasks'}
+					component={MyPendingTasksUtil}
+					options={{
+						drawerLabel: 'My Pending Tasks',
 						title: 'task',
 						swipeEnabled: false,
 						headerShown: false,

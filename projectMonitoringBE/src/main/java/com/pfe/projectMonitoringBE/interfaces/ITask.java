@@ -24,7 +24,7 @@ public interface ITask {
 
 	public List<Task> getAllPendingTasksCreatedByClient(String email);
 
-	public List<Task> getSpecificClientPendingTasks(String managerEmail, String clientEmail);
+	public List<Task> getSpecificClientPendingTasks(String clientEmail);
 
 	public List<Task> getRiskyTask();
 

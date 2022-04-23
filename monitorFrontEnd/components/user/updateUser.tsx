@@ -126,7 +126,7 @@ export const updateUserComponent = (props: any) => {
 				<View style={{width: '100%', marginBottom: 15, padding: 15}}>
 					<Dropdown
 						style={{width: '100%'}}
-						label={'Update User Role'}
+						label={'Affect New Role'}
 						data={[
 							{label: 'Administrator', value: 'ADMINISTRATOR'},
 							{label: 'Manager', value: 'MANAGER'},

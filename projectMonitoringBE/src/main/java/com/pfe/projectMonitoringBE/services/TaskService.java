@@ -74,9 +74,9 @@ public class TaskService implements ITask {
 	}
 
 	@Override
-	public List<Task> getSpecificClientPendingTasks(String managerEmail, String clientEmail) {
+	public List<Task> getSpecificClientPendingTasks(String clientEmail) {
 		// TODO Auto-generated method stub
-		return repository.getSpecificClientPendingTasks(managerEmail, clientEmail);
+		return repository.getSpecificClientPendingTasks(clientEmail);
 	}
 	
 	@Override

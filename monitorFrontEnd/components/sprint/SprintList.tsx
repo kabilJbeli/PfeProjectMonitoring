@@ -119,7 +119,7 @@ const SprintList = (props: any) => {
 		</View>);
 		if (!loading) {
 			retrievedValue = (<FlatList
-				style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.68}}
+				style={{maxHeight: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.68,minHeight:200}}
 				keyExtractor={(item, index) => index.toString()}
 				data={sprints?.previousSprints || []}
 				ItemSeparatorComponent={FlatListItemSeparator}
@@ -211,7 +211,7 @@ const SprintList = (props: any) => {
 		if (!loading) {
 
 			retrievedValue = (<FlatList
-				style={{height: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.68}}
+				style={{maxHeight: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.68,minHeight:200}}
 				keyExtractor={(item, index) => index.toString()}
 				data={sprints?.currentSprints || []}
 				ItemSeparatorComponent={FlatListItemSeparator}
@@ -322,7 +322,7 @@ const SprintList = (props: any) => {
 			<Text>Current Sprints:</Text>
 			{getCurrentSprints()}
 		</View>
-		<View style={{marginTop: 0}}>
+		<View style={{marginTop: 10}}>
 			<Text>Previous Sprints:</Text>
 			{getPreviousSprints()}
 		</View>
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#c8003f',
 	},
 	view: {
-		backgroundColor: '#3b436b',
+		backgroundColor: '#3ca7a7',
 	},
 	update: {
 		backgroundColor: '#1f9683',

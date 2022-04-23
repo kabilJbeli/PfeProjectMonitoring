@@ -137,9 +137,8 @@ public class TaskController {
 	}
 
 	@GetMapping("/getSpecificClientPendingTasks")
-	public List<Task> getSpecificClientPendingTasks(@RequestParam String managerEmail,
-			@RequestParam String clientEmail) {
-		return service.getSpecificClientPendingTasks(managerEmail, clientEmail);
+	public List<Task> getSpecificClientPendingTasks(@RequestParam String clientEmail) {
+		return service.getSpecificClientPendingTasks(clientEmail);
 
 	}
 

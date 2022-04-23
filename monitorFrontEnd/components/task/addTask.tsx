@@ -87,14 +87,19 @@ const AddTask = (props: any) => {
 
 
 	const createTask = () => {
-		console.log('task.task ==========================>',task.task);
 		axios
 			.post(`${Environment.API_URL}/api/task/add`, task.task)
 			.then((res: any) => {
-				// @ts-ignore
-				navigation.navigate('Task');
 				showToastWithGravity('Task Successfully Created');
 				setTask(defaultTask);
+				if(userInfo && userInfo.roles && userInfo.roles.includes('CLIENT')){
+					// @ts-ignore
+					navigation.navigate('myPendingTasks');
+				}else{
+					// @ts-ignore
+					navigation.navigate('Task');
+				}
+
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
 			console.error(error);
@@ -274,6 +279,27 @@ const AddTask = (props: any) => {
 		return returnedDropDown;
 	}
 
+	const getSprintsByProject = (projectID:number)=>{
+		const localSprintData:any[]=[];
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/sprint/getCurrentSprintByProject?projectID=${projectID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				response.data.map((item: any) => {
+					localSprintData.push({label: item.sprintTitle, value: item});
+				})
+				setSprints(localSprintData);
+			})
+			.catch((err: any) => {
+			});
+
+	}
 
 	const getSprintDropdown = (): any => {
 		let returnedDropDown: any = (<View></View>);
@@ -341,6 +367,7 @@ const AddTask = (props: any) => {
 							onChangeText={(value: any) => setTask((prevState: any) => {
 								let task = Object.assign({}, prevState.task);
 								task.project = value;
+								getSprintsByProject(value.projectID);
 								getSelectedProjectMembers(value.projectID);
 								return {task};
 							})}

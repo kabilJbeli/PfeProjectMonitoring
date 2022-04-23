@@ -13,6 +13,7 @@ import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.services.SprintService;
 
 public class SprintReader implements ItemReader<Sprint> {
+	
 	@Autowired
 	SprintService sprintservice;
 

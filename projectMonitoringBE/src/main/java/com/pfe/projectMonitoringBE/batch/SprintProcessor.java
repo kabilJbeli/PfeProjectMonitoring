@@ -11,8 +11,13 @@ public class SprintProcessor implements ItemProcessor<Sprint, Sprint> {
 
 	@Override
 	public Sprint process(Sprint item) throws Exception {
-		if (item.getSprintEndDate().isBefore(LocalDateTime.now()))
+		if (item.getSprintEndDate().isBefore(LocalDateTime.now()) &&  item.getStatus().equals(SprintStatus.InProgress)) {
 				item.setStatus(SprintStatus.Done);
+				}
+		else if(item.getSprintEndDate().isAfter(LocalDateTime.now()) && item.getStatus().equals(SprintStatus.Created)) {
+			item.setStatus(SprintStatus.InProgress);			
+		}
+		
 		return item;
 	}
 

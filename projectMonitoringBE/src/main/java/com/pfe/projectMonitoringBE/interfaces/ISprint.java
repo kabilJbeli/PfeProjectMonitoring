@@ -28,4 +28,7 @@ public interface ISprint {
 	public SprintModel getEmployeeSprintByStatus(String email);
 
 	public void saveAll(List<? extends Sprint> sprint);
+	
+	public List<Sprint> getProjectCurrentSprint(Integer projectID);
+	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID);
 }

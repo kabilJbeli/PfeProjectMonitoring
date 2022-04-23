@@ -13,6 +13,7 @@ import {MainUserStack, UserTabNavigator} from "../user/User";
 import {MainPriorityStack, PriorityTabStatusNavigator} from "../priority/Priority";
 import {CategoryTabStatusNavigator, MainCategoryStack} from "../category/Category";
 import {ClientTaskStack} from "../task/ClientTask";
+import myPendingTasks, {MainPendingTaskStack} from "../task/myPendingTasks";
 
 const Stack = createStackNavigator();
 
@@ -278,6 +279,32 @@ export const ClientTaskStackUtil = ({navigation}: any,props:any) => {
 
 
 
+
+export const MyPendingTasksUtil = ({navigation}: any,props:any) => {
+	return (
+		<Stack.Navigator initialRouteName="myPendingTasks">
+			<Stack.Screen
+				name="myPendingTasks"
+				component={MainPendingTaskStack}
+				options={{
+					title: 'My Pending Tasks', //Set Header Title
+					headerLeft: () => (
+						<NavigationDrawerStructure navigationProps={navigation}/>
+					),
+					headerStyle: {
+						backgroundColor: '#262626', //Set Header color
+					},
+					headerTintColor: '#fff', //Set Header text color
+					headerTitleStyle: {
+						fontWeight: 'bold', //Set Header text style
+					},
+				}}
+				{...props}
+
+			/>
+		</Stack.Navigator>
+	);
+};
 
 export const UserStack = ({navigation}: Props,props:any) => {
 	return (

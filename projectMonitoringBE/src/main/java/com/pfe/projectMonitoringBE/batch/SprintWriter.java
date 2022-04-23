@@ -14,8 +14,7 @@ public class SprintWriter implements ItemWriter<Sprint> {
 
 	@Override
 	public void write(List<? extends Sprint> items) throws Exception {
-		sprintservice.saveAll(items);
-		
+		sprintservice.saveAll(items);		
 	}
 
 }
