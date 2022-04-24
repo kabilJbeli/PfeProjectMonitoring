@@ -41,6 +41,11 @@ You must have the android studio pre-configured to be able to test the applicati
 yarn android
 ```
 
+## Installation BackEnd
+To login to the application for the first time please use the credentials below:
+
+**Username:** manager@manager.com  
+**Password:** admin
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
