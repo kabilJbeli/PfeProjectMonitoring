@@ -84,7 +84,7 @@ const SprintList = (props: any) => {
 
 				</Pressable>
 			</View>
-			{/*<View style={{width: '100%', padding: 15, height: 90}}>
+			<View style={{width: '100%', padding: 15, height: 90}}>
 				<Pressable
 					style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, {
 						backgroundColor: '#45b1b1',
@@ -104,7 +104,7 @@ const SprintList = (props: any) => {
 					<IconAnt name={'arrowright'} color={'#fff'} size={25}/>
 				</Pressable>
 			</View>
-*/}
+
 			<View style={{width: '100%', padding: 15, height: 90}}>
 				<Pressable
 					style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, {

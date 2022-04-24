@@ -8,6 +8,7 @@ import SprintList from "./SprintList";
 import ViewSprint from "./viewSprint";
 import CurrentSprintList from "./currentSprints";
 import PreviousSprintList from "./previousSprints";
+import PlannedSprintList from "./plannedSprints";
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,14 @@ export const MainSprintStack = (props: any) => {
 						  }}
 			/>
 			<Stack.Screen name="previousSprint" component={PreviousSprintList}
+						  {...props}
+						  options={{
+							  title: 'Sprint Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+			/>
+			<Stack.Screen name="plannedSprint" component={PlannedSprintList}
 						  {...props}
 						  options={{
 							  title: 'Sprint Information',

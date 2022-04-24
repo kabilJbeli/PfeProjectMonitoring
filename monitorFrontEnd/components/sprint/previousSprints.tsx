@@ -256,7 +256,7 @@ const PreviousSprintList = (props: any) => {
 					/>
 				</View>
 				<FlatList
-				style={{maxHeight: Dimensions.get('screen').height - 200,minHeight:200}}
+				style={{maxHeight: Dimensions.get('screen').height - 400,minHeight:200}}
 				keyExtractor={(item, index) => index.toString()}
 				data={sprints?.previousSprints || []}
 				ItemSeparatorComponent={FlatListItemSeparator}

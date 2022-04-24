@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.entities.Report;
@@ -59,20 +60,28 @@ public class SprintService implements ISprint {
 		List<Sprint> sprints = repository.getSprintByStatus(email);
 		List<Sprint> currentSprints = new ArrayList<Sprint>();
 		List<Sprint> previousSprints = new ArrayList<Sprint>();
+		List<Sprint> plannedSprints = new ArrayList<Sprint>();
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(sprint.getSprintEndDate().toLocalDate(), currentDate.toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
 
-			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0) {
+			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
+			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.Created)) {
+				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);
 			}
 
 		});
+		
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
+		transformedSprint.setPlannedSprints(plannedSprints);
+
 		return transformedSprint;
 	}
 
@@ -95,20 +104,28 @@ public class SprintService implements ISprint {
 		List<Sprint> sprints = repository.getClientSprintByStatus(email);
 		List<Sprint> currentSprints = new ArrayList<Sprint>();
 		List<Sprint> previousSprints = new ArrayList<Sprint>();
+		List<Sprint> plannedSprints = new ArrayList<Sprint>();
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(sprint.getSprintEndDate().toLocalDate(), currentDate.toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
 
-			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0) {
+			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
+			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.Created)) {
+				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);
 			}
 
 		});
+		
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
+		transformedSprint.setPlannedSprints(plannedSprints);
+
 		return transformedSprint;
 	}
 
@@ -121,30 +138,37 @@ public class SprintService implements ISprint {
 		List<Sprint> sprints = repository.getEmployeeSprintByStatus(email);
 		List<Sprint> currentSprints = new ArrayList<Sprint>();
 		List<Sprint> previousSprints = new ArrayList<Sprint>();
+		List<Sprint> plannedSprints = new ArrayList<Sprint>();
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(sprint.getSprintEndDate().toLocalDate(), currentDate.toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
 
-			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0) {
+			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
+			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.Created)) {
+				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);
 			}
 
 		});
+		
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
+		transformedSprint.setPlannedSprints(plannedSprints);
 		return transformedSprint;
 	}
 
 	@Override
 	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID) {
-		List<Sprint> sprints = repository.getProjectCurrentSprint(projectID);
+		List<Sprint> sprints = repository.getProjectCurrentSprint(projectID,SprintStatus.InProgress);
 		LocalDateTime dateTime = LocalDateTime.now();
-		this.currentSsprint=null;
+		this.currentSsprint = null;
 		sprints.forEach(sprint -> {
-			if (dateTime.isAfter(sprint.getSprintStartDate()) && dateTime.isBefore(sprint.getSprintEndDate())) {
+			if (dateTime.isAfter(sprint.getSprintStartDate()) && dateTime.isBefore(sprint.getSprintEndDate()) && sprint.getStatus() == SprintStatus.InProgress) {
 				this.currentSsprint = sprint;
 			}
 		});
@@ -154,7 +178,13 @@ public class SprintService implements ISprint {
 
 	@Override
 	public List<Sprint> getProjectCurrentSprint(Integer projectID) {
-		return repository.getProjectCurrentSprint(projectID);
+		return repository.getProjectCurrentSprint(projectID,SprintStatus.InProgress);
 
 	}
+	@Override
+	public List<Sprint> getProjectSprints(Integer projectID) {
+		return repository.getProjectSprints(projectID,SprintStatus.Done);
+	}
+	
+	
 }
