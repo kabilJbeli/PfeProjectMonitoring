@@ -35,16 +35,12 @@ You need to start the backend application before starting to test the applicatio
 ### FrontEnd
 After installing all the dependencies open the project through the terminal and launch the command below for testing the application on an android emulator.
 
+You must have the android studio pre-configured to be able to test the application on an emulator.
+
 ```bash
 yarn android
 ```
 
-You must have the android studio pre-configured to be able to test the application on an emulator.
-
-
-```bash
-standalone.bat
-```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
