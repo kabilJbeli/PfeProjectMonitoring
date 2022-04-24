@@ -6,6 +6,8 @@ import CreateSprint from "./addSprint";
 import {useIsFocused} from "@react-navigation/native";
 import SprintList from "./SprintList";
 import ViewSprint from "./viewSprint";
+import CurrentSprintList from "./currentSprints";
+import PreviousSprintList from "./previousSprints";
 
 const Stack = createStackNavigator();
 
@@ -45,13 +47,28 @@ export const MainSprintStack = (props: any) => {
 							  headerShown: false
 						  }}
 			/>
+			<Stack.Screen name="currentSprint" component={CurrentSprintList}
+						  {...props}
+						  options={{
+							  title: 'Sprint Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+			/>
+			<Stack.Screen name="previousSprint" component={PreviousSprintList}
+						  {...props}
+						  options={{
+							  title: 'Sprint Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+			/>
 		</Stack.Navigator>
 	);
 }
 
 const Sprint = (props: any) => {
 	const isFocused = useIsFocused();
-
 
 	return (
 		<SafeAreaView>
