@@ -64,12 +64,12 @@ public class SprintService implements ISprint {
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(), sprint.getSprintEndDate().toLocalDate());
 
 			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
-			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.Created)) {
 				plannedSprints.add(sprint);
 			} else {
@@ -77,7 +77,7 @@ public class SprintService implements ISprint {
 			}
 
 		});
-		
+
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
 		transformedSprint.setPlannedSprints(plannedSprints);
@@ -108,12 +108,12 @@ public class SprintService implements ISprint {
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(), sprint.getSprintEndDate().toLocalDate());
 
 			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
-			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.Created)) {
 				plannedSprints.add(sprint);
 			} else {
@@ -121,7 +121,7 @@ public class SprintService implements ISprint {
 			}
 
 		});
-		
+
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
 		transformedSprint.setPlannedSprints(plannedSprints);
@@ -142,12 +142,12 @@ public class SprintService implements ISprint {
 
 		sprints.forEach(sprint -> {
 			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
-			Period endPeriod = Period.between(currentDate.toLocalDate(),sprint.getSprintEndDate().toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(), sprint.getSprintEndDate().toLocalDate());
 
 			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
-			} else if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
 					&& sprint.getStatus().equals(SprintStatus.Created)) {
 				plannedSprints.add(sprint);
 			} else {
@@ -155,7 +155,7 @@ public class SprintService implements ISprint {
 			}
 
 		});
-		
+
 		transformedSprint.setCurrentSprints(currentSprints);
 		transformedSprint.setPreviousSprints(previousSprints);
 		transformedSprint.setPlannedSprints(plannedSprints);
@@ -164,11 +164,12 @@ public class SprintService implements ISprint {
 
 	@Override
 	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID) {
-		List<Sprint> sprints = repository.getProjectCurrentSprint(projectID,SprintStatus.InProgress);
+		List<Sprint> sprints = repository.getProjectCurrentSprint(projectID, SprintStatus.InProgress);
 		LocalDateTime dateTime = LocalDateTime.now();
 		this.currentSsprint = null;
 		sprints.forEach(sprint -> {
-			if (dateTime.isAfter(sprint.getSprintStartDate()) && dateTime.isBefore(sprint.getSprintEndDate()) && sprint.getStatus() == SprintStatus.InProgress) {
+			if (dateTime.isAfter(sprint.getSprintStartDate()) && dateTime.isBefore(sprint.getSprintEndDate())
+					&& sprint.getStatus() == SprintStatus.InProgress) {
 				this.currentSsprint = sprint;
 			}
 		});
@@ -178,13 +179,13 @@ public class SprintService implements ISprint {
 
 	@Override
 	public List<Sprint> getProjectCurrentSprint(Integer projectID) {
-		return repository.getProjectCurrentSprint(projectID,SprintStatus.InProgress);
+		return repository.getProjectCurrentSprint(projectID, SprintStatus.InProgress);
 
 	}
+
 	@Override
 	public List<Sprint> getProjectSprints(Integer projectID) {
-		return repository.getProjectSprints(projectID,SprintStatus.Done);
+		return repository.getProjectSprints(projectID, SprintStatus.Done);
 	}
-	
-	
+
 }
