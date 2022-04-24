@@ -19,7 +19,7 @@ export const MainCategoryStack = (props: any) => {
 		<Stack.Navigator initialRouteName="Category"
 
 		>
-			<Stack.Screen name="Category" component={Category}
+			<Stack.Screen name="Category" component={CategoryTabStatusNavigator}
 						  {...props}
 						  options={{
 							  headerShown: false,

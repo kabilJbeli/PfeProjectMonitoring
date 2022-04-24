@@ -7,12 +7,13 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import Dashboard from '../dashboard/Dashboard';
 import Sprint, {MainSprintStack} from '../sprint/Sprint';
 import {Props} from "../../utils";
-import ProfileInformation from "../profile/profileInformation";
+import ProfileInformation, {MainProfileStack} from "../profile/profileInformation";
 import {MainTaskStack} from "../task/Task";
 import {MainUserStack, UserTabNavigator} from "../user/User";
 import {MainPriorityStack, PriorityTabStatusNavigator} from "../priority/Priority";
 import {CategoryTabStatusNavigator, MainCategoryStack} from "../category/Category";
 import {ClientTaskStack} from "../task/ClientTask";
+import myPendingTasks, {MainPendingTaskStack} from "../task/myPendingTasks";
 
 const Stack = createStackNavigator();
 
@@ -279,6 +280,32 @@ export const ClientTaskStackUtil = ({navigation}: any,props:any) => {
 
 
 
+export const MyPendingTasksUtil = ({navigation}: any,props:any) => {
+	return (
+		<Stack.Navigator initialRouteName="myPendingTasks">
+			<Stack.Screen
+				name="myPendingTasks"
+				component={MainPendingTaskStack}
+				options={{
+					title: 'My Pending Tasks', //Set Header Title
+					headerLeft: () => (
+						<NavigationDrawerStructure navigationProps={navigation}/>
+					),
+					headerStyle: {
+						backgroundColor: '#262626', //Set Header color
+					},
+					headerTintColor: '#fff', //Set Header text color
+					headerTitleStyle: {
+						fontWeight: 'bold', //Set Header text style
+					},
+				}}
+				{...props}
+
+			/>
+		</Stack.Navigator>
+	);
+};
+
 export const UserStack = ({navigation}: Props,props:any) => {
 	return (
 		<Stack.Navigator initialRouteName="UserManagement">
@@ -312,7 +339,7 @@ export const ProfileStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="ProfileInformation">
 			<Stack.Screen
 				name="ProfileInformation"
-				component={ProfileInformation}
+				component={MainProfileStack}
 				options={{
 					title: 'Profile Information', //Set Header Title
 					headerLeft: () => (

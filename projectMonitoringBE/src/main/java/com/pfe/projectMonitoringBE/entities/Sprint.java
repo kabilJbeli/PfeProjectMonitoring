@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.SprintTypes;
 
 @Entity
@@ -36,6 +37,18 @@ public class Sprint implements Serializable {
 
 	private SprintTypes sprintTypes;
 	
+	private Integer period;
+	
+	
+	
+	public Integer getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(Integer period) {
+		this.period = period;
+	}
+
 	@Column(name = "SPRINTTITLE")
 	private String sprintTitle;
 	
@@ -75,7 +88,7 @@ public class Sprint implements Serializable {
 		this.sprintEndDate = sprintEndDate;
 	}
 
-	@OneToOne
+
 	public SprintStatus getStatus() {
 		return status;
 	}
@@ -93,6 +106,7 @@ public class Sprint implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "sprint")
+	@JsonManagedReference
 	public Set<Task> getTask() {
 		return task;
 	}
@@ -101,7 +115,7 @@ public class Sprint implements Serializable {
 		this.task = task;
 	}
 
-	@ManyToOne
+	@ManyToOne	
 	public Project getProject() {
 		return project;
 	}

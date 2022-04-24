@@ -31,6 +31,7 @@ const KeycloakLogin = () => {
 			}
 			if (token === null) {
 				setToken(keycloak?.token);
+				console.log(keycloak?.token)
 			}
 
 			_storeData('token', JSON.stringify(keycloak?.token));

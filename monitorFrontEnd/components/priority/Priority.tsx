@@ -17,7 +17,7 @@ export const MainPriorityStack = (props: any) => {
 		<Stack.Navigator initialRouteName="Priority"
 
 		>
-			<Stack.Screen name="Priority" component={Priority}
+			<Stack.Screen name="Priority" component={PriorityTabStatusNavigator}
 						  {...props}
 						  options={{
 							  headerShown: false,

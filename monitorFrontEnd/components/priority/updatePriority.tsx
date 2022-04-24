@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
@@ -7,6 +7,7 @@ import Environment from "../../Environment";
 import {_retrieveData, showToastWithGravity} from "../../utils";
 import {Input} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import IconM from "react-native-vector-icons/MaterialIcons";
 
 export const updatePriorityComponent = (props: any) => {
 	const defaultState = {
@@ -71,8 +72,23 @@ const getPriorityInfo = (priorityID:any)=>{
 				<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
 					Update Priority</Text>
 			</View>
+
 			<ScrollView style={{height:'100%',backgroundColor:'#fff'}}>
+
 				<View style={styles.modalView}>
+					<View style={{paddingBottom: 15}}>
+						<View>
+							<Pressable
+								style={{width: 80, flexDirection: 'row'}}
+								onPress={() => {
+									navigation.goBack();
+								}}
+							><IconM name='arrow-back' size={20} color={'#000'}/>
+								<Text style={{paddingLeft: 10, fontWeight: 'bold'}}
+								>Go Back</Text>
+							</Pressable>
+						</View>
+					</View>
 					<View style={{width: '100%'}}>
 						<Text>Priority Title</Text>
 						<Input
@@ -176,7 +192,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		padding: 15,
 		borderRadius: 0,
-		alignItems: 'center',
+		//alignItems: 'center',
 		shadowColor: '#fff',
 		borderColor: '#fff',
 		shadowOpacity: 0,

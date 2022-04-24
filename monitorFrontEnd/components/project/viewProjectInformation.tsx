@@ -9,7 +9,7 @@ import {
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
-import {_retrieveData, showToastWithGravity} from "../../utils";
+import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
 
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,6 +24,7 @@ const ViewProjectInformation = (props: any) => {
 	const [assignedEmployees, setAssignedEmployees] = useState<any>([]);
 	const [selectedEmployees, setSelectedEmployees] = useState<any>([]);
 	const [userInfo, setUserInfo] = useState<any>(null);
+	const [currentSprintInfo, setCurrentSprint] = useState<any>(null);
 
 
 	useEffect(() => {
@@ -75,12 +76,39 @@ const ViewProjectInformation = (props: any) => {
 
 			_retrieveData('updatedProjectId').then((projectID: string) => {
 				getProjectInfo(projectID);
+				getCurrentSprintInfo(projectID);
 				showToastWithGravity('Project Information Retrieved Successfully');
 			}).catch(err => {
 				showToastWithGravity('ERR Project ID ' + err);
 			});
 		}
 	}, [props]);
+
+
+	const getCurrentSprintInfo = (projectID?: string) => {
+		const members: any[] = [{
+			name: 'Employees',
+			memberID: 0,
+			children: []
+		}];
+		const selectedEmployees: any[] = [];
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/sprint/getProjectCurrentSprintByEndAndStartDates?projectID=${projectID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then((response: any) => {
+				setCurrentSprint(response.data);
+			})
+			.catch((err: any) => {
+				showToastWithGravity(err);
+			});
+
+	}
 
 	const getProjectInfo = (projectID?: string) => {
 		const members: any[] = [{
@@ -178,51 +206,51 @@ const ViewProjectInformation = (props: any) => {
 
 	const getNextDisplayedProjectStatusLabel = (currentStatus: string): string => {
 		let nextProjectStatus: any;
-		if(userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')){
-		switch (currentStatus) {
-			case 'Created': {
-				nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
-					changeStatus(projectInfo.projectID, projectInfo.projectStatus);
-				}}>
-					<Text
-						style={styles.buttonText}>
-						Start Progress
-					</Text>
-				</Pressable>)
-				break;
-			}
-			case 'InProgress': {
-				nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
-					changeStatus(projectInfo.projectID, projectInfo.projectStatus);
-				}}>
-					<Text
-						style={styles.buttonText}>
-						Set As Released
-					</Text>
-				</Pressable>)
-				break;
-			}
-			case 'Released': {
-				nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
-					changeStatus(projectInfo.projectID, projectInfo.projectStatus);
-				}}>
-					<Text
-						style={styles.buttonText}>
-						Finish Project
-					</Text>
-				</Pressable>)
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			switch (currentStatus) {
+				case 'Created': {
+					nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
+						changeStatus(projectInfo.projectID, projectInfo.projectStatus);
+					}}>
+						<Text
+							style={styles.buttonText}>
+							Start Progress
+						</Text>
+					</Pressable>)
+					break;
+				}
+				case 'InProgress': {
+					nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
+						changeStatus(projectInfo.projectID, projectInfo.projectStatus);
+					}}>
+						<Text
+							style={styles.buttonText}>
+							Set As Released
+						</Text>
+					</Pressable>)
+					break;
+				}
+				case 'Released': {
+					nextProjectStatus = (<Pressable style={styles.button} onPress={() => {
+						changeStatus(projectInfo.projectID, projectInfo.projectStatus);
+					}}>
+						<Text
+							style={styles.buttonText}>
+							Finish Project
+						</Text>
+					</Pressable>)
 
-				break;
+					break;
+				}
+				case 'Finished': {
+					nextProjectStatus = (<View></View>)
+					break;
+				}
+				default: {
+					nextProjectStatus = (<View></View>)
+					break;
+				}
 			}
-			case 'Finished': {
-				nextProjectStatus = (<View></View>)
-				break;
-			}
-			default: {
-				nextProjectStatus = (<View></View>)
-				break;
-			}
-		}
 		}
 		return nextProjectStatus;
 	}
@@ -301,17 +329,17 @@ const ViewProjectInformation = (props: any) => {
 				expandDropDowns={true}
 				showDropDowns={false}
 				styles={{
-					chipsWrapper:{
-						borderStyle:'dashed',
-						padding:10,
-						borderColor:'#b4b4ba',
-						borderWidth:2,
-						backgroundColor:'#fff'
+					chipsWrapper: {
+						borderStyle: 'dashed',
+						padding: 10,
+						borderColor: '#b4b4ba',
+						borderWidth: 2,
+						backgroundColor: '#fff'
 					},
-					selectToggle:{
-					backgroundColor:'#fff',
-						padding:15,
-						marginBottom:15
+					selectToggle: {
+						backgroundColor: '#fff',
+						padding: 15,
+						marginBottom: 15
 					},
 					chipText: {
 						maxWidth: Dimensions.get('screen').width - 90,
@@ -357,11 +385,11 @@ const ViewProjectInformation = (props: any) => {
 		</View>);
 	}
 
-	const getAssignProjectMembers = ():any=>{
-		let returnedValue=(<View></View>);
+	const getAssignProjectMembers = (): any => {
+		let returnedValue = (<View></View>);
 
-		if(userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')){
-			returnedValue = (	<View>
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
+			returnedValue = (<View>
 				<Text style={{marginTop: 15, fontWeight: 'bold'}}>Assign Project Members:</Text>
 
 				<View
@@ -372,7 +400,35 @@ const ViewProjectInformation = (props: any) => {
 		}
 		return returnedValue;
 	}
+	const goToSprint = (sprint: any) => {
+		_storeData('sprintInfo', JSON.stringify(sprint)).then((res) => {
+			// @ts-ignore
+			navigation.navigate('viewSprint');
+		});
+	}
 
+
+const	goToProductBacklog = (projectInfo:any)=>{
+	_storeData('projectInfo', JSON.stringify(projectInfo)).then((res) => {
+		// @ts-ignore
+		navigation.navigate('consultProductBacklog');
+	});
+}
+
+	const checkSprintInfo = (): any => {
+		if (currentSprintInfo && currentSprintInfo.sprintID) {
+
+			return (<Pressable
+				style={styles.button}
+				onPress={() => {
+					goToSprint(currentSprintInfo)
+				}}>
+				<Text style={styles.buttonText}>Go To Sprint</Text>
+			</Pressable>);
+		} else {
+			return (<></>);
+		}
+	}
 	const getProjectInfoDisplay = () => {
 		if (projectInfo) {
 			return (<View>
@@ -427,20 +483,34 @@ const ViewProjectInformation = (props: any) => {
 						</Text>
 					</View>
 					<View style={{marginTop: 15}}>
+						<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 
 						<Text>
 							<Text style={{fontWeight: 'bold'}}>Number of project
 								Members:</Text> {selectedEmployees.length}
 						</Text>
+
+						<Pressable
+							style={styles.button}
+							onPress={() => {
+								goToProductBacklog(projectInfo)
+							}}>
+							<Text style={styles.buttonText}>Product Backlog</Text>
+						</Pressable>
+						</View>
 					</View>
 
 					<View style={{marginTop: 15}}>
 						<Text>
-							<Text style={{fontWeight: 'bold'}}>Number of sprints:</Text> {projectInfo.sprint?.length || 0}
+							<Text style={{fontWeight: 'bold'}}>Number of
+								sprints:</Text> {projectInfo.sprint?.length || 0}
 						</Text>
-						<Text>
-							<Text style={{fontWeight: 'bold'}}>Current sprint:</Text>
-						</Text>
+						<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text style={{fontWeight: 'bold'}}>Current sprint: {currentSprintInfo?.sprintTitle || ''}
+							</Text>
+							{checkSprintInfo()}
+
+						</View>
 					</View>
 					<View style={{marginTop: 15}}>
 						<Text style={{fontWeight: 'bold'}}>
@@ -565,11 +635,13 @@ const styles = StyleSheet.create({
 		backgroundColor: '#00a3cc',
 		padding: 10,
 		textAlign: 'center',
+		minWidth:125
 	},
 	buttonText: {
 		color: '#fff',
 		fontSize: 14,
-		width: 'auto'
+		width: 'auto',
+		textAlign:"center"
 	},
 	borderButton: {
 		borderStyle: 'solid',

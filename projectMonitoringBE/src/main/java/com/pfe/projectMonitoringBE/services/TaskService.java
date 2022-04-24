@@ -74,9 +74,9 @@ public class TaskService implements ITask {
 	}
 
 	@Override
-	public List<Task> getSpecificClientPendingTasks(String managerEmail, String clientEmail) {
+	public List<Task> getSpecificClientPendingTasks(String clientEmail) {
 		// TODO Auto-generated method stub
-		return repository.getSpecificClientPendingTasks(managerEmail, clientEmail);
+		return repository.getSpecificClientPendingTasks(clientEmail);
 	}
 	
 	@Override
@@ -119,4 +119,26 @@ public class TaskService implements ITask {
 	}
 	
 
+	@Override
+	public List<Task> getUnassignedSprintTasks(Integer projectID){
+		
+		return repository.getUnassignedSprintTasks(projectID);
+	}
+	
+	@Override
+	public List<Task> getProjectBacklog(Integer projectID){		
+		return repository.getProjectBacklog(projectID);
+	}
+	
+	
+
+	@Override
+	public List<Task> findByTaskStatus(TaskStatus taskStatus,Integer sprintID) {
+		// TODO Auto-generated method stub
+		return repository.findByTaskStatus(taskStatus,sprintID);
+	}
+	
+	
+	
+	
 }
