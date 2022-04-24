@@ -283,7 +283,7 @@ const AddTask = (props: any) => {
 		const localSprintData:any[]=[];
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/sprint/getCurrentSprintByProject?projectID=${projectID}`,
+			url: `${Environment.API_URL}/api/sprint/getProjectSprints?projectID=${projectID}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,

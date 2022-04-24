@@ -150,6 +150,15 @@ public class SprintController {
 		return service.getProjectCurrentSprint(projectID);
 	}
 	
+
+	@GetMapping("/getProjectSprints")
+	public List<Sprint> getProjectSprints(@RequestParam Integer projectID) {
+		return service.getProjectSprints(projectID);
+	}
+	
+	
+	
+	
 	@GetMapping("/getProjectCurrentSprintByEndAndStartDates")
 	public ResponseEntity<Sprint> getProjectCurrentSprintByEndAndStartDates(@RequestParam Integer projectID) {
 		

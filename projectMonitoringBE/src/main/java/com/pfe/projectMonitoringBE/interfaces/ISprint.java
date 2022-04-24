@@ -31,4 +31,5 @@ public interface ISprint {
 	
 	public List<Sprint> getProjectCurrentSprint(Integer projectID);
 	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID);
+	public List<Sprint> getProjectSprints(Integer projectID);
 }
