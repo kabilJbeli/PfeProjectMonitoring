@@ -278,6 +278,11 @@ const CreateSprint = (props: any) => {
 								getLastSprintEndDate(value.projectID).then((data: any) => {
 									console.log(data);
 									setMaxDate(new Date(data));
+									setSprint((prevState: any) => {
+										let sprint = Object.assign({}, prevState.sprint);
+										sprint.sprintStartDate = new Date(data);
+										return {sprint};
+									});
 									setDate(new Date(data));
 									setExpectedEndDate(new Date(data));
 								}).catch(error => {
