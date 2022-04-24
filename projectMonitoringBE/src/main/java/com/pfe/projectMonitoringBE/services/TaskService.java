@@ -78,7 +78,7 @@ public class TaskService implements ITask {
 		// TODO Auto-generated method stub
 		return repository.getSpecificClientPendingTasks(clientEmail);
 	}
-	
+
 	@Override
 	public List<Task> getRiskyTask() {
 		List<Task> riskytasks = new ArrayList<>();
@@ -106,39 +106,46 @@ public class TaskService implements ITask {
 
 		return riskytasks;
 	}
-	
-	//week 1 day 2 hour 3 minute
-	public int converter( int value, DurationType typevalue) {
+
+	// week 1 day 2 hour 3 minute
+	public int converter(int value, DurationType typevalue) {
 		switch (typevalue) {
-		case Week  : return value * 40;
-		case Day: return value * 8;
-		case Hour: return value;
-		case Minute: return value / 60;
+		case Week:
+			return value * 40;
+		case Day:
+			return value * 8;
+		case Hour:
+			return value;
+		case Minute:
+			return value / 60;
 		}
 		return 0;
 	}
-	
 
 	@Override
-	public List<Task> getUnassignedSprintTasks(Integer projectID){
-		
+	public List<Task> getUnassignedSprintTasks(Integer projectID) {
+
 		return repository.getUnassignedSprintTasks(projectID);
 	}
-	
-	@Override
-	public List<Task> getProjectBacklog(Integer projectID){		
-		return repository.getProjectBacklog(projectID);
-	}
-	
-	
 
 	@Override
-	public List<Task> findByTaskStatus(TaskStatus taskStatus,Integer sprintID) {
-		// TODO Auto-generated method stub
-		return repository.findByTaskStatus(taskStatus,sprintID);
+	public List<Task> getProjectBacklog(Integer projectID) {
+		List<Task> tasks = repository.getProjectBacklog(projectID);
+		List<Task> returnedtasks = new ArrayList<Task>();
+		tasks.forEach(task -> {
+			if (task.getIsCreatedByClient() && task.getIsClientTaskValidated() != null
+					&& task.getIsClientTaskValidated() || !task.getIsCreatedByClient()) {
+				returnedtasks.add(task);
+			}
+
+		});
+		return returnedtasks;
 	}
-	
-	
-	
-	
+
+	@Override
+	public List<Task> findByTaskStatus(TaskStatus taskStatus, Integer sprintID) {
+		// TODO Auto-generated method stub
+		return repository.findByTaskStatus(taskStatus, sprintID);
+	}
+
 }

@@ -51,7 +51,7 @@ public class Task implements Serializable {
 	
 	private Member client;
 	
-	private Boolean isClientTaskValidated;
+	private Boolean isClientTaskValidated=false;
 		
 	@Column(columnDefinition="Boolean default false")
 	public Boolean getIsClientTaskValidated() {

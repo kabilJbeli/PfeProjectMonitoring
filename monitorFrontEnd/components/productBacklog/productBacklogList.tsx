@@ -186,7 +186,7 @@ const ProductBacklogList = (props: any) => {
 				<View>
 					<View style={{
 						height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
-						backgroundColor: '#3a436c',
+						backgroundColor: '#3a436c',padding:10
 
 					}}>
 						<Text style={{color: '#fff', fontSize: 40, textAlign: 'center'}}>
