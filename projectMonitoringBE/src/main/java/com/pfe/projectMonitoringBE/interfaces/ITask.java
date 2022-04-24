@@ -30,7 +30,7 @@ public interface ITask {
 
 	public List<Task> getUnassignedSprintTasks(Integer projectID);
 	
-	
+	public List<Task> getProjectBacklog(Integer projectID);
 	
 	public List<Task> findByTaskStatus(TaskStatus taskStatus,Integer sprintID);
 }

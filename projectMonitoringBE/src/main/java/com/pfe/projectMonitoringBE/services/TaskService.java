@@ -119,11 +119,18 @@ public class TaskService implements ITask {
 	}
 	
 
-	
+	@Override
 	public List<Task> getUnassignedSprintTasks(Integer projectID){
 		
 		return repository.getUnassignedSprintTasks(projectID);
 	}
+	
+	@Override
+	public List<Task> getProjectBacklog(Integer projectID){		
+		return repository.getProjectBacklog(projectID);
+	}
+	
+	
 
 	@Override
 	public List<Task> findByTaskStatus(TaskStatus taskStatus,Integer sprintID) {

@@ -38,10 +38,10 @@ const CreateSprint = (props: any) => {
 		}
 	};
 
-	const [tasks,setTasks] = useState<any[]>([]);
+	const [tasks, setTasks] = useState<any[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<any>([]);
-
-	const [assignedTasks,setAssignedTasks]= useState<any>([]);
+	const [maxDate, setMaxDate] = useState<Date>(new Date());
+	const [assignedTasks, setAssignedTasks] = useState<any>([]);
 
 	const getButtonStatus = (): boolean => {
 		return (
@@ -104,7 +104,20 @@ const CreateSprint = (props: any) => {
 		});
 	}
 
-	const getTasks = (projectID:number) => {
+
+	const getLastSprintEndDate = (projectID: any) => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get<any>(`${Environment.API_URL}/api/sprint/getProjectCurrentSprintEndDate?projectID=${projectID}`)
+				.then((res: any) => {
+					resolve(res.data);
+				}).catch((error: any) => {
+				console.error(error);
+			});
+		})
+	}
+
+	const getTasks = (projectID: number) => {
 		return new Promise((resolve, reject) => {
 			axios
 				.get<any[]>(`${Environment.API_URL}/api/task/getUnassignedSprintTasks?projectID=${projectID}`, {})
@@ -119,7 +132,7 @@ const CreateSprint = (props: any) => {
 
 
 	const onConfirm = () => {
-		if(assignedTasks[0] && assignedTasks[0].children){
+		if (assignedTasks[0] && assignedTasks[0].children) {
 			setSprint((prevState: any) => {
 				let sprint = Object.assign({}, prevState.sprint);
 				sprint.task = assignedTasks[0].children;
@@ -146,7 +159,7 @@ const CreateSprint = (props: any) => {
 	const getMultipleSelect = () => {
 		return (<View style={{marginTop: 15}}>
 			<SectionedMultiSelect
-				disabled={tasks.length ===0}
+				disabled={tasks.length === 0}
 				items={tasks}
 				IconRenderer={Icon}
 				uniqueKey="taskID"
@@ -162,18 +175,18 @@ const CreateSprint = (props: any) => {
 				expandDropDowns={true}
 				showDropDowns={false}
 				styles={{
-					chipsWrapper:{
-						borderStyle:'dashed',
-						padding:10,
-						borderColor:'#b4b4ba',
-						borderWidth:2,
-						backgroundColor:'#fff'
+					chipsWrapper: {
+						borderStyle: 'dashed',
+						padding: 10,
+						borderColor: '#b4b4ba',
+						borderWidth: 2,
+						backgroundColor: '#fff'
 					},
-					selectToggle:{
-						backgroundColor:'#fff',
-						padding:15,
-						marginBottom:15,
-						opacity: tasks.length ===0 ? 0.5 : 1,
+					selectToggle: {
+						backgroundColor: '#fff',
+						padding: 15,
+						marginBottom: 15,
+						opacity: tasks.length === 0 ? 0.5 : 1,
 					},
 					chipText: {
 						maxWidth: Dimensions.get('screen').width - 90,
@@ -228,7 +241,6 @@ const CreateSprint = (props: any) => {
 		});
 
 
-
 	}, [props]);
 	return (
 		<SafeAreaView>
@@ -241,7 +253,7 @@ const CreateSprint = (props: any) => {
 					Create Sprint</Text>
 			</View>
 
-			<ScrollView style={{padding: 15,height:Dimensions.get('screen').height-250}}>
+			<ScrollView style={{padding: 15, height: Dimensions.get('screen').height - 250}}>
 				<View>
 					<Pressable
 						style={{width: 80, flexDirection: 'row'}}
@@ -259,9 +271,19 @@ const CreateSprint = (props: any) => {
 							style={{width: '100%'}}
 							label={'Project'}
 							data={projects}
+
 							onChangeText={(value: any) => setSprint((prevState: any) => {
 								let sprint = Object.assign({}, prevState.sprint);
 								sprint.project = value;
+								getLastSprintEndDate(value.projectID).then((data: any) => {
+									console.log(data);
+									setMaxDate(new Date(data));
+									setDate(new Date(data));
+									setExpectedEndDate(new Date(data));
+								}).catch(error => {
+									console.error(`HTTP error: ${error.name} => ${error.message}`);
+									throw "fail request at: GET /projectStatus";
+								});
 
 								getTasks(value.projectID).then((data: any) => {
 									const tasks: any[] = [{
@@ -272,7 +294,7 @@ const CreateSprint = (props: any) => {
 
 									if (data) {
 										data.map((item: any) => {
-											item.name = item.project.projectTitle.trim().replace(' ','_') + '-' + item.taskID+' ('+item.taskTitle+')';
+											item.name = item.project.projectTitle.trim().replace(' ', '_') + '-' + item.taskID + ' (' + item.taskTitle + ')';
 											tasks[0].children.push(item);
 										});
 										setTasks(tasks);
@@ -342,7 +364,7 @@ const CreateSprint = (props: any) => {
 							<Button title="Change" onPress={() => setOpen(true)}/>
 						</View>
 						<DatePicker
-							minimumDate={new Date()}
+							minimumDate={maxDate}
 							modal
 							mode={'date'}
 							open={open}
@@ -380,7 +402,7 @@ const CreateSprint = (props: any) => {
 							<Button title="Change" onPress={() => setOpenEndDate(true)}/>
 						</View>
 						<DatePicker
-							minimumDate={new Date()}
+							minimumDate={maxDate}
 							modal
 							mode={'date'}
 							open={openEndDate}

@@ -14,6 +14,8 @@ import UpdateProjectScreen from "./updateProject";
 import {createStackNavigator} from "@react-navigation/stack";
 import ViewProjectInformation from "./viewProjectInformation";
 import {_retrieveData} from "../../utils";
+import ViewSprint from "../sprint/viewSprint";
+import {MainProductBacklogStack, ProductBacklog} from "../productBacklog/productBacklog";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -49,24 +51,42 @@ export const MainProjectStack = (props: any) => {
 						  }}
 
 			/>
+			<Stack.Screen name="viewSprint" component={ViewSprint}
+						  {...props}
+						  options={{
+							  title: 'Sprint Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+			<Stack.Screen name="consultProductBacklog" component={MainProductBacklogStack}
+						  {...props}
+						  options={{
+							  title: 'Product Backlog Information',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+
+
 
 		</Stack.Navigator>
 	);
 }
 
 
-
 export const TabNavigator = (props: any) => {
 	const [roles, setRoles] = useState<string[]>([]);
 	let conditionalTabNavigatorValue = (<View></View>);
-useEffect(()=>{
+	useEffect(() => {
 
 
-
-	_retrieveData('userInfo').then((userInfo: any) => {
-		setRoles(JSON.parse(userInfo).roles);
-	});
-},[props])
+		_retrieveData('userInfo').then((userInfo: any) => {
+			setRoles(JSON.parse(userInfo).roles);
+		});
+	}, [props])
 	if (roles.includes('ADMINISTRATOR')) {
 		conditionalTabNavigatorValue = (
 			<Tab.Navigator
@@ -165,7 +185,7 @@ const ProjectComponent = (props: any) => {
 						Project List</Text>
 				</View>
 				{isFocused ? <ProjectsList   {...props}
-			/> : <Text>''</Text>}</View>
+				/> : <Text>''</Text>}</View>
 		</SafeAreaView>
 	);
 };

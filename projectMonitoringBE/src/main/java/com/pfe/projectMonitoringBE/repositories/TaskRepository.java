@@ -37,6 +37,9 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
 	@Query("SELECT  t FROM Task t WHERE t.project.projectID = ?1 AND t.sprint IS NULL")
 	public List<Task> getUnassignedSprintTasks(Integer projectID);
+	
+	@Query("SELECT  t FROM Task t WHERE t.project.projectID = ?1 AND t.sprint IS NULL AND t.taskStatus='ToDo'")
+	public List<Task> getProjectBacklog(Integer projectID);
 
 	@Query("SELECT  t FROM Task t WHERE t.taskStatus = ?1 AND t.sprint.sprintID = ?2")
 	public List<Task> findByTaskStatus(TaskStatus taskStatus, Integer sprintID);

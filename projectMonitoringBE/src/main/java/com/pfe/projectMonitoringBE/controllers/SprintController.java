@@ -1,5 +1,6 @@
 package com.pfe.projectMonitoringBE.controllers;
 
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +158,24 @@ public class SprintController {
 			return new ResponseEntity<Sprint>(sprint, HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Sprint>(HttpStatus.NOT_FOUND);
+		}
+		
+	}
+	
+	@GetMapping("/getProjectCurrentSprintEndDate")
+	public ResponseEntity<LocalDateTime> getProjectCurrentSprintEndDate(@RequestParam Integer projectID) {
+		
+		try {
+			Sprint sprint = service.getProjectCurrentSprintByEndAndStartDates(projectID);
+			if(sprint != null) {
+				return new ResponseEntity<LocalDateTime>(sprint.getSprintEndDate(),HttpStatus.OK);
+
+			}else {
+				return new ResponseEntity<LocalDateTime>(HttpStatus.NOT_FOUND);
+
+			}
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<LocalDateTime>(HttpStatus.NOT_FOUND);
 		}
 		
 	}

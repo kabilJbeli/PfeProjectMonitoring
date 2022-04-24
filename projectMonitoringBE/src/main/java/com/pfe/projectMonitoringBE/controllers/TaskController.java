@@ -160,4 +160,10 @@ public class TaskController {
 	public List<Task> getUnassignedSprintTasks(@RequestParam Integer projectID) {
 		return service.getUnassignedSprintTasks(projectID);
 	}
+	@GetMapping("/getProjectBacklog")
+	public List<Task> getProjectBacklog(@RequestParam Integer projectID) {
+		return service.getProjectBacklog(projectID);
+	}
+	
+	
 }
