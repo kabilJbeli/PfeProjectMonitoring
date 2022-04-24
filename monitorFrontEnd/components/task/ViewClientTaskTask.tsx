@@ -69,6 +69,28 @@ export const ViewClientTaskComponent = (props: any) => {
 	}
 
 
+	const getSprintsByProject = (projectID:number)=>{
+		const localSprintData:any[]=[];
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/sprint/getCurrentSprintByProject?projectID=${projectID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				response.data.map((item: any) => {
+					localSprintData.push({label: item.sprintTitle, value: item});
+				})
+				setSprints(localSprintData);
+			})
+			.catch((err: any) => {
+			});
+
+	}
+
 	const getSelectedProjectMembers = (projectId: number) => {
 		const localMemberData: any[] = [];
 		axios({
@@ -178,6 +200,7 @@ export const ViewClientTaskComponent = (props: any) => {
 				task = JSON.parse(taskInfo);
 				task.isClientTaskValidated = true;
 				console.log(task.taskID,' ',task);
+				getSprintsByProject(JSON.parse(taskInfo).project.projectID);
 				getSelectedProjectMembers(JSON.parse(taskInfo).project.projectID);
 
 				return {task};

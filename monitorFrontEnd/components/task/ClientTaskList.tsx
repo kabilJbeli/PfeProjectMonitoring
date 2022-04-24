@@ -106,8 +106,7 @@ export const ClientTaskListComponent = (props: any) => {
 		<SafeAreaView>
 			<View style={{
 				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
-				backgroundColor: '#3a436c',
-
+				backgroundColor: '#3a436c'
 			}}>
 				<Text style={{color: '#fff', fontSize: 38, textAlign: 'center'}}>
 					Pending Client Task ({state})</Text>
