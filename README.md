@@ -1,6 +1,6 @@
 # PfeProjectMonitoring
 
-PfeProjectMonitoring is a mobile project monitoring solution that provides the possibility of generating reports and KPIs regarding the project, There's 4 different roles in the application(Administrator,Client,Manager,Employee), the application is developer Spring Boot/Java EE for the backend, React native for the front end with the use of Keycloak 16 for user management and security
+PfeProjectMonitoring is a mobile project monitoring solution that provides the possibility of generating reports and KPIs regarding the project, There's 4 different roles in the application(Administrator,Client,Manager,Employee), the application is developed Spring Boot/Java EE for the backend, React native for the front end with the use of Keycloak 16 for user management and security
 
 ## Installation FrontEnd
 
@@ -41,7 +41,7 @@ You must have the android studio pre-configured to be able to test the applicati
 yarn android
 ```
 
-## Installation BackEnd
+## First Sign In
 To login to the application for the first time please use the credentials below:
 
 **Username:** manager@manager.com  
