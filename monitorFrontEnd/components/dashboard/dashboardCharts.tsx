@@ -12,7 +12,7 @@ const chartConfig = {
 	backgroundGradientFromOpacity: 0,
 	backgroundGradientTo: '#fff',
 	backgroundGradientToOpacity: 0.5,
-	decimal:0,
+	decimal: 0,
 	color: (opacity = 1) => `rgba(0, 163, 204, ${opacity})`,
 	labelColor: (opacity = 1) => `rgba(39, 40, 34, ${opacity})`,
 	strokeWidth: 2,
@@ -30,12 +30,12 @@ export const DashboardCharts = (props: any) => {
 
 	const [riskyTasks, setRiskyTasks] = useState<any[]>([]);
 	const navigation = useNavigation();
-	const [pieChartData,setPieChartData]= useState<any[]>([]);
+	const [pieChartData, setPieChartData] = useState<any[]>([]);
 
-	const getAdministratorRiskyTasks = () => {
+	const getAdministratorRiskyTasks = (role: string, email: string) => {
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/dashbord/getRiskyTask`,
+			url: `${Environment.API_URL}/api/dashbord/getRiskyTask?role=${role}&email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -236,7 +236,6 @@ export const DashboardCharts = (props: any) => {
 				getMember(parsedInfo.email);
 			}
 		});
-		getAdministratorRiskyTasks();
 		getSprintStats();
 		getTotalNumberOfTasks();
 	}, [props]);
@@ -257,12 +256,20 @@ export const DashboardCharts = (props: any) => {
 				setMemberInfo(response.data);
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
+					getAdministratorRiskyTasks('ADMINISTRATOR', email);
+
 				} else if (response.data.role === 'CLIENT') {
 					getClientProjectStatus(response.data);
+					getAdministratorRiskyTasks('CLIENT', email);
+
 				} else if (response.data.role === 'EMPLOYEE') {
 					getEmployeeProjectStatus(response.data);
+					getAdministratorRiskyTasks('EMPLOYEE', email);
+
 				} else if (response.data.role === 'MANAGER') {
 					getManagerProjectStatus(response.data);
+					getAdministratorRiskyTasks('MANAGER', email);
+
 				}
 			})
 			.catch((err: any) => {
@@ -281,13 +288,18 @@ export const DashboardCharts = (props: any) => {
 		);
 	};
 
+	const getPercentage = (): number => {
+		const percentage = (riskyTasks.length * 100) / totalTasks;
+		return Math.round(percentage);
+	}
+
 	return (
-		<View>
+		<View style={{paddingBottom: 15}}>
 			<View>
 				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
 				<BarChart
 					style={{
-						borderRadius: 15,
+						borderRadius: 0,
 						marginTop: 15
 					}}
 					fromZero={true}
@@ -296,11 +308,11 @@ export const DashboardCharts = (props: any) => {
 						datasets: [
 							{
 								data: projectStatus,
-								strokeWidth:0
+								strokeWidth: 0
 							}
 						]
 					}}
-					width={Dimensions.get("screen").width - 30}
+					width={screenWidth - 30}
 					height={300}
 					yAxisLabel=""
 					yAxisSuffix=""
@@ -324,10 +336,11 @@ export const DashboardCharts = (props: any) => {
 				/>
 			</View>
 			<View>
-				<Text style={{paddingBottom: 10}}>Total Number Of Risky tasks:</Text>
-				<View style={{width:'100%',alignItems:'center',justifyContent:'center',minHeight:150
+				<Text style={{paddingBottom: 10}}>Percentage of risky tasks of total tasks:</Text>
+				<View style={{
+					width: '100%', alignItems: 'center', justifyContent: 'center', minHeight: 150
 				}}>
-				<Text style={{fontWeight:'bold',fontSize:48}}>{riskyTasks.length || 0}/{totalTasks}</Text>
+					<Text style={{fontWeight: 'bold', fontSize: 48}}>{getPercentage() || 0}%</Text>
 				</View>
 			</View>
 			<View>
@@ -356,7 +369,10 @@ export const DashboardCharts = (props: any) => {
 								navigation.navigate('viewTask');
 							}}
 						>
-							<Text style={{color:'#00a3cc',fontWeight:'bold'}}>{item.project.projectTitle.replace(' ', '_') + '-' + item.taskID} ({item.taskStatus})</Text>
+							<Text style={{
+								color: '#00a3cc',
+								fontWeight: 'bold'
+							}}>{item.project.projectTitle.replace(' ', '_') + '-' + item.taskID} ({item.taskStatus})</Text>
 							<IconAnt name={'arrowright'} color={'#00a3cc'} size={25}/>
 						</Pressable>
 						</View>

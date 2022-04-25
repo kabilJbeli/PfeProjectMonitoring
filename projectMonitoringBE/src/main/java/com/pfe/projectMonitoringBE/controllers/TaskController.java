@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.IEmail;
@@ -155,9 +156,9 @@ public class TaskController {
 	}
 
 	@GetMapping("/getriskeyTask")
-	public List<Task> getriskeyTask() {
+	public List<Task> getriskeyTask(Roles role,String email) {
 
-		return service.getRiskyTask();
+		return service.getRiskyTask(role,email);
 
 	}
 	

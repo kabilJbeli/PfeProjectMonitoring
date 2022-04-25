@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.Enums.DurationType;
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskDuration;
@@ -77,9 +78,19 @@ public class TaskService implements ITask {
 	}
 
 	@Override
-	public List<Task> getRiskyTask() {
+	public List<Task> getRiskyTask(Roles role, String email) {
 		List<Task> riskytasks = new ArrayList<>();
-		List<Task> tasks = repository.getTaskstatus();
+		List<Task> tasks = new ArrayList<Task>();
+		if (role.equals(Roles.ADMINISTRATOR)) {
+			tasks = repository.getTaskstatus();
+		} else if (role.equals(Roles.CLIENT)) {
+			tasks = repository.getClientTaskstatus(email);
+		} else if (role.equals(Roles.EMPLOYEE)) {
+			tasks = repository.getEmployeeTaskstatus(email);
+		} else if (role.equals(Roles.MANAGER)) {
+			tasks = repository.getManagerTaskstatus(email);
+		}
+
 		for (Task task : tasks) {
 			int estimation = task.getTaskEstimation();
 			LocalDateTime creationdate = task.getCreationDate();

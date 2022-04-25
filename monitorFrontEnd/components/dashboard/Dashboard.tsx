@@ -3,13 +3,8 @@ import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'reac
 import {DashboardCharts} from "./dashboardCharts";
 import {useIsFocused} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
-import CreateSprint from "../sprint/addSprint";
-import ViewSprint from "../sprint/viewSprint";
 import ViewTask from "../task/viewTask";
-import CurrentSprintList from "../sprint/currentSprints";
-import PreviousSprintList from "../sprint/previousSprints";
-import PlannedSprintList from "../sprint/plannedSprints";
-import Sprint from "../sprint/Sprint";
+
 
 
 const Stack = createStackNavigator();
@@ -53,7 +48,7 @@ const Dashboard = (props: any) => {
 			</View>
 
 			<ScrollView style={[styles.container,{
-				height:Dimensions.get('screen').height-285
+				height:Dimensions.get('screen').height-250,
 			}]}>
 				{isFocused ? <DashboardCharts {...props}/> : <></>}
 			</ScrollView>
