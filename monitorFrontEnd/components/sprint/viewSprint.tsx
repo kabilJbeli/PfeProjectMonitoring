@@ -11,7 +11,7 @@ import {
 	View
 } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {useNavigation} from "@react-navigation/native";
+import {useIsFocused, useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Environment from "../../Environment";
@@ -40,6 +40,7 @@ const ViewSprint = (props: any) => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [userInfo, setUserInfo] = useState<any>({});
 	const [myTasks, setMyTasks] = useState<any[]>([]);
+	const isFocused = useIsFocused();
 
 	useEffect(() => {
 		_retrieveData('userInfo').then((info: any) => {

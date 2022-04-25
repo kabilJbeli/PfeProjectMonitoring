@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Priority;
 import com.pfe.projectMonitoringBE.interfaces.IPriority;
 import com.pfe.projectMonitoringBE.repositories.PriorityRepository;

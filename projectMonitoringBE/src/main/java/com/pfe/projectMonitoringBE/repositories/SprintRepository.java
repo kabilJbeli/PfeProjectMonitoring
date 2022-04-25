@@ -28,4 +28,7 @@ public interface SprintRepository extends JpaRepository<Sprint, Integer> {
 	
 	@Query("SELECT t FROM Sprint s INNER JOIN s.task t WHERE s.sprintID=  ?1")	
 	public List<Task> getTasksBySprintId(Integer sprintID);
+	
+	@Query("SELECT s FROM Sprint s WHERE s.status=?1")	
+	public List<Sprint> findSprintByStatus(SprintStatus status);
 }

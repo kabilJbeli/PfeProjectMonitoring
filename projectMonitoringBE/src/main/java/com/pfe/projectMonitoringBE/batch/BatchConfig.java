@@ -9,44 +9,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.pfe.projectMonitoringBE.entities.Sprint;
 
-
+//@Configuration 
+//@EnableBatchProcessing 
 public class BatchConfig {
-	
-	 @Autowired
+
+	@Autowired
 	private JobBuilderFactory jobs;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-    
-    
-    
-    @Bean
-    public Job job(@Qualifier("step1") Step step1) {
-        return jobs.get("myJob").start(step1).build();
-    }
-    
-    @Autowired
-    SprintProcessor sprintProcessor;
-    
-    @Autowired
-    SprintReader sprintReader;
-    
-    @Autowired
-    SprintWriter sprintWriter;
-    
+	@Autowired
+	private StepBuilderFactory stepBuilderFactory;
 
-    @Bean
-    protected Step step1() {
-        return stepBuilderFactory.get("Update sprints")
-            .<Sprint, Sprint> chunk(10000)
-            .reader(sprintReader)
-            .processor(sprintProcessor)
-            .writer(sprintWriter)
-            .build();
+	@Bean
+	public Job job(@Qualifier("step1") Step step1) {
+		return jobs.get("myJob").start(step1).build();
+	}
+
+	@Autowired
+	SprintProcessor sprintProcessor;
+	
+
+
+	@Autowired
+	SprintReader sprintReader;
+
+	@Autowired
+	SprintWriter sprintWriter;
+	
+	
+	@Bean
+    public SprintProcessor sprintProcessor() {
+        return  sprintProcessor;
     }
+	
+	@Bean
+    public SprintReader sprintReader() {
+        return  sprintReader;
+    }
+
+	
+	@Bean
+    public SprintWriter sprintWriter() {
+        return sprintWriter;
+    }
+
+
+	@Bean
+	protected Step step1() {
+		return stepBuilderFactory.get("Update sprints").<Sprint, Sprint>chunk(10000).reader(sprintReader())
+				.processor(sprintProcessor()).writer(sprintWriter()).build();
+	}
 
 }

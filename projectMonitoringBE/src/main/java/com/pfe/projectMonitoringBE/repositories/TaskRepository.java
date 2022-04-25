@@ -1,15 +1,11 @@
 package com.pfe.projectMonitoringBE.repositories;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
-import com.pfe.projectMonitoringBE.entities.Member;
-import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.entities.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Integer> {

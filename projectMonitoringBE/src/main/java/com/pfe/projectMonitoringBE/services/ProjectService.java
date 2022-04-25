@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
 import com.pfe.projectMonitoringBE.entities.Member;
-import com.pfe.projectMonitoringBE.entities.Priority;
 import com.pfe.projectMonitoringBE.entities.Project;
 import com.pfe.projectMonitoringBE.interfaces.IProject;
 import com.pfe.projectMonitoringBE.models.ProjectStats;

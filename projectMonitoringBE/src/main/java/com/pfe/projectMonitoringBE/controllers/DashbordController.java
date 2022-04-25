@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,19 +32,19 @@ public class DashbordController {
 	}
 	
 	
-	@GetMapping("/projectStatutsstatsperCustomer")
+	@PostMapping("/projectStatutsstatsperCustomer")
 	public List<ProjectStats> getProjectstatsperClient (@RequestBody Member client){
 		return projet.getNumberClientPerProject(client);
 	}
 	
-	@GetMapping("/projectStatutsstatsperEmployee")
-	public List<ProjectStats> getProjectstatsperEmployee (@RequestBody Member client){
-		return projet.getNumberEmployeePerProject(client);
+	@PostMapping("/projectStatutsstatsperEmployee")
+	public List<ProjectStats> getProjectstatsperEmployee (@RequestBody Member employee){
+		return projet.getNumberEmployeePerProject(employee);
 	}
 	
-	@GetMapping("/projectStatutsstatsperManager")
-	public List<ProjectStats> getProjectstatsperManager (@RequestBody Member client){
-		return projet.getNumberManagerPerProject(client);
+	@PostMapping("/projectStatutsstatsperManager")
+	public List<ProjectStats> getProjectstatsperManager (@RequestBody Member manager){
+		return projet.getNumberManagerPerProject(manager);
 	}
 	@GetMapping("/getRiskyTask")
 	public List<Task> getRiskyTask (){

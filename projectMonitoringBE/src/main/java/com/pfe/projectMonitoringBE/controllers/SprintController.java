@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfe.projectMonitoringBE.Enums.ProjectStatus;
+import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.ISprint;
 import com.pfe.projectMonitoringBE.interfaces.ITask;
-import com.pfe.projectMonitoringBE.models.ProjectStats;
+import com.pfe.projectMonitoringBE.models.ProjectSprintStats;
 import com.pfe.projectMonitoringBE.models.SprintModel;
 import com.pfe.projectMonitoringBE.models.SprintStats;
 
@@ -41,8 +41,13 @@ public class SprintController {
 	@Autowired
 	private ITask serviceTask;
 
+	@GetMapping("/getAllSprintByStatus")
+	public SprintModel getAllSprintByStatus() {
+		return service.getAllSprintByStatus();
+	}
+	
 	@GetMapping("/getSprintByStatus")
-	public SprintModel getSprintByStatus(@RequestParam String email) {
+	public SprintModel getManagerSprintByStatus(@RequestParam String email) {
 		return service.getSprintByStatus(email);
 	}
 
@@ -115,6 +120,19 @@ public class SprintController {
 	@GetMapping("/getTasksBySprintId")
 	public List<Task> getTasksBySprintId(@RequestParam Integer sprintID) {
 		return service.getTasksBySprintId(sprintID);
+	}
+	
+	@GetMapping("/getProjectSprintStats")
+	public List<ProjectSprintStats> getProjectSprintStats() {
+		List<ProjectSprintStats> stats = new ArrayList<ProjectSprintStats>();
+		List<Sprint> sprints = service.getAllSprint();
+		
+		
+		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Created), SprintStatus.Created));
+		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.InProgress), SprintStatus.InProgress));
+		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Done), SprintStatus.Done));
+
+		return stats;
 	}
 
 	@GetMapping("/getCurrentSprintStats")
