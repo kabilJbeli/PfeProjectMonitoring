@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
-import com.pfe.projectMonitoringBE.entities.TaskComment;
 import com.pfe.projectMonitoringBE.interfaces.IEmail;
 import com.pfe.projectMonitoringBE.interfaces.ITask;
 
@@ -39,6 +38,12 @@ public class TaskController {
 		return service.getAllTask();
 	}
 
+	@GetMapping("/getTotalNumberOfTasks")
+	public Integer getTotalNumberOfTasks() {
+		return service.getAllTask().size();
+	}
+
+	
 	@GetMapping("/getTaskByReporter")
 	public List<Task> getTaskByReporter(@RequestParam String email) {
 		return service.getTaskByReporter(email);

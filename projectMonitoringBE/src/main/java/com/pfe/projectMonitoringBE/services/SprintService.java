@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
-import com.pfe.projectMonitoringBE.entities.Project;
-import com.pfe.projectMonitoringBE.entities.Report;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.ISprint;
-import com.pfe.projectMonitoringBE.models.ProjectStats;
+import com.pfe.projectMonitoringBE.models.ProjectSprintStats;
 import com.pfe.projectMonitoringBE.models.SprintModel;
 import com.pfe.projectMonitoringBE.models.SprintStats;
 import com.pfe.projectMonitoringBE.repositories.SprintRepository;
@@ -50,6 +48,40 @@ public class SprintService implements ISprint {
 	@Override
 	public void deleteSprint(Sprint sprint) {
 		repository.delete(sprint);
+	}
+
+
+	@Override
+	public SprintModel getAllSprintByStatus() {
+
+		SprintModel transformedSprint = new SprintModel();
+		LocalDateTime currentDate = LocalDateTime.now();
+		List<Sprint> sprints = repository.findAll();
+		List<Sprint> currentSprints = new ArrayList<Sprint>();
+		List<Sprint> previousSprints = new ArrayList<Sprint>();
+		List<Sprint> plannedSprints = new ArrayList<Sprint>();
+
+		sprints.forEach(sprint -> {
+			Period startPeriod = Period.between(sprint.getSprintStartDate().toLocalDate(), currentDate.toLocalDate());
+			Period endPeriod = Period.between(currentDate.toLocalDate(), sprint.getSprintEndDate().toLocalDate());
+
+			if (startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
+				currentSprints.add(sprint);
+			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
+					&& sprint.getStatus().equals(SprintStatus.Created)) {
+				plannedSprints.add(sprint);
+			} else {
+				previousSprints.add(sprint);
+			}
+
+		});
+
+		transformedSprint.setCurrentSprints(currentSprints);
+		transformedSprint.setPreviousSprints(previousSprints);
+		transformedSprint.setPlannedSprints(plannedSprints);
+
+		return transformedSprint;
 	}
 
 	@Override
@@ -95,6 +127,13 @@ public class SprintService implements ISprint {
 		return new SprintStats(statut, tasks.size());
 	}
 
+	
+	@Override
+	public ProjectSprintStats calculationProjectSprintStats(List<Sprint> sprints, SprintStatus statut) {
+		return new ProjectSprintStats(statut, sprints.size());
+	}
+
+	
 	@Override
 	public SprintModel getClientSprintByStatus(String email) {
 		// TODO Auto-generated method stub
@@ -186,6 +225,12 @@ public class SprintService implements ISprint {
 	@Override
 	public List<Sprint> getProjectSprints(Integer projectID) {
 		return repository.getProjectSprints(projectID, SprintStatus.Done);
+	}
+
+	@Override
+	public List<Sprint> findSprintByStatus(SprintStatus status) {
+		// TODO Auto-generated method stub
+		return repository.findSprintByStatus(status);
 	}
 
 }

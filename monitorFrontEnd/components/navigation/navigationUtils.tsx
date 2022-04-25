@@ -4,7 +4,7 @@ import Home from '../home/Home';
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Image, TouchableOpacity, View} from 'react-native';
-import Dashboard from '../dashboard/Dashboard';
+import Dashboard, {MainDashboardStack} from '../dashboard/Dashboard';
 import Sprint, {MainSprintStack} from '../sprint/Sprint';
 import {Props} from "../../utils";
 import ProfileInformation, {MainProfileStack} from "../profile/profileInformation";
@@ -178,7 +178,7 @@ export const DashboardStack = ({navigation}: Props,props:any) => {
 		<Stack.Navigator initialRouteName="Dashboard">
 			<Stack.Screen
 				name="Dashboard"
-				component={Dashboard}
+				component={MainDashboardStack}
 				options={{
 					title: 'Dashboard Management', //Set Header Title
 					headerLeft: () => (

@@ -1,6 +1,5 @@
 package com.pfe.projectMonitoringBE.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.Enums.DurationType;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
-import com.pfe.projectMonitoringBE.entities.Member;
-import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.entities.TaskDuration;
 import com.pfe.projectMonitoringBE.interfaces.ITask;

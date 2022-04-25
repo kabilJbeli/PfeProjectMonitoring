@@ -2,9 +2,11 @@ package com.pfe.projectMonitoringBE.interfaces;
 
 import java.util.List;
 
+import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
+import com.pfe.projectMonitoringBE.models.ProjectSprintStats;
 import com.pfe.projectMonitoringBE.models.SprintModel;
 import com.pfe.projectMonitoringBE.models.SprintStats;
 
@@ -32,4 +34,7 @@ public interface ISprint {
 	public List<Sprint> getProjectCurrentSprint(Integer projectID);
 	public Sprint getProjectCurrentSprintByEndAndStartDates(Integer projectID);
 	public List<Sprint> getProjectSprints(Integer projectID);
+	public SprintModel getAllSprintByStatus();
+	public ProjectSprintStats calculationProjectSprintStats(List<Sprint> sprints, SprintStatus statut);
+	public List<Sprint> findSprintByStatus(SprintStatus status);
 }

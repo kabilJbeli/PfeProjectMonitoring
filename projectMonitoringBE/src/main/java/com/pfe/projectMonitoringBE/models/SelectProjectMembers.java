@@ -1,7 +1,5 @@
 package com.pfe.projectMonitoringBE.models;
 
-import java.util.Set;
-
 import com.pfe.projectMonitoringBE.entities.Member;
 
 public class SelectProjectMembers {

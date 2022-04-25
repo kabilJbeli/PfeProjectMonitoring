@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pfe.projectMonitoringBE.Enums.Roles;
-import com.pfe.projectMonitoringBE.entities.Category;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.interfaces.IMember;
 import com.pfe.projectMonitoringBE.repositories.MemberRepository;
