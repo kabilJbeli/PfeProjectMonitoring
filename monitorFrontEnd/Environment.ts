@@ -1,4 +1,4 @@
 export default {
-  API_URL: 'http://10.0.2.2:8083',
-  KEYCLOAK_URL:'http://10.0.2.2:8080'
+  API_URL: 'https://witty-fox-76.loca.lt',
+  KEYCLOAK_URL:'http://bef3-197-23-249-117.ngrok.io'
 };

@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.IProject;
@@ -47,8 +50,8 @@ public class DashbordController {
 		return projet.getNumberManagerPerProject(manager);
 	}
 	@GetMapping("/getRiskyTask")
-	public List<Task> getRiskyTask (){
-		return taskService.getRiskyTask();
+	public List<Task> getRiskyTask(@RequestParam Roles role,@RequestParam String email){
+		return taskService.getRiskyTask(role,email);
 	}
 	
 	

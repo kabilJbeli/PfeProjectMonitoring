@@ -2,6 +2,7 @@ package com.pfe.projectMonitoringBE.interfaces;
 
 import java.util.List;
 
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 
@@ -26,7 +27,7 @@ public interface ITask {
 
 	public List<Task> getSpecificClientPendingTasks(String clientEmail);
 
-	public List<Task> getRiskyTask();
+	public List<Task> getRiskyTask(Roles role,String email);
 
 	public List<Task> getUnassignedSprintTasks(Integer projectID);
 	
