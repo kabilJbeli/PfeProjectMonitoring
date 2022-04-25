@@ -414,3 +414,4 @@
 2022-04-25 18:34:22,292 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-5) WFLYJCA0019: Stopped Driver service with driver-name = h2
 2022-04-25 18:34:22,396 FATAL [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0056: Server boot has failed in an unrecoverable manner; exiting. See previous messages for details.
 2022-04-25 18:34:22,502 INFO  [org.jboss.as] (MSC service thread 1-4) WFLYSRV0050: Keycloak 16.1.1 (WildFly Core 18.0.4.Final) stopped in 58ms
+2022-04-25 22:41:46,852 WARN  [org.keycloak.events] (default task-5) type=LOGIN_ERROR, realmId=projectMonitoring, clientId=projectMonitoringFE, userId=null, ipAddress=127.0.0.1, error=user_not_found, auth_method=openid-connect, auth_type=code, redirect_uri=monitorfrontend://homepage, code_id=87ba76d1-1939-4576-ae32-99369afa382f, username=k:jebali19004@pi.tn, authSessionParentId=87ba76d1-1939-4576-ae32-99369afa382f, authSessionTabId=lKqghzU2cTc

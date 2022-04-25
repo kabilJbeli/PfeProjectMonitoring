@@ -135,7 +135,7 @@ export const DashboardCharts = (props: any) => {
 			.then(response => {
 				console.log(response.data);
 				response.data.map((item: any) => {
-					localProjectStatusLabel.push(item.description);
+					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
 				setProjectStatusLabel(localProjectStatusLabel);
@@ -162,7 +162,7 @@ export const DashboardCharts = (props: any) => {
 			.then(response => {
 				console.log(response.data);
 				response.data.map((item: any) => {
-					localProjectStatusLabel.push(item.description);
+					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
 				setProjectStatusLabel(localProjectStatusLabel);
@@ -189,7 +189,7 @@ export const DashboardCharts = (props: any) => {
 			.then(response => {
 				console.log(response.data);
 				response.data.map((item: any) => {
-					localProjectStatusLabel.push(item.description);
+					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
 				setProjectStatusLabel(localProjectStatusLabel);
@@ -199,7 +199,24 @@ export const DashboardCharts = (props: any) => {
 				console.error(err);
 			});
 	}
-
+const getLabel = (label:string):string =>{
+		let transferedLabel:string='';
+		switch (label) {
+			case 'InMaintenance':{
+				transferedLabel='In Maintenance';
+				break;
+			}
+			case 'InProgress':{
+				transferedLabel='In Progress';
+				break;
+			}
+			default:{
+				transferedLabel=label;
+				break;
+			}
+		}
+		return transferedLabel;
+}
 	const getClientProjectStatus = (client: any) => {
 		const localProjectStatus: any[] = [];
 		const localProjectStatusLabel: any[] = [];
@@ -216,7 +233,7 @@ export const DashboardCharts = (props: any) => {
 			.then(response => {
 				console.log(response.data);
 				response.data.map((item: any) => {
-					localProjectStatusLabel.push(item.description);
+					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
 				setProjectStatusLabel(localProjectStatusLabel);
@@ -257,19 +274,15 @@ export const DashboardCharts = (props: any) => {
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
 					getAdministratorRiskyTasks('ADMINISTRATOR', email);
-
 				} else if (response.data.role === 'CLIENT') {
 					getClientProjectStatus(response.data);
 					getAdministratorRiskyTasks('CLIENT', email);
-
 				} else if (response.data.role === 'EMPLOYEE') {
 					getEmployeeProjectStatus(response.data);
 					getAdministratorRiskyTasks('EMPLOYEE', email);
-
 				} else if (response.data.role === 'MANAGER') {
 					getManagerProjectStatus(response.data);
 					getAdministratorRiskyTasks('MANAGER', email);
-
 				}
 			})
 			.catch((err: any) => {
@@ -298,10 +311,7 @@ export const DashboardCharts = (props: any) => {
 			<View>
 				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
 				<BarChart
-					style={{
-						borderRadius: 0,
-						marginTop: 15
-					}}
+
 					fromZero={true}
 					data={{
 						labels: projectStatusLabel,
@@ -312,12 +322,15 @@ export const DashboardCharts = (props: any) => {
 							}
 						]
 					}}
-					width={screenWidth - 30}
+					width={screenWidth}
 					height={300}
 					yAxisLabel=""
 					yAxisSuffix=""
 					yAxisInterval={1}
 					chartConfig={chartConfig}
+					showValuesOnTopOfBars={true}
+					withHorizontalLabels={true}
+					style={{ paddingRight: 0,paddingLeft:0 }}
 				/>
 			</View>
 			<View>
