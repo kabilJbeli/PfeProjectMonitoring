@@ -50,10 +50,10 @@ export const DashboardCharts = (props: any) => {
 			});
 	}
 
-	const getTotalNumberOfTasks = () => {
+	const getTotalNumberOfTasks = (role: string, email: string) => {
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/task/getTotalNumberOfTasks`,
+			url: `${Environment.API_URL}/api/task/getTotalNumberOfTasks?role=${role}&email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -69,12 +69,12 @@ export const DashboardCharts = (props: any) => {
 	}
 
 
-	const getSprintStats = (): any => {
+	const getSprintStats = (role: string, email: string): any => {
 		const sprintStats: any[] = [];
 
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/sprint/getProjectSprintStats`,
+			url: `${Environment.API_URL}/api/sprint/getProjectSprintStats?role=${role}&email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -199,24 +199,24 @@ export const DashboardCharts = (props: any) => {
 				console.error(err);
 			});
 	}
-const getLabel = (label:string):string =>{
-		let transferedLabel:string='';
+	const getLabel = (label: string): string => {
+		let transferedLabel: string = '';
 		switch (label) {
-			case 'InMaintenance':{
-				transferedLabel='In Maintenance';
+			case 'InMaintenance': {
+				transferedLabel = 'In Maintenance';
 				break;
 			}
-			case 'InProgress':{
-				transferedLabel='In Progress';
+			case 'InProgress': {
+				transferedLabel = 'In Progress';
 				break;
 			}
-			default:{
-				transferedLabel=label;
+			default: {
+				transferedLabel = label;
 				break;
 			}
 		}
 		return transferedLabel;
-}
+	}
 	const getClientProjectStatus = (client: any) => {
 		const localProjectStatus: any[] = [];
 		const localProjectStatusLabel: any[] = [];
@@ -253,8 +253,6 @@ const getLabel = (label:string):string =>{
 				getMember(parsedInfo.email);
 			}
 		});
-		getSprintStats();
-		getTotalNumberOfTasks();
 	}, [props]);
 
 
@@ -274,15 +272,23 @@ const getLabel = (label:string):string =>{
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
 					getAdministratorRiskyTasks('ADMINISTRATOR', email);
+					getTotalNumberOfTasks('ADMINISTRATOR', email);
+					getSprintStats('ADMINISTRATOR', email);
 				} else if (response.data.role === 'CLIENT') {
 					getClientProjectStatus(response.data);
 					getAdministratorRiskyTasks('CLIENT', email);
+					getTotalNumberOfTasks('CLIENT', email);
+					getSprintStats('CLIENT', email);
 				} else if (response.data.role === 'EMPLOYEE') {
 					getEmployeeProjectStatus(response.data);
 					getAdministratorRiskyTasks('EMPLOYEE', email);
+					getTotalNumberOfTasks('EMPLOYEE', email);
+					getSprintStats('EMPLOYEE', email);
 				} else if (response.data.role === 'MANAGER') {
 					getManagerProjectStatus(response.data);
 					getAdministratorRiskyTasks('MANAGER', email);
+					getTotalNumberOfTasks('MANAGER', email);
+					getSprintStats('MANAGER', email);
 				}
 			})
 			.catch((err: any) => {
@@ -307,7 +313,7 @@ const getLabel = (label:string):string =>{
 	}
 
 	return (
-		<View style={{paddingBottom: 15}}>
+		<View style={{paddingBottom: 30}}>
 			<View>
 				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
 				<BarChart
@@ -330,7 +336,7 @@ const getLabel = (label:string):string =>{
 					chartConfig={chartConfig}
 					showValuesOnTopOfBars={true}
 					withHorizontalLabels={true}
-					style={{ paddingRight: 0,paddingLeft:0 }}
+					style={{paddingRight: 0, paddingLeft: 0}}
 				/>
 			</View>
 			<View>
