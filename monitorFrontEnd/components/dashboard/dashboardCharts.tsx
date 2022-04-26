@@ -133,7 +133,6 @@ export const DashboardCharts = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data);
 				response.data.map((item: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
@@ -160,7 +159,6 @@ export const DashboardCharts = (props: any) => {
 			data: manager
 		})
 			.then(response => {
-				console.log(response.data);
 				response.data.map((item: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
@@ -187,7 +185,6 @@ export const DashboardCharts = (props: any) => {
 			data: employee
 		})
 			.then(response => {
-				console.log(response.data);
 				response.data.map((item: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
@@ -231,7 +228,6 @@ export const DashboardCharts = (props: any) => {
 			data: client
 		})
 			.then(response => {
-				console.log(response.data);
 				response.data.map((item: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
@@ -267,7 +263,6 @@ export const DashboardCharts = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setMemberInfo(response.data);
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
@@ -309,7 +304,11 @@ export const DashboardCharts = (props: any) => {
 
 	const getPercentage = (): number => {
 		const percentage = (riskyTasks.length * 100) / totalTasks;
-		return Math.round(percentage);
+		if(totalTasks && totalTasks!==null && riskyTasks.length !== null && percentage !== null){
+			return Math.round(percentage);
+		}else {
+			return 0;
+		}
 	}
 
 	return (
@@ -401,6 +400,5 @@ export const DashboardCharts = (props: any) => {
 				/>
 			</View>
 		</View>
-	)
-
+	);
 }

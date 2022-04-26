@@ -107,7 +107,6 @@ const PreviousSprintList = (props: any) => {
 				useQueryString: false,
 			},
 			params: {},
-			data: {}
 		})
 			.then(response => {
 
@@ -134,14 +133,13 @@ const PreviousSprintList = (props: any) => {
 		}];
 		if (loading) {
 			axios({
-				method: 'POST',
+				method: 'GET',
 				url: `${Environment.API_URL}/api/project/findByMember?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
 					useQueryString: false,
 				},
 				params: {},
-				data: {}
 			})
 				.then(response => {
 					response.data.map((item: any) => {
@@ -152,6 +150,7 @@ const PreviousSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error(err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -166,14 +165,13 @@ const PreviousSprintList = (props: any) => {
 		}];
 		if (loading) {
 			axios({
-				method: 'POST',
+				method: 'GET',
 				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
 					useQueryString: false,
 				},
 				params: {},
-				data: {}
 			})
 				.then(response => {
 					response.data.map((item: any) => {
@@ -184,6 +182,7 @@ const PreviousSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error(err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
