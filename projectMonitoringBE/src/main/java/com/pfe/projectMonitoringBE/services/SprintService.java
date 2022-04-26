@@ -233,4 +233,22 @@ public class SprintService implements ISprint {
 		return repository.findSprintByStatus(status);
 	}
 
+	@Override
+	public List<Sprint> findManagerSprintByStatus(String email, SprintStatus status) {
+		// TODO Auto-generated method stub
+		return repository.findManagerSprintByStatus(email, status);
+	}
+
+	@Override
+	public List<Sprint> findClientSprintByStatus(String email, SprintStatus status) {
+		// TODO Auto-generated method stub
+		return repository.findClientSprintByStatus(email, status);
+	}
+
+	@Override
+	public List<Sprint> findEmployeeSprintByStatus(String email, SprintStatus status) {
+		// TODO Auto-generated method stub
+		return repository.findEmployeeSprintByStatus(email, status);
+	}
+
 }

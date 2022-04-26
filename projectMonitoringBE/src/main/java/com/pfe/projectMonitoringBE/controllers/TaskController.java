@@ -41,57 +41,52 @@ public class TaskController {
 	}
 
 	@GetMapping("/getTotalNumberOfTasks")
-	public Integer getTotalNumberOfTasks(@RequestParam Roles role,@RequestParam String email) {
+	public Integer getTotalNumberOfTasks(@RequestParam Roles role, @RequestParam String email) {
 		List<Task> taskList = new ArrayList<Task>();
-			
+
 		switch (role) {
-		
-		case ADMINISTRATOR :{
+
+		case ADMINISTRATOR: {
 			taskList = service.getAllTask();
 			break;
 		}
-		case CLIENT :{
+		case CLIENT: {
 			taskList = service.getClientTask(email);
 			break;
 		}
-		case EMPLOYEE :{
-			taskList = service.getTaskByMember(email);	
+		case EMPLOYEE: {
+			taskList = service.getTaskByMember(email);
 			break;
 		}
-		
-		case MANAGER :{
-			taskList = service.getTaskByReporter(email);	
+
+		case MANAGER: {
+			taskList = service.getTaskByReporter(email);
 			break;
 		}
-		default:{
-			
+		default: {
 			break;
 		}
-		
+
 		}
-		
+
 		return taskList.size();
 	}
-	
 
 	@GetMapping("/getClientTotalNumberOfTasks")
 	public Integer getClientTotalNumberOfTasks(@RequestParam String email) {
 		return service.getClientTask(email).size();
 	}
 
-
-
 	@GetMapping("/getEmployeeTotalNumberOfTasks")
 	public Integer getEmployeeTotalNumberOfTasks(@RequestParam String email) {
 		return service.getTaskByMember(email).size();
 	}
 
-	
 	@GetMapping("/getManagerTotalNumberOfTasks")
 	public Integer getManagerTotalNumberOfTasks(@RequestParam String email) {
 		return service.getTaskByReporter(email).size();
 	}
-	
+
 	@GetMapping("/getTaskByReporter")
 	public List<Task> getTaskByReporter(@RequestParam String email) {
 		return service.getTaskByReporter(email);
@@ -169,7 +164,7 @@ public class TaskController {
 				emailService.sendSimpleMessage(task.getAssignee().getEmail(), "Task Status Changed",
 						"You  have changed the task '" + task.getTaskTitle() + "' status to  " + task.getTaskStatus());
 			}
-			
+
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 
 		} catch (NoSuchElementException e) {
@@ -203,20 +198,20 @@ public class TaskController {
 	}
 
 	@GetMapping("/getriskeyTask")
-	public List<Task> getriskeyTask(Roles role,String email) {
+	public List<Task> getriskeyTask(Roles role, String email) {
 
-		return service.getRiskyTask(role,email);
+		return service.getRiskyTask(role, email);
 
 	}
-	
+
 	@GetMapping("/getUnassignedSprintTasks")
 	public List<Task> getUnassignedSprintTasks(@RequestParam Integer projectID) {
 		return service.getUnassignedSprintTasks(projectID);
 	}
+
 	@GetMapping("/getProjectBacklog")
 	public List<Task> getProjectBacklog(@RequestParam Integer projectID) {
 		return service.getProjectBacklog(projectID);
 	}
-	
-	
+
 }

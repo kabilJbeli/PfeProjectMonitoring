@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Sprint;
@@ -45,7 +46,7 @@ public class SprintController {
 	public SprintModel getAllSprintByStatus() {
 		return service.getAllSprintByStatus();
 	}
-	
+
 	@GetMapping("/getSprintByStatus")
 	public SprintModel getManagerSprintByStatus(@RequestParam String email) {
 		return service.getSprintByStatus(email);
@@ -121,17 +122,57 @@ public class SprintController {
 	public List<Task> getTasksBySprintId(@RequestParam Integer sprintID) {
 		return service.getTasksBySprintId(sprintID);
 	}
-	
-	@GetMapping("/getProjectSprintStats")
-	public List<ProjectSprintStats> getProjectSprintStats() {
-		List<ProjectSprintStats> stats = new ArrayList<ProjectSprintStats>();
-		List<Sprint> sprints = service.getAllSprint();
-		
-		
-		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Created), SprintStatus.Created));
-		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.InProgress), SprintStatus.InProgress));
-		stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Done), SprintStatus.Done));
 
+	@GetMapping("/getProjectSprintStats")
+	public List<ProjectSprintStats> getProjectSprintStats(@RequestParam Roles role, @RequestParam String email) {
+		List<ProjectSprintStats> stats = new ArrayList<ProjectSprintStats>();
+
+		switch (role) {
+
+		case ADMINISTRATOR: {
+			stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Created),
+					SprintStatus.Created));
+			stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.InProgress),
+					SprintStatus.InProgress));
+			stats.add(service.calculationProjectSprintStats(service.findSprintByStatus(SprintStatus.Done),
+					SprintStatus.Done));
+			break;
+		}
+		case MANAGER: {
+
+			stats.add(service.calculationProjectSprintStats(
+					service.findManagerSprintByStatus(email, SprintStatus.Created), SprintStatus.Created));
+			stats.add(service.calculationProjectSprintStats(
+					service.findManagerSprintByStatus(email, SprintStatus.InProgress), SprintStatus.InProgress));
+			stats.add(service.calculationProjectSprintStats(service.findManagerSprintByStatus(email, SprintStatus.Done),
+					SprintStatus.Done));
+			break;
+		}
+		case CLIENT: {
+
+			stats.add(service.calculationProjectSprintStats(
+					service.findClientSprintByStatus(email, SprintStatus.Created), SprintStatus.Created));
+			stats.add(service.calculationProjectSprintStats(
+					service.findClientSprintByStatus(email, SprintStatus.InProgress), SprintStatus.InProgress));
+			stats.add(service.calculationProjectSprintStats(service.findClientSprintByStatus(email, SprintStatus.Done),
+					SprintStatus.Done));
+			break;
+		}
+		case EMPLOYEE: {
+
+			stats.add(service.calculationProjectSprintStats(
+					service.findEmployeeSprintByStatus(email, SprintStatus.Created), SprintStatus.Created));
+			stats.add(service.calculationProjectSprintStats(
+					service.findEmployeeSprintByStatus(email, SprintStatus.InProgress), SprintStatus.InProgress));
+			stats.add(service.calculationProjectSprintStats(
+					service.findEmployeeSprintByStatus(email, SprintStatus.Done), SprintStatus.Done));
+			break;
+		}
+		default: {
+			break;
+		}
+
+		}
 		return stats;
 	}
 
@@ -167,44 +208,40 @@ public class SprintController {
 	public List<Sprint> getProjectCurrentSprint(@RequestParam Integer projectID) {
 		return service.getProjectCurrentSprint(projectID);
 	}
-	
 
 	@GetMapping("/getProjectSprints")
 	public List<Sprint> getProjectSprints(@RequestParam Integer projectID) {
 		return service.getProjectSprints(projectID);
 	}
-	
-	
-	
-	
+
 	@GetMapping("/getProjectCurrentSprintByEndAndStartDates")
 	public ResponseEntity<Sprint> getProjectCurrentSprintByEndAndStartDates(@RequestParam Integer projectID) {
-		
+
 		try {
 			Sprint sprint = service.getProjectCurrentSprintByEndAndStartDates(projectID);
 			return new ResponseEntity<Sprint>(sprint, HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Sprint>(HttpStatus.NOT_FOUND);
 		}
-		
+
 	}
-	
+
 	@GetMapping("/getProjectCurrentSprintEndDate")
 	public ResponseEntity<LocalDateTime> getProjectCurrentSprintEndDate(@RequestParam Integer projectID) {
-		
+
 		try {
 			Sprint sprint = service.getProjectCurrentSprintByEndAndStartDates(projectID);
-			if(sprint != null) {
-				return new ResponseEntity<LocalDateTime>(sprint.getSprintEndDate(),HttpStatus.OK);
+			if (sprint != null) {
+				return new ResponseEntity<LocalDateTime>(sprint.getSprintEndDate(), HttpStatus.OK);
 
-			}else {
+			} else {
 				return new ResponseEntity<LocalDateTime>(HttpStatus.NOT_FOUND);
 
 			}
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<LocalDateTime>(HttpStatus.NOT_FOUND);
 		}
-		
+
 	}
 
 }
