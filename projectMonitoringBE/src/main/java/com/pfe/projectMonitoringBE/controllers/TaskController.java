@@ -1,5 +1,6 @@
 package com.pfe.projectMonitoringBE.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,10 +41,56 @@ public class TaskController {
 	}
 
 	@GetMapping("/getTotalNumberOfTasks")
-	public Integer getTotalNumberOfTasks() {
-		return service.getAllTask().size();
+	public Integer getTotalNumberOfTasks(@RequestParam Roles role,@RequestParam String email) {
+		List<Task> taskList = new ArrayList<Task>();
+			
+		switch (role) {
+		
+		case ADMINISTRATOR :{
+			taskList = service.getAllTask();
+			break;
+		}
+		case CLIENT :{
+			taskList = service.getClientTask(email);
+			break;
+		}
+		case EMPLOYEE :{
+			taskList = service.getTaskByMember(email);	
+			break;
+		}
+		
+		case MANAGER :{
+			taskList = service.getTaskByReporter(email);	
+			break;
+		}
+		default:{
+			
+			break;
+		}
+		
+		}
+		
+		return taskList.size();
+	}
+	
+
+	@GetMapping("/getClientTotalNumberOfTasks")
+	public Integer getClientTotalNumberOfTasks(@RequestParam String email) {
+		return service.getClientTask(email).size();
 	}
 
+
+
+	@GetMapping("/getEmployeeTotalNumberOfTasks")
+	public Integer getEmployeeTotalNumberOfTasks(@RequestParam String email) {
+		return service.getTaskByMember(email).size();
+	}
+
+	
+	@GetMapping("/getManagerTotalNumberOfTasks")
+	public Integer getManagerTotalNumberOfTasks(@RequestParam String email) {
+		return service.getTaskByReporter(email).size();
+	}
 	
 	@GetMapping("/getTaskByReporter")
 	public List<Task> getTaskByReporter(@RequestParam String email) {

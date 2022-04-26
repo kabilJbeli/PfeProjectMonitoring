@@ -50,10 +50,10 @@ export const DashboardCharts = (props: any) => {
 			});
 	}
 
-	const getTotalNumberOfTasks = () => {
+	const getTotalNumberOfTasks = (role:string,email:string) => {
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/task/getTotalNumberOfTasks`,
+			url: `${Environment.API_URL}/api/task/getTotalNumberOfTasks?role=${role}&email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -254,7 +254,6 @@ const getLabel = (label:string):string =>{
 			}
 		});
 		getSprintStats();
-		getTotalNumberOfTasks();
 	}, [props]);
 
 
@@ -274,15 +273,20 @@ const getLabel = (label:string):string =>{
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
 					getAdministratorRiskyTasks('ADMINISTRATOR', email);
+					getTotalNumberOfTasks('ADMINISTRATOR', email);
+
 				} else if (response.data.role === 'CLIENT') {
 					getClientProjectStatus(response.data);
 					getAdministratorRiskyTasks('CLIENT', email);
+					getTotalNumberOfTasks('CLIENT', email);
 				} else if (response.data.role === 'EMPLOYEE') {
 					getEmployeeProjectStatus(response.data);
 					getAdministratorRiskyTasks('EMPLOYEE', email);
+					getTotalNumberOfTasks('EMPLOYEE', email);
 				} else if (response.data.role === 'MANAGER') {
 					getManagerProjectStatus(response.data);
 					getAdministratorRiskyTasks('MANAGER', email);
+					getTotalNumberOfTasks('MANAGER', email);
 				}
 			})
 			.catch((err: any) => {
@@ -307,7 +311,7 @@ const getLabel = (label:string):string =>{
 	}
 
 	return (
-		<View style={{paddingBottom: 15}}>
+		<View style={{paddingBottom: 30}}>
 			<View>
 				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
 				<BarChart
