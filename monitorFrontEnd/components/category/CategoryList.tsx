@@ -43,7 +43,7 @@ const CategoryList = () => {
                         setLoading(false);
                     })
                     .catch((err: any) => {
-                        console.error(err);
+                        console.error('/api/category/all',err);
 
                     });
                 setTimeout(() => setLoading(false), 1000);
@@ -72,7 +72,7 @@ const CategoryList = () => {
                 handleModal(true);
                 setTitleMessage("Warning");
                 setMessage("Can't remove this category as it's attached to other tasks");
-                console.error(err);
+                console.error('/api/category/delete/',err);
             });
     };
 

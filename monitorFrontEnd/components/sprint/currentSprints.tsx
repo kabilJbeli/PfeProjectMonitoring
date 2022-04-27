@@ -44,7 +44,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getSprintByStatus',err);
 			});
 	};
 
@@ -66,7 +66,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getClientSprintByStatus',err);
 			});
 	};
 
@@ -88,7 +88,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -119,7 +119,7 @@ const CurrentSprintList = (props: any) => {
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/project/getProjectsByClient',err);
 			});
 	};
 
@@ -150,7 +150,7 @@ const CurrentSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.log(err);
+					console.error('api/project/findByMember',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -165,7 +165,7 @@ const CurrentSprintList = (props: any) => {
 		}];
 		if (loading) {
 			axios({
-				method: 'GET',
+				method: 'POST',
 				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const CurrentSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.log(err);
+					console.error('api/project/getProjectsByProjectManager',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}

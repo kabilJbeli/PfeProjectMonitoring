@@ -79,7 +79,7 @@ export const ClientTaskListComponent = (props: any) => {
 				setMainTasks(response.data);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getAllPendingTasksCreatedByClient',err);
 			});
 
 	}

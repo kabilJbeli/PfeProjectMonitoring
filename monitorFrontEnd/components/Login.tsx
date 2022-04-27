@@ -53,7 +53,7 @@ const Login = (props: any) => {
 				props.changeSignInStatus(false);
 				setError(true);
 				_storeData('connectedMember', '');
-				console.error(err);
+				console.error('/api/member/login/',err);
 			});
 	};
 	const renderAuthResponse = () => {

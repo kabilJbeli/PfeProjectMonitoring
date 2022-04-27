@@ -43,7 +43,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getSprintByStatus',err);
 			});
 	};
 
@@ -65,7 +65,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getClientSprintByStatus',err);
 			});
 	};
 
@@ -87,7 +87,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -118,7 +118,7 @@ const PlannedSprintList = (props: any) => {
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/project/getProjectsByClient',err);
 			});
 	};
 
@@ -150,7 +150,7 @@ const PlannedSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.error(err);
+					console.error('api/project/findByMember',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -165,7 +165,7 @@ const PlannedSprintList = (props: any) => {
 		}];
 		if (loading) {
 			axios({
-				method: 'GET',
+				method: 'POST',
 				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ const PlannedSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.error(err);
+					console.error('api/project/getProjectsByProjectManager',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}

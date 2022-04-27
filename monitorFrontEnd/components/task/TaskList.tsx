@@ -43,7 +43,7 @@ const TaskList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getTaskByReporter',err);
 			});
 	};
 
@@ -66,7 +66,7 @@ const TaskList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getClientTask',err);
 			});
 	};
 
@@ -89,7 +89,7 @@ const TaskList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getTaskByMember',err);
 			});
 	};
 	useEffect(() => {

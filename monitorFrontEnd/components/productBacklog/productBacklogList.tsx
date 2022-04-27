@@ -44,7 +44,7 @@ const ProductBacklogList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getProjectBacklog',err);
 			});
 	};
 

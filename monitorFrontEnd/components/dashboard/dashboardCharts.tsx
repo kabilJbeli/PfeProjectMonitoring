@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Dimensions, FlatList, Pressable, ScrollView, Text, View} from "react-native";
+import {ActivityIndicator, Dimensions, FlatList, Pressable, ScrollView, StyleSheet, Text, View} from "react-native";
 import {BarChart, LineChart, PieChart} from "react-native-chart-kit";
 import axios from "axios";
 import Environment from "../../Environment";
@@ -27,6 +27,11 @@ export const DashboardCharts = (props: any) => {
 	const [userInfo, setUserInfo] = useState<any>({});
 	const [memberInfo, setMemberInfo] = useState<any>({});
 	const [totalTasks, setTotalTasks] = useState<number>(0);
+	const [loadingProject, setLoadingProject] = useState<boolean>(true);
+	const [loadingSprint, setLoadingSprint] = useState<boolean>(true);
+	const [loadingRiskyTasks, setLoadingRiskyTasks] = useState<boolean>(true);
+	const [loadingPercentage, setLoadingPercentage] = useState<boolean>(true);
+
 
 	const [riskyTasks, setRiskyTasks] = useState<any[]>([]);
 	const navigation = useNavigation();
@@ -44,9 +49,10 @@ export const DashboardCharts = (props: any) => {
 		})
 			.then(response => {
 				setRiskyTasks(response.data);
+				setLoadingRiskyTasks(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('/api/dashbord/getRiskyTask?role', err);
 			});
 	}
 
@@ -62,9 +68,10 @@ export const DashboardCharts = (props: any) => {
 		})
 			.then(response => {
 				setTotalTasks(response.data);
+				setLoadingPercentage(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getTotalNumberOfTasks', err);
 			});
 	}
 
@@ -109,14 +116,14 @@ export const DashboardCharts = (props: any) => {
 							break;
 						}
 					}
-
+					setLoadingSprint(false);
 					sprintStats.push(statData);
 
 				});
 				setPieChartData(sprintStats);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getProjectSprintStats', err);
 			});
 	}
 
@@ -137,11 +144,13 @@ export const DashboardCharts = (props: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
+
+				setLoadingProject(false);
 				setProjectStatusLabel(localProjectStatusLabel);
 				setProjectStatus(localProjectStatus);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/dashbord/projectStatutsstats', err);
 			});
 	}
 
@@ -163,11 +172,13 @@ export const DashboardCharts = (props: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
+				setLoadingProject(false);
+
 				setProjectStatusLabel(localProjectStatusLabel);
 				setProjectStatus(localProjectStatus);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/dashbord/projectStatutsstatsperManager', err);
 			});
 	}
 
@@ -189,11 +200,13 @@ export const DashboardCharts = (props: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
+				setLoadingProject(false);
+
 				setProjectStatusLabel(localProjectStatusLabel);
 				setProjectStatus(localProjectStatus);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/dashbord/projectStatutsstatsperEmployee', err);
 			});
 	}
 	const getLabel = (label: string): string => {
@@ -232,11 +245,12 @@ export const DashboardCharts = (props: any) => {
 					localProjectStatusLabel.push(getLabel(item.description));
 					localProjectStatus.push(item.number);
 				});
+				setLoadingProject(false);
 				setProjectStatusLabel(localProjectStatusLabel);
 				setProjectStatus(localProjectStatus);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/dashbord/projectStatutsstatsperCustomer', err);
 			});
 	}
 
@@ -287,9 +301,10 @@ export const DashboardCharts = (props: any) => {
 				}
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/member/getMemberByEmail', err);
 			});
 	}
+
 	const FlatListItemSeparator = () => {
 		return (
 			<View
@@ -302,67 +317,67 @@ export const DashboardCharts = (props: any) => {
 		);
 	};
 
-	const getPercentage = (): number => {
-		const percentage = (riskyTasks.length * 100) / totalTasks;
-		if(totalTasks && totalTasks!==null && riskyTasks.length !== null && percentage !== null){
-			return Math.round(percentage);
-		}else {
-			return 0;
+	const getPercentage = (): string => {
+		let returnedValue: any;
+
+		if (loadingPercentage) {
+			returnedValue = (<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#d81e05"/>
+			</View>);
+		} else {
+			const percentage = (riskyTasks.length * 100) / totalTasks;
+			if (totalTasks && totalTasks !== null && riskyTasks.length !== null && percentage !== null) {
+				returnedValue = Math.round(percentage) + '%';
+			} else {
+				returnedValue = '0%';
+			}
 		}
+		return returnedValue;
 	}
 
-	return (
-		<View style={{paddingBottom: 30}}>
-			<View>
-				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
-				<BarChart
+	const getProjectByStatus = (): any => {
+		let returnedValue: any;
+		if (loadingProject) {
+			returnedValue = (<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#d81e05"/>
+			</View>);
+		} else {
+			returnedValue = (<BarChart
+				fromZero={true}
+				data={{
+					labels: projectStatusLabel,
+					datasets: [
+						{
+							data: projectStatus,
+							strokeWidth: 0
+						}
+					]
+				}}
+				width={screenWidth}
+				height={300}
+				yAxisLabel=""
+				yAxisSuffix=""
+				yAxisInterval={1}
+				chartConfig={chartConfig}
+				showValuesOnTopOfBars={true}
+				withHorizontalLabels={true}
+				style={{paddingRight: 0, paddingLeft: 0}}
+			/>)
+		}
 
-					fromZero={true}
-					data={{
-						labels: projectStatusLabel,
-						datasets: [
-							{
-								data: projectStatus,
-								strokeWidth: 0
-							}
-						]
-					}}
-					width={screenWidth}
-					height={300}
-					yAxisLabel=""
-					yAxisSuffix=""
-					yAxisInterval={1}
-					chartConfig={chartConfig}
-					showValuesOnTopOfBars={true}
-					withHorizontalLabels={true}
-					style={{paddingRight: 0, paddingLeft: 0}}
-				/>
-			</View>
-			<View>
-				<Text>Sprints by status:</Text>
-				<PieChart
-					data={pieChartData}
-					width={screenWidth}
-					height={200}
-					chartConfig={chartConfig}
-					accessor={'value'}
-					backgroundColor={'transparent'}
-					center={[0, 0]}
-					hasLegend={true}
-					paddingLeft={'15'}
+		return returnedValue
+	}
 
-				/>
-			</View>
-			<View>
-				<Text style={{paddingBottom: 10}}>Percentage of risky tasks of total tasks:</Text>
-				<View style={{
-					width: '100%', alignItems: 'center', justifyContent: 'center', minHeight: 150
-				}}>
-					<Text style={{fontWeight: 'bold', fontSize: 48}}>{getPercentage() || 0}%</Text>
-				</View>
-			</View>
-			<View>
-				<Text style={{paddingBottom: 10}}>Risky tasks:</Text>
+
+	const getRiskyTasks = ():any=>{
+
+		let returnedValue: any;
+		if (loadingRiskyTasks) {
+			returnedValue = (<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#d81e05"/>
+			</View>);
+		} else {
+			returnedValue = (
 				<FlatList
 					keyExtractor={(item, index) => index.toString()}
 					data={riskyTasks || []}
@@ -397,8 +412,74 @@ export const DashboardCharts = (props: any) => {
 
 					)}
 
-				/>
+				/>)
+		}
+
+		return returnedValue
+	}
+
+
+	const getSprintByStatus = (): any => {
+		let returnedValue: any;
+		if (loadingSprint) {
+			returnedValue = (<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#d81e05"/>
+			</View>);
+		} else {
+			returnedValue = (
+				<PieChart
+					data={pieChartData}
+					width={screenWidth}
+					height={200}
+					chartConfig={chartConfig}
+					accessor={'value'}
+					backgroundColor={'transparent'}
+					center={[0, 0]}
+					hasLegend={true}
+					paddingLeft={'15'}
+
+				/>)
+		}
+
+		return returnedValue
+	}
+	return (
+		<View style={{paddingBottom: 30}}>
+			<View>
+				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
+				{getProjectByStatus()}
+			</View>
+			<View>
+				<Text>Sprints by status:</Text>
+				{getSprintByStatus()}
+			</View>
+			<View>
+				<Text style={{paddingBottom: 10}}>Percentage of risky tasks of total tasks:</Text>
+				<View style={{
+					width: '100%', alignItems: 'center', justifyContent: 'center', minHeight: 150
+				}}>
+					<Text style={{fontWeight: 'bold', fontSize: 48}}>{ getPercentage()}</Text>
+				</View>
+			</View>
+			<View>
+				<Text style={{paddingBottom: 10}}>Risky tasks:</Text>
+				{getRiskyTasks()}
 			</View>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	customMargin: {
+		marginTop: 15,
+		paddingBottom: 0,
+		marginBottom: 0,
+	},
+	loadingContainer: {
+		display: 'flex',
+		height: 200,
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+	},
+});

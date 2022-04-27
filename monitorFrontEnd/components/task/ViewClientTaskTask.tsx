@@ -64,7 +64,7 @@ export const ViewClientTaskComponent = (props: any) => {
 				});
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/member/getMemberByEmail',err);
 			});
 	}
 
@@ -95,7 +95,7 @@ export const ViewClientTaskComponent = (props: any) => {
 		const localMemberData: any[] = [];
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/project/findProjectMembers?projectId=${projectId}`,
+			url: `${Environment.API_URL}/api/member/getMemberByEmail?projectId=${projectId}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -109,7 +109,7 @@ export const ViewClientTaskComponent = (props: any) => {
 				setMembers(localMemberData);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/member/getMemberByEmail',err);
 			});
 	}
 
@@ -148,7 +148,7 @@ export const ViewClientTaskComponent = (props: any) => {
 				setTask(defaultTask);
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/task/update',error);
 		});
 	}
 
@@ -179,7 +179,7 @@ export const ViewClientTaskComponent = (props: any) => {
 				setPriorities(priorityLocal);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/priority/all',err);
 
 			});
 	};

@@ -43,7 +43,7 @@ const PreviousSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getSprintByStatus',err);
 			});
 	};
 
@@ -65,7 +65,7 @@ const PreviousSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getClientSprintByStatus',err);
 			});
 	};
 
@@ -87,7 +87,7 @@ const PreviousSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -101,7 +101,7 @@ const PreviousSprintList = (props: any) => {
 		}];
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/project/getProjectsByClient?email=${userInfoParam.email}`,
+			url: `${Environment.API_URL}/api/sprint/getEmployeeSprintByStatus?email=${userInfoParam.email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -118,7 +118,7 @@ const PreviousSprintList = (props: any) => {
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -150,7 +150,7 @@ const PreviousSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.error(err);
+					console.error('api/project/findByMember',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -163,17 +163,19 @@ const PreviousSprintList = (props: any) => {
 				projectTitle:'ALL'
 			}
 		}];
-		if (loading) {
+
 			axios({
-				method: 'GET',
+				method: 'POST',
 				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
 					useQueryString: false,
 				},
 				params: {},
+				data:{}
 			})
 				.then(response => {
+					console.log('getProjectsByProjectManager ========>',response.data)
 					response.data.map((item: any) => {
 						localProject.push({
 							label: item.projectTitle, value: item
@@ -182,10 +184,9 @@ const PreviousSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
-					console.error(err);
+					console.error('api/project/getProjectsByProjectManager',err);
 				});
-			setTimeout(() => setLoading(false), 1000);
-		}
+
 	};
 
 	const FlatListItemSeparator = () => {

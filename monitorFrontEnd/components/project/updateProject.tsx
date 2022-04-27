@@ -57,7 +57,7 @@ const UpdateProjectScreen = (props: any) => {
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
-				console.error(error);
+				console.error('api/member/getMemberByRole',error);
 			});
 		})
 
@@ -70,7 +70,7 @@ const UpdateProjectScreen = (props: any) => {
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
-				console.error(error);
+				console.error('api/member/getProjectManagers',error);
 			});
 		});
 	}
@@ -134,7 +134,7 @@ const UpdateProjectScreen = (props: any) => {
 				setState({project: res.data});
 				setLoading(false);
 			}).catch((error: any) => {
-			console.error(error);
+			console.error('api/project',error);
 		});
 	}
 
@@ -160,7 +160,7 @@ const UpdateProjectScreen = (props: any) => {
 				showToastWithGravity('Project Successfully Updated');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/project/update',error);
 		});
 	};
 

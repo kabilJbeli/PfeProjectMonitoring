@@ -1,4 +1,4 @@
-package com.pfe.projectMonitoringBE.keycloak;
+package com.pfe.projectMonitoringBE.security;
 
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -50,10 +50,7 @@ public class SpringSecurity extends KeycloakWebSecurityConfigurerAdapter {
 
 		super.configure(http);
 
-		http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll().and()	      
-	      .formLogin().disable()
-	      .httpBasic().disable()
-	      .logout().disable();;
+		http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
 
 	}
 }

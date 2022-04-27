@@ -69,7 +69,8 @@ public class SprintService implements ISprint {
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
 			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
-					&& sprint.getStatus().equals(SprintStatus.Created)) {
+					&& sprint.getStatus().equals(SprintStatus.Created) || startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+							&& sprint.getStatus().equals(SprintStatus.Created) ) {
 				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);
@@ -102,7 +103,8 @@ public class SprintService implements ISprint {
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
 			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
-					&& sprint.getStatus().equals(SprintStatus.Created)) {
+					&& sprint.getStatus().equals(SprintStatus.Created) || startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+							&& sprint.getStatus().equals(SprintStatus.Created) ) {
 				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);
@@ -153,7 +155,8 @@ public class SprintService implements ISprint {
 					&& sprint.getStatus().equals(SprintStatus.InProgress)) {
 				currentSprints.add(sprint);
 			} else if (startPeriod.getDays() < 0 && endPeriod.getDays() >= 0
-					&& sprint.getStatus().equals(SprintStatus.Created)) {
+					&& sprint.getStatus().equals(SprintStatus.Created) || startPeriod.getDays() >= 0 && endPeriod.getDays() >= 0
+							&& sprint.getStatus().equals(SprintStatus.Created) ) {
 				plannedSprints.add(sprint);
 			} else {
 				previousSprints.add(sprint);

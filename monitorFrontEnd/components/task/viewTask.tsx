@@ -226,7 +226,7 @@ const ViewTask = (props: any) => {
 
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/taskDuration/findTaskDurationByTasks',err);
 			});
 
 	}
@@ -283,7 +283,7 @@ const ViewTask = (props: any) => {
 				});
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/member/getMemberByEmail',err);
 			});
 
 	}
@@ -326,7 +326,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Task Successfully Updated');
 			})
 			.catch((err: any) => {
-				console.error(err)
+				console.error('api/task/update',err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -355,7 +355,7 @@ const ViewTask = (props: any) => {
 				getSelectedProjectMembers(response.data.project.projectID);
 			})
 			.catch((err: any) => {
-				console.error(err)
+				console.error('api/task',err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -449,7 +449,7 @@ const ViewTask = (props: any) => {
 				setComment('');
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/taskComment/add',err);
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -556,7 +556,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Log In Duration Successfully');
 			})
 			.catch((err: any) => {
-				console.error(err)
+				console.error('api/taskDuration/add`',err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -586,7 +586,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Status Successfully Updated');
 			})
 			.catch((err: any) => {
-				console.error(err)
+				console.error('api/task/changeTaskStatus',err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}

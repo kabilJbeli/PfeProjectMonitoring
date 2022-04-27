@@ -45,7 +45,7 @@ const PriorityList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/priority/all',err);
 
 			});
 	};
@@ -75,7 +75,7 @@ const PriorityList = (props: any) => {
 				setTitleMessage("Warning")
 
 				setMessage("Can't remove this priority as it's attached to other tasks");
-				console.error(err)
+				console.error('api/priority/delete',err)
 			});
 	};
 

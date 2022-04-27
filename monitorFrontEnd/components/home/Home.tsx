@@ -47,7 +47,7 @@ const Home = (props: any) => {
 
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/member/getMemberByEmail',err);
 			});
 
 	}

@@ -30,7 +30,7 @@ export const updatePriorityComponent = (props: any) => {
 				navigation.navigate('Priority');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/priority/update',error);
 		});
 	}
 	const getButtonStatus = ():boolean=>{
@@ -59,7 +59,7 @@ const getPriorityInfo = (priorityID:any)=>{
 
 		}).catch((error: any) => {
 		showToastWithGravity('An Error Has Occurred!!!');
-		console.error(error);
+		console.error('api/priority',error);
 	});
 }
 	return (
