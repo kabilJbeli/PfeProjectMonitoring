@@ -29,7 +29,7 @@ const AddProjectStatus = () => {
 				setState(defaultState);
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/projectStatus/add',error);
 		});
 	};
 	return (

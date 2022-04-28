@@ -63,7 +63,7 @@ const AddProjectComponent = (props: any) => {
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
-				console.error(error);
+				console.error('api/member/getMemberByRole',error);
 			});
 		})
 
@@ -77,7 +77,7 @@ const AddProjectComponent = (props: any) => {
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
-				console.error(error);
+				console.error('api/member/getProjectManagers',error);
 			});
 		})
 
@@ -125,7 +125,7 @@ const AddProjectComponent = (props: any) => {
 				setExpectedEndDate(new Date());
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/project/add',error);
 		});
 	};
 

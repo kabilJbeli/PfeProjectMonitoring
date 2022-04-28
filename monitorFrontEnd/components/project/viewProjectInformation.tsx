@@ -43,7 +43,7 @@ const ViewProjectInformation = (props: any) => {
 				.then((res: any) => {
 					resolve(res.data);
 				}).catch((error: any) => {
-				console.error(error);
+				console.error('api/member/getMemberByRole',error);
 			});
 		})
 

@@ -160,7 +160,7 @@ const ProjectsList = (props: any) => {
 				handleModal(true);
 
 				setMessage("Can't remove this project as it's attached to other entities");
-				console.error(err);
+				console.error('api/project/delete',err);
 			});
 	};
 

@@ -86,7 +86,7 @@ const UserManagement = ( props: any) => {
 				handleModal(true);
 				setTitleMessage("Warning");
 				setMessage("Can't remove this user as it's attached to other entities");
-				console.error(err);
+				console.error('api/keycloak/user',err);
 			});
 	};
 

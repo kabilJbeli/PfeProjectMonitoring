@@ -84,7 +84,7 @@ const ProjectStatus = () => {
 						setLoading(false);
 					})
 					.catch((err: any) => {
-						console.error(err);
+						console.error('/api/projectStatus/all',err);
 
 					});
 				setTimeout(() => setLoading(false), 1000);

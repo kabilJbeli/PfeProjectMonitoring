@@ -59,7 +59,7 @@ const MyPendingTasksList = (props:any)=>{
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/project/getProjectsByClient?emai',err);
 			});
 	};
 
@@ -81,7 +81,7 @@ const MyPendingTasksList = (props:any)=>{
 				setMainTasks(response.data);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/task/getSpecificClientPendingTasks',err);
 			});
 
 	}

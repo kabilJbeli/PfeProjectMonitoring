@@ -51,7 +51,7 @@ export const updateUserComponent = (props: any) => {
 				setTitleMessage('Error');
 				setMessage('An error has occurred during the update of the user role');
 				setModalVisible(true);
-				console.error(err);
+				console.error('api/keycloak/updateRole',err);
 			});
 
 	}

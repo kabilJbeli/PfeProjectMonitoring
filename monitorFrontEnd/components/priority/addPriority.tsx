@@ -27,7 +27,7 @@ const AddPriority = () => {
 				navigation.navigate('Priority');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/priority/add',error);
 		});
 	}
 	const getButtonStatus = ():boolean=>{

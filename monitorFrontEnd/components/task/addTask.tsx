@@ -62,7 +62,7 @@ const AddTask = (props: any) => {
 				setPriorities(priorityLocal);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/priority/all',err);
 
 			});
 	};
@@ -102,7 +102,7 @@ const AddTask = (props: any) => {
 
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('api/task/add',error);
 		});
 	}
 	const cancelTask = () => {

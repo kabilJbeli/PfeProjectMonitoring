@@ -84,7 +84,7 @@ const ViewSprint = (props: any) => {
 				}, 100);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getTasksBySprintId',err);
 			});
 	}
 
@@ -162,7 +162,7 @@ const ViewSprint = (props: any) => {
 				setPieChartData(sprintStats);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getCurrentSprintStats',err);
 			});
 	}
 

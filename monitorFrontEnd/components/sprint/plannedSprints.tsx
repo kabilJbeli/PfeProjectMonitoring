@@ -43,7 +43,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getSprintByStatus',err);
 			});
 	};
 
@@ -65,7 +65,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getClientSprintByStatus',err);
 			});
 	};
 
@@ -87,7 +87,7 @@ const PlannedSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -107,7 +107,6 @@ const PlannedSprintList = (props: any) => {
 				useQueryString: false,
 			},
 			params: {},
-			data: {}
 		})
 			.then(response => {
 
@@ -119,7 +118,7 @@ const PlannedSprintList = (props: any) => {
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/project/getProjectsByClient',err);
 			});
 	};
 
@@ -134,14 +133,13 @@ const PlannedSprintList = (props: any) => {
 		}];
 		if (loading) {
 			axios({
-				method: 'POST',
+				method: 'GET',
 				url: `${Environment.API_URL}/api/project/findByMember?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
 					useQueryString: false,
 				},
 				params: {},
-				data: {}
 			})
 				.then(response => {
 					response.data.map((item: any) => {
@@ -152,6 +150,7 @@ const PlannedSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error('api/project/findByMember',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -173,7 +172,6 @@ const PlannedSprintList = (props: any) => {
 					useQueryString: false,
 				},
 				params: {},
-				data: {}
 			})
 				.then(response => {
 					response.data.map((item: any) => {
@@ -184,6 +182,7 @@ const PlannedSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error('api/project/getProjectsByProjectManager',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}

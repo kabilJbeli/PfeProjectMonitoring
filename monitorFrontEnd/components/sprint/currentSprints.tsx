@@ -44,7 +44,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getSprintByStatus',err);
 			});
 	};
 
@@ -66,7 +66,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getClientSprintByStatus',err);
 			});
 	};
 
@@ -88,7 +88,7 @@ const CurrentSprintList = (props: any) => {
 				setLoading(false);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/sprint/getEmployeeSprintByStatus',err);
 			});
 	};
 
@@ -96,7 +96,7 @@ const CurrentSprintList = (props: any) => {
 		// Update the document title using the broconwser API
 		const localProject: any = [{
 			label: 'ALL', value: {
-				projectTitle:'ALL'
+				projectTitle: 'ALL'
 			}
 		}];
 		axios({
@@ -110,7 +110,7 @@ const CurrentSprintList = (props: any) => {
 			data: {}
 		})
 			.then(response => {
-
+				console.log(response.data);
 				response.data.map((item: any) => {
 					localProject.push({
 						label: item.projectTitle, value: item
@@ -119,29 +119,27 @@ const CurrentSprintList = (props: any) => {
 				setProjects(localProject);
 			})
 			.catch((err: any) => {
-				console.error(err);
+				console.error('api/project/getProjectsByClient',err);
 			});
 	};
-
 
 
 	const getEmployeeProjects = (userInfoParam?: any) => {
 		// Update the document title using the broconwser API
 		const localProject: any = [{
 			label: 'ALL', value: {
-				projectTitle:'ALL'
+				projectTitle: 'ALL'
 			}
 		}];
 		if (loading) {
 			axios({
-				method: 'POST',
+				method: 'GET',
 				url: `${Environment.API_URL}/api/project/findByMember?email=${userInfoParam.email}`,
 				headers: {
 					'Content-Type': 'application/json',
 					useQueryString: false,
 				},
 				params: {},
-				data: {}
 			})
 				.then(response => {
 					response.data.map((item: any) => {
@@ -152,6 +150,7 @@ const CurrentSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error('api/project/findByMember',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -161,7 +160,7 @@ const CurrentSprintList = (props: any) => {
 		// Update the document title using the broconwser API
 		const localProject: any = [{
 			label: 'ALL', value: {
-				projectTitle:'ALL'
+				projectTitle: 'ALL'
 			}
 		}];
 		if (loading) {
@@ -184,6 +183,7 @@ const CurrentSprintList = (props: any) => {
 					setProjects(localProject);
 				})
 				.catch((err: any) => {
+					console.error('api/project/getProjectsByProjectManager',err);
 				});
 			setTimeout(() => setLoading(false), 1000);
 		}
@@ -205,13 +205,13 @@ const CurrentSprintList = (props: any) => {
 			let parsedInfo = JSON.parse(info)
 			if (parsedInfo !== undefined) {
 				setUserInfo(parsedInfo);
-				if(parsedInfo.roles.includes('MANAGER')){
+				if (parsedInfo.roles.includes('MANAGER')) {
 					getProjectManagersSprint(parsedInfo.email);
 					getManagerProjects(parsedInfo);
-				}else if (parsedInfo.roles.includes('CLIENT')){
+				} else if (parsedInfo.roles.includes('CLIENT')) {
 					getClientSprint(parsedInfo.email);
 					getClientProjects(parsedInfo);
-				}else if(parsedInfo.roles.includes('EMPLOYEE')){
+				} else if (parsedInfo.roles.includes('EMPLOYEE')) {
 					getEmployeeSprint(parsedInfo.email);
 					getEmployeeProjects(parsedInfo);
 				}
@@ -222,14 +222,14 @@ const CurrentSprintList = (props: any) => {
 	}, [props]);
 
 	const filterSprint = (projectTitle: string) => {
-		if(projectTitle === 'ALL'){
+		if (projectTitle === 'ALL') {
 			setSprints(mainSprints);
-		}else {
-			const filteredSprints = mainSprints.currentSprints.filter((item:any) => item.project.projectTitle == projectTitle);
+		} else {
+			const filteredSprints = mainSprints.currentSprints.filter((item: any) => item.project.projectTitle == projectTitle);
 
-			const constructedSprint ={
-				currentSprints:filteredSprints,
-				previousSprints:mainSprints.previousSprints
+			const constructedSprint = {
+				currentSprints: filteredSprints,
+				previousSprints: mainSprints.previousSprints
 			}
 
 			setSprints(constructedSprint);
@@ -247,92 +247,92 @@ const CurrentSprintList = (props: any) => {
 						style={{width: '100%'}}
 						label={'Filter by project'}
 						data={projects}
-						onChangeText={(value: any) =>{
+						onChangeText={(value: any) => {
 							filterSprint(value.projectTitle)
 
 						}}
 					/>
 				</View>
 				<FlatList
-				style={{maxHeight: Dimensions.get('screen').height - 400,minHeight:200}}
-				keyExtractor={(item, index) => index.toString()}
-				data={sprints?.currentSprints || []}
-				ItemSeparatorComponent={FlatListItemSeparator}
-				initialNumToRender={sprints?.currentSprints?.length || 0}
-				renderItem={({item}) => (
-					<View style={styles.project}>
-						<View style={[
-							{
-								flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
-								paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
-							}
-						]}>
-							<Text style={styles.text}>
-								{item.sprintTitle}
-							</Text>
-							<View
-								style={[styles.status, {
-									backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
-										'#00a3cc' : item.taskStatus === 'Validating' ?
-											'#c83c1c' : item.taskStatus === 'Testing' ?
-												'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
-													'#45b1b1' : item.taskStatus === 'Released' ?
-														'#23ab96' : '#23ab96'
+					style={{maxHeight: Dimensions.get('screen').height - 400, minHeight: 200}}
+					keyExtractor={(item, index) => index.toString()}
+					data={sprints?.currentSprints || []}
+					ItemSeparatorComponent={FlatListItemSeparator}
+					initialNumToRender={sprints?.currentSprints?.length || 0}
+					renderItem={({item}) => (
+						<View style={styles.project}>
+							<View style={[
+								{
+									flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
+									paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+								}
+							]}>
+								<Text style={styles.text}>
+									{item.sprintTitle}
+								</Text>
+								<View
+									style={[styles.status, {
+										backgroundColor: item.taskStatus === 'ToDo' ? '#f5821e' : item.taskStatus === 'InProgress' ?
+											'#00a3cc' : item.taskStatus === 'Validating' ?
+												'#c83c1c' : item.taskStatus === 'Testing' ?
+													'#001c4b' : item.taskStatus === 'ReadyForRelease' ?
+														'#45b1b1' : item.taskStatus === 'Released' ?
+															'#23ab96' : '#23ab96'
 
-								}]}>
+									}]}>
+									<Text style={{
+										color: '#fff',
+										textAlign: 'center'
+									}}>{item.sprintTypes}</Text>
+								</View>
+							</View>
+							<View style={{
+								paddingLeft: 15, paddingRight: 15, marginBottom: 5,
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}>
 								<Text style={{
-									color: '#fff',
-									textAlign: 'center'
-								}}>{item.sprintTypes}</Text>
+									fontWeight: 'bold'
+								}}>Status: {item.status}</Text>
+
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Project: {item.project.projectTitle}</Text>
+							</View>
+							<View style={{
+								paddingLeft: 15,
+								paddingRight: 15,
+								marginBottom: 15,
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Sprint Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
+								<Text style={{
+									fontWeight: 'bold'
+								}}>Sprint End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
+							</View>
+							<View style={styles.buttonWrapper}>
+								<Pressable
+									style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, styles.button, styles.borderButton, styles.view]}
+									onPress={() => {
+										_storeData('sprintInfo', JSON.stringify(item));
+										// @ts-ignore
+										navigation.navigate('viewSprint');
+									}}>
+									<Text
+										style={{
+											textAlign: 'center',
+											color: '#fff',
+											fontWeight: '500',
+										}}>
+										View Sprint Information
+									</Text>
+								</Pressable>
 							</View>
 						</View>
-						<View style={{
-							paddingLeft: 15, paddingRight: 15, marginBottom: 5,
-							flexDirection: 'row',
-							justifyContent: 'space-between'
-						}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Status: {item.status}</Text>
-
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Project: {item.project.projectTitle}</Text>
-						</View>
-						<View style={{
-							paddingLeft: 15,
-							paddingRight: 15,
-							marginBottom: 15,
-							flexDirection: 'row',
-							justifyContent: 'space-between'
-						}}>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Sprint Start Date: {new Date(item.sprintStartDate).toLocaleDateString()}</Text>
-							<Text style={{
-								fontWeight: 'bold'
-							}}>Sprint End Date: {new Date(item.sprintEndDate).toLocaleDateString()}</Text>
-						</View>
-						<View style={styles.buttonWrapper}>
-							<Pressable
-								style={({pressed}) => [{opacity: pressed ? 1 : 0.8}, styles.button, styles.borderButton, styles.view]}
-								onPress={() => {
-									_storeData('sprintInfo', JSON.stringify(item));
-									// @ts-ignore
-									navigation.navigate('viewSprint');
-								}}>
-								<Text
-									style={{
-										textAlign: 'center',
-										color: '#fff',
-										fontWeight: '500',
-									}}>
-									View Sprint Information
-								</Text>
-							</Pressable>
-						</View>
-					</View>
-				)}
+					)}
 				/></View>)
 		}
 		return retrievedValue;
@@ -359,10 +359,10 @@ const CurrentSprintList = (props: any) => {
 					>Go Back</Text>
 				</Pressable>
 			</View>
-		<View>
-			{getCurrentSprints()}
+			<View>
+				{getCurrentSprints()}
+			</View>
 		</View>
-	</View>
 	</SafeAreaView>);
 };
 export default CurrentSprintList;

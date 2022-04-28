@@ -34,7 +34,7 @@ const AddCategory = () => {
 				navigation.navigate('Category');
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error(error);
+			console.error('/api/category/add',error);
 		});
 	};
 	return  (

@@ -71,8 +71,6 @@ public class ProjectController {
 	}
 	
 	
-	
-	
 	@GetMapping("/findByMember")
 	public List<Project> getProjectByMemberEmail(@RequestParam String email) {
 

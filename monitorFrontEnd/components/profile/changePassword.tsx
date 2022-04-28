@@ -55,7 +55,7 @@ const updatePassword = () =>{
 			setTitleMessage('Error');
 			setMessage('An error has occurred during the update of the password');
 			setModalVisible(true);
-			console.error(err);
+			console.error('api/keycloak/updatePassword?username',err);
 		});
 
 }

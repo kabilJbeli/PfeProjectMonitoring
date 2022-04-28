@@ -58,7 +58,7 @@ const User = () => {
 				setState(defaultState);
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has occurred!!!');
-			console.error(error);
+			console.error('api/keycloak/user',error);
 			setDisableBtn(false);
 		});
 	};
