@@ -187,10 +187,7 @@ const ViewSprint = (props: any) => {
 		if (!loading) {
 			retrievedValue = (
 				<FlatList
-					style={{
-						minHeight: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.85,
-						maxHeight: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.7
-					}}
+
 					keyExtractor={(item, index) => index.toString()}
 					data={tasks || []}
 					ItemSeparatorComponent={FlatListItemSeparator}
@@ -352,7 +349,7 @@ const ViewSprint = (props: any) => {
 						<Text style={{marginBottom: 10, marginTop: 10, fontWeight: 'bold'}}>Project:</Text>
 						<Text>{sprintInfo.project?.projectTitle || ''}</Text>
 					</View>
-					<Text style={{marginBottom: 10, marginTop: 10, fontWeight: 'bold'}}>Sprint Tasks:</Text>
+					<Text style={{marginBottom: 10, marginTop: 10, fontWeight: 'bold'}}>Sprint Backlog:</Text>
 
 					{getTaskInfo()}
 

@@ -12,6 +12,7 @@
   "dependencies": {
     "@chartiful/react-native-chart-builder": "^0.1.8",
     "@chartiful/react-native-line-graph": "^0.1.2",
+    "@highcharts/highcharts-react-native": "^3.1.7",
     "@mloureiro/react-native-expandable-text": "^0.2.3",
     "@rainbow-me/animated-charts": "^1.0.0-alpha.6",
     "@react-keycloak/keycloak-ts": "^0.2.4",
@@ -62,6 +63,7 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-vector-icons": "^9.1.0",
     "react-native-web": "^0.17.7",
+    "react-native-webview": "^11.18.2",
     "react-navigation": "^4.4.4",
     "react-redux": "^7.2.6",
     "redux-thunk": "^2.4.1",
