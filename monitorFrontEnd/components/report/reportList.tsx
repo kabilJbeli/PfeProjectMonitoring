@@ -58,7 +58,6 @@ const ReportList = (props: any) => {
 
 		RNFetchBlob.fs.writeFile(filePath, reportInformation.pdfAsBytes, 'base64')
 			.then((response: any) => {
-				console.log('Success Log: ', response);
 				Alert.alert('Successfully Downloaded', 'Path:' + filePath || '', [
 					{text: "Cancel", onPress: () => console.log('Cancel pressed')},
 					{text: "Open", onPress: () => viewReport(reportInformation)}
@@ -79,7 +78,7 @@ const ReportList = (props: any) => {
 	return (<View>
 
 		<FlatList
-			style={{height: Dimensions.get('screen').height - 390}}
+			style={{height:props.project !== null ?  Dimensions.get('screen').height - 460:Dimensions.get('screen').height - 390}}
 			keyExtractor={(item, index) => index.toString()}
 			data={reports}
 			ItemSeparatorComponent={FlatListItemSeparator}

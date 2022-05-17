@@ -199,7 +199,6 @@ export const ViewClientTaskComponent = (props: any) => {
 				let task = Object.assign({}, prevState.task);
 				task = JSON.parse(taskInfo);
 				task.isClientTaskValidated = true;
-				console.log(task.taskID,' ',task);
 				getSprintsByProject(JSON.parse(taskInfo).project.projectID);
 				getSelectedProjectMembers(JSON.parse(taskInfo).project.projectID);
 

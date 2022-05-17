@@ -69,7 +69,6 @@ const ProfileInformation = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setMember(response.data);
 			})
 			.catch((err: any) => {

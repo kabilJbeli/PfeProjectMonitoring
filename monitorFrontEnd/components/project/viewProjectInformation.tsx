@@ -281,7 +281,6 @@ const ViewProjectInformation = (props: any) => {
 		})
 			.then((response: any) => {
 				setProjectInfo(response.data);
-				console.log(response.data)
 				response.data.members.map((item: any) => {
 					if (item) {
 						item.name = item.name + ' ' + item.lastName;
@@ -293,7 +292,7 @@ const ViewProjectInformation = (props: any) => {
 				setAssignedEmployees(retrievedMembers);
 			})
 			.catch((err: any) => {
-				console.log(err);
+				console.error(err);
 				showToastWithGravity(err);
 			});
 	}

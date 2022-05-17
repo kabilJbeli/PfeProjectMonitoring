@@ -120,7 +120,7 @@ const reportScreenComponent = (props: any) => {
 			{conditionalDisplayOfGenerateReport()}
 
 			<View>
-				{isFocused ? <ReportList  member={member}  {...props}
+				{isFocused ? <ReportList project={selectedProject} member={member}  {...props}
 				/> : <Text>''</Text>}
 			</View>
 		</SafeAreaView>

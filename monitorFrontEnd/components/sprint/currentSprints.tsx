@@ -38,7 +38,6 @@ const CurrentSprintList = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setSprints(response.data);
 				setMainSprints(response.data);
 				setLoading(false);
@@ -60,7 +59,6 @@ const CurrentSprintList = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setSprints(response.data);
 				setMainSprints(response.data);
 				setLoading(false);
@@ -82,7 +80,6 @@ const CurrentSprintList = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setSprints(response.data);
 				setMainSprints(response.data);
 				setLoading(false);
@@ -110,7 +107,6 @@ const CurrentSprintList = (props: any) => {
 			data: {}
 		})
 			.then(response => {
-				console.log(response.data);
 				response.data.map((item: any) => {
 					localProject.push({
 						label: item.projectTitle, value: item

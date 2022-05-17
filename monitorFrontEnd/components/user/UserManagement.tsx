@@ -199,7 +199,6 @@ const UserManagement = ( props: any) => {
 
 										onPress={() => {
 											_storeData('memberInfo', JSON.stringify(item));
-											console.log(item)
 											updateItem(item.userID);
 										}}>
 										<Text

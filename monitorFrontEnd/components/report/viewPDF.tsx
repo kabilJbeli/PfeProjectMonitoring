@@ -20,7 +20,6 @@ const ViewPDF = (props: any) => {
 		_retrieveData('pdfBas64').then(response => {
 			setPdfBase64(response);
 			setSource({uri: "data:application/pdf;base64," + atob(response)})
-			console.log(atob(response))
 		})
 	}, [props])
 

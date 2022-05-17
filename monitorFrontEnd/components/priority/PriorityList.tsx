@@ -40,7 +40,6 @@ const PriorityList = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setPriorities(response.data);
 				setLoading(false);
 			})
