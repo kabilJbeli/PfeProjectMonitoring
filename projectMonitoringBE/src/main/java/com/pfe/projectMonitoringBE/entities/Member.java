@@ -12,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonManagedReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pfe.projectMonitoringBE.Enums.Roles;
@@ -54,6 +56,8 @@ public class Member implements Serializable {
 	
 	
 	@OneToMany(mappedBy="member")	
+	@JsonManagedReference(value="member-report")
+	@JsonIgnore
 	public Set<Report> getReports() {
 		return reports;
 	}

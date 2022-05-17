@@ -77,7 +77,7 @@ public class Report implements Serializable {
 	}
 
 	@ManyToOne
-	@JsonBackReference
+	@JsonBackReference(value="project-report")
 	public Project getProject() {
 		return project;
 	}
