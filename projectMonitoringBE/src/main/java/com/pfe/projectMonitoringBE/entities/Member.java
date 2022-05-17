@@ -49,7 +49,19 @@ public class Member implements Serializable {
 	private Set<TaskComment> taskComment;
 	
 	private Set<TaskDuration> taskDuration;
-		
+	
+	private Set<Report> reports;
+	
+	
+	@OneToMany(mappedBy="member")	
+	public Set<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(Set<Report> reports) {
+		this.reports = reports;
+	}
+
 	@OneToMany(mappedBy="loggedBy")
 	@JsonIgnore
 	public Set<TaskDuration> getTaskDuration() {

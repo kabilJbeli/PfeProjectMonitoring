@@ -1,11 +1,19 @@
 package com.pfe.projectMonitoringBE.controllers;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.SprintStatus;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
+import com.pfe.projectMonitoringBE.batch.SprintJobExecutionListener;
 import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.ISprint;
@@ -35,12 +44,21 @@ import com.pfe.projectMonitoringBE.models.SprintStats;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/sprint")
 public class SprintController {
+	
+    private static final Logger LOGGER = LoggerFactory.getLogger(SprintJobExecutionListener.class);
+
 
 	@Autowired
 	private ISprint service;
 
 	@Autowired
 	private ITask serviceTask;
+	
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job job;
 
 	@GetMapping("/getAllSprintByStatus")
 	public SprintModel getAllSprintByStatus() {
@@ -243,5 +261,30 @@ public class SprintController {
 		}
 
 	}
+	
+	
+    @GetMapping(value = "/trigger/start")
+    public String invokeBatch() {
+        //
+        long start = System.currentTimeMillis();
+
+        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+
+        long end = System.currentTimeMillis();
+
+        NumberFormat formatter = new DecimalFormat("#0.00000");
+        System.out.print("Execution time is " + formatter.format((end - start) / 1000d) + " seconds");
+        LOGGER.info("loader Execution time is " + formatter.format((end - start) / 1000d) + " seconds");
+
+
+        try {
+            jobLauncher.run(job, jobParameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("BatchTriggerController Exception "+e.getMessage());
+            return "Fail";
+        }
+        return "Success";
+    }
 
 }

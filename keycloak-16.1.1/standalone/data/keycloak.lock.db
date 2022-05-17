@@ -1,6 +1,6 @@
 #FileLock
-#Tue Apr 26 08:05:56 WAT 2022
-server=10.111.173.29\:49940
+#Tue May 17 09:53:08 WAT 2022
+server=192.168.100.126\:52935
 hostName=TNLT1468.vermeg.com
 method=file
-id=18064b0dc1c26bbb5392ecceba7e525903fc875b628
+id=180d1387ba6eabdc1d61e7a51fd7d2d834e8a3a2f44

@@ -80,6 +80,7 @@ public class ProjectController {
 
 	@PostMapping("/add")
 	public void addProject(@RequestBody Project project) {
+		
 		service.createOrUpdateProject(project);
 		
 		emailService.sendSimpleMessage(project.getProjectManager().getEmail(), "New Project", "You have been assigned as a project manager in a new project: "+project.getProjectTitle());
@@ -90,6 +91,7 @@ public class ProjectController {
 
 	@PutMapping("/update/{id}")
 	public void updateProject(@RequestBody Project project) {
+		
 		try {
 			Project searchedProject = service.findProject(project.getProjectID());
 			if (searchedProject.getProjectID() != null) {
@@ -98,10 +100,12 @@ public class ProjectController {
 		} catch (NoSuchElementException e) {
 
 		}
+		
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public void deleteProject(@PathVariable Integer id) {
+		
 		try {
 			Project searchedProject = service.findProject(id);
 			if (searchedProject.getProjectID() != null) {
@@ -110,6 +114,7 @@ public class ProjectController {
 		} catch (NoSuchElementException e) {
 
 		}
+		
 	}
 	
 	

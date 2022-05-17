@@ -3,6 +3,8 @@ package com.pfe.projectMonitoringBE.batch;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -17,13 +19,20 @@ public class SprintReader implements ItemReader<Sprint> {
 	
 	@Autowired
 	SprintService sprintservice;
-
+	
+	Iterator<Sprint> sprintsite ;
+    
+	@BeforeStep
+    public void before(StepExecution stepExecution) {
+		sprintsite = sprintservice.getAllSprint().iterator();
+    }
 	@Override
 	public Sprint read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		List<Sprint> sprints = sprintservice.getAllSprint();
-		Iterator<Sprint> sprintsite = sprints.iterator();
-		return sprintsite.next();
+        if (sprintsite != null && sprintsite.hasNext()) {
+            return sprintsite.next();
+        } else {
+            return null;
+        }
 	}
-
 
 }
