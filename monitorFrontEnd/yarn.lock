@@ -1969,6 +1969,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/base-64@^1.0.0":
+  version "1.0.0"
+  resolved "http://10.1.144.249:8081/repository/frontend-group/@types/base-64/-/base-64-1.0.0.tgz#de9c6070ea457fbd65a1b5ebf13976b3ac0bdad0"
+  integrity sha512-AvCJx/HrfYHmOQRFdVvgKMplXfzTUizmh0tz9GFTpDePWgCY4uoKll84zKlaRoeiYiCr7c9ZnqSTzkl0BUVD6g==
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.npmjs.org/@types/body-parser/-/body-parser-1.19.2.tgz"
@@ -3732,6 +3737,11 @@ base-64@0.1.0:
   version "0.1.0"
   resolved "http://10.1.144.249:8081/repository/frontend-group/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
+
+base-64@^1.0.0:
+  version "1.0.0"
+  resolved "http://10.1.144.249:8081/repository/frontend-group/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
+  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
 
 base64-js@1.1.2:
   version "1.1.2"
@@ -10500,13 +10510,6 @@ react-native-pdf@^6.5.0:
   integrity sha512-R/RNF+/nhFXBkhrdAWLQRhtg9xcZkq/3wC+wq9lA+ORgn1sx+6VDtU7hWnY047FK0FRG8REUj4jILVSdpG2zDg==
   dependencies:
     crypto-js "^3.2.0"
-
-react-native-quick-base64@^2.0.2:
-  version "2.0.2"
-  resolved "http://10.1.144.249:8081/repository/frontend-group/react-native-quick-base64/-/react-native-quick-base64-2.0.2.tgz#1d2af8ddab8f548d89e66208201fe6ce377b1fc5"
-  integrity sha512-bLIAOUhQ0JaVQ9RSQoQdt/lV5/XHpq982J1UwN+Gj42A2GfNtqT8kJzaLjJLO6rWhMZ7iVJeFJIVcTf90pWoJQ==
-  dependencies:
-    base64-js "^1.5.1"
 
 react-native-ratings@8.0.4:
   version "8.0.4"

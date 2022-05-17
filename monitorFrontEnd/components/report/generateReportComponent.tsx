@@ -7,7 +7,7 @@ import {
 	TouchableHighlight,
 	Alert
 } from 'react-native';
-import {btoa, atob} from 'react-native-quick-base64';
+import { encode as btoa} from 'base-64'
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import axios from "axios";
@@ -223,7 +223,7 @@ const GenerateReport = (props: any) => {
 			// @ts-ignore
 			navigation.navigate('viewPDF')
 		}
-		
+
 		const gotToDashboard = () => {
 			// @ts-ignore
 			navigation.navigate('Dashboard')
