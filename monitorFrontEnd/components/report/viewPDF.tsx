@@ -7,7 +7,7 @@ import {_retrieveData} from "../../utils";
 
 import {useEffect, useState} from "react";
 import Pdf from 'react-native-pdf';
-import {btoa, atob} from 'react-native-quick-base64';
+import {decode as atob, encode as btoa} from 'base-64'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {useNavigation} from "@react-navigation/native";
 
