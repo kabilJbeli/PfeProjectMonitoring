@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Report;
@@ -41,6 +42,16 @@ public class ReportController {
 			return new ResponseEntity<Report>(report, HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Report>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/findByMember")
+	public ResponseEntity<List<Report>> findByMember(@RequestParam String email) {
+		try {
+			List<Report> reports = service.findByMember(email);
+			return new ResponseEntity<List<Report>>(reports, HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<List<Report>>(HttpStatus.NOT_FOUND);
 		}
 	}
 

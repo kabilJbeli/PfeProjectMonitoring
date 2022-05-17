@@ -12,4 +12,6 @@ public interface IReport {
 	public List<Report> getAllReport();
 
 	public void deleteReport(Report report);
+
+	List<Report> findByMember(String email);
 }
