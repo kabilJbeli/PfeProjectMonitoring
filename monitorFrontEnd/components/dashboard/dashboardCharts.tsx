@@ -460,7 +460,7 @@ export const DashboardCharts = (props: any) => {
 						// @ts-ignore
 						navigation.navigate('generateReport')
 					}}>
-					<Text style={{color: '#fff', textAlign: 'center', fontWeight: 'bold', paddingRight: 15}}>Consult
+					<Text style={{color: '#fff', textAlign: 'center', fontWeight: 'bold', paddingRight: 15}}>
 						Consult/Generate Reports</Text>
 					<IconAnt name={'arrowright'} color={'#fff'} size={25}/>
 				</Pressable>

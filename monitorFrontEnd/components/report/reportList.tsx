@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {
-	Text, View, Pressable, FlatList, Dimensions, StyleSheet, Linking
+	Text, View, Pressable, FlatList, Dimensions, StyleSheet, Linking, Alert
 } from 'react-native';
 import axios from "axios";
 import Environment from "../../Environment";
@@ -10,6 +10,7 @@ import IconAnt from "react-native-vector-icons/AntDesign";
 import {useEffect, useState} from "react";
 import {_storeData} from "../../utils";
 import {useNavigation} from "@react-navigation/native";
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const ReportList = (props: any) => {
 	const [reports, setReports] = useState<any[]>([]);
@@ -45,10 +46,34 @@ const ReportList = (props: any) => {
 		);
 	};
 
-	const downloadReport = async (reportInformation: any) => {
+	const viewReport = async (reportInformation: any) => {
 		await _storeData('pdfBas64',reportInformation.pdfAsBytes);
 		// @ts-ignore
-		navigation.navigate('viewPDF')
+		navigation.navigate('viewPDF');
+	}
+
+	const gotToDashboard = ()=>{
+		// @ts-ignore
+		navigation.navigate('Dashboard');
+	}
+
+
+	const downloadReport = async (reportInformation: any) => {
+		const date: Date = new Date();
+		let filePath = RNFetchBlob.fs.dirs.DownloadDir + '/report-' + date.getTime();
+
+		RNFetchBlob.fs.writeFile(filePath, reportInformation.pdfAsBytes, 'base64')
+			.then((response:any) => {
+				console.log('Success Log: ', response);
+				Alert.alert('Successfully Downloaded', 'Path:' + filePath || '', [
+					{text: "OK", onPress: () => gotToDashboard()},
+					{text: "Open", onPress: () => viewReport(reportInformation)}
+				], {cancelable: true});
+			})
+			.catch((errors:any) => {
+				console.error(" Error Log: ", errors);
+			})
+
 	}
 
 	useEffect(() => {
@@ -92,6 +117,22 @@ const ReportList = (props: any) => {
 						<Pressable
 							style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.view]}
 							onPress={() => {
+								viewReport(item);
+							}}>
+							<Text
+								style={{
+									textAlign: 'center',
+									color: '#fff',
+									fontWeight: '500',
+									paddingRight: 15
+								}}>
+								View
+							</Text>
+							<IconAnt name={'eyeo'} color={'#ffff'} size={18}/>
+						</Pressable>
+						<Pressable
+							style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.update]}
+							onPress={() => {
 								downloadReport(item);
 							}}>
 							<Text
@@ -101,7 +142,7 @@ const ReportList = (props: any) => {
 									fontWeight: '500',
 									paddingRight: 15
 								}}>
-								View Report
+								Download
 							</Text>
 							<IconAnt name={'download'} color={'#ffff'} size={18}/>
 						</Pressable>
@@ -195,9 +236,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 	},
+
+
 	button: {
 		backgroundColor: '#fff',
-		width: '100%',
+		width: '50%',
 		padding: 10,
 		textAlign: 'center',
 		display: 'flex',

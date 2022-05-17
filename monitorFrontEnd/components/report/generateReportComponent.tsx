@@ -16,6 +16,7 @@ import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
 import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const GenerateReport = (props: any) => {
 	const navigation = useNavigation();
@@ -232,12 +233,22 @@ const GenerateReport = (props: any) => {
 
 		if (granted) {
 			let file = await RNHTMLtoPDF.convert(options);
+			let filePath = RNFetchBlob.fs.dirs.DownloadDir + '/report-' + date.getTime();
+
 			savePDF(file.base64, projectInfo, props.member, projectInfo.projectTitle + ' Report');
 
-			Alert.alert('Successfully Exported', 'Path:' + file.filePath || '', [
-				{text: "OK", onPress: () => gotToDashboard()},
-				{text: "Open", onPress: () => openFile(file.base64)}
-			], {cancelable: true});
+			RNFetchBlob.fs.writeFile(filePath, file.base64 || '', 'base64')
+				.then((response:any) => {
+					console.log('Success Log: ', response);
+					Alert.alert('Successfully Exported', 'Path:' + filePath || '', [
+						{text: "OK", onPress: () => gotToDashboard()},
+						{text: "Open", onPress: () => openFile(file.base64)}
+					], {cancelable: true});
+				})
+				.catch((errors:any) => {
+					console.log(" Error Log: ", errors);
+				})
+
 
 
 		} else {

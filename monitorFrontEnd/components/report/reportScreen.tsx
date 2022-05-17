@@ -25,11 +25,7 @@ const reportScreenComponent = (props: any) => {
 
 	const getUserSpecificProjects = (userInfoParam?: any) => {
 		// Update the document title using the broconwser API
-		const localProject: any = [{
-			label: 'ALL', value: {
-				projectTitle: 'ALL'
-			}
-		}];
+		const localProject: any = [];
 
 		axios({
 			method: 'POST',

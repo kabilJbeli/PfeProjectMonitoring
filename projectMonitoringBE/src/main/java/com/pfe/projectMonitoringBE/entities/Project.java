@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.codehaus.jackson.annotate.JsonManagedReference;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -151,6 +153,8 @@ public class Project implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "project")
+	@JsonManagedReference(value="project-report")
+	@JsonIgnore
 	public Set<Report> getReport() {
 		return report;
 	}
