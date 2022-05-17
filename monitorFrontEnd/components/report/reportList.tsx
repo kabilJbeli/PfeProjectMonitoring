@@ -26,7 +26,6 @@ const ReportList = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log(response.data)
 				setReports(response.data);
 			})
 			.catch((err: Error) => {

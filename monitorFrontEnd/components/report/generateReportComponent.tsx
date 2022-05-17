@@ -7,11 +7,12 @@ import {
 	TouchableHighlight,
 	Alert
 } from 'react-native';
+import {btoa, atob} from 'react-native-quick-base64';
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import axios from "axios";
 import Environment from "../../Environment";
-import {_retrieveData, showToastWithGravity} from "../../utils";
+import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
 import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 
@@ -25,11 +26,11 @@ const GenerateReport = (props: any) => {
 			setProject(JSON.parse(reponse));
 		});
 
-	}, [props])
+	}, [props]);
 
 	const requestStoragePermission = async () => {
 		try {
-		await PermissionsAndroid.requestMultiple([
+			await PermissionsAndroid.requestMultiple([
 				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
 				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
 			]).then((result) => {
@@ -64,8 +65,7 @@ const GenerateReport = (props: any) => {
 			.post(`${Environment.API_URL}/api/report/add`, report)
 			.then((res: any) => {
 				showToastWithGravity('Report Successfully generated');
-				// @ts-ignore
-				navigation.navigate('Dashboard')
+
 			}).catch((error: Error) => {
 			showToastWithGravity('An Error Has Occurred!!!');
 			console.error('/api/report/add', error.message);
@@ -218,16 +218,25 @@ const GenerateReport = (props: any) => {
 		};
 
 		const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+		const openFile = (base64: any) => {
+			_storeData('pdfBas64', btoa(base64));
+			// @ts-ignore
+			navigation.navigate('viewPDF')
+		}
+		
+		const gotToDashboard = () => {
+			// @ts-ignore
+			navigation.navigate('Dashboard')
+			console.log("OK Pressed")
+		}
 
 		if (granted) {
 			let file = await RNHTMLtoPDF.convert(options);
-console.log(file.base64);
 			savePDF(file.base64, projectInfo, props.member, projectInfo.projectTitle + ' Report');
 
-
 			Alert.alert('Successfully Exported', 'Path:' + file.filePath || '', [
-				/*{ text: "Cancel", onPress: () => console.log("CANCEL Pressed") },*/
-				{text: "OK", onPress: () => console.log("OK Pressed")}
+				{text: "OK", onPress: () => gotToDashboard()},
+				{text: "Open", onPress: () => openFile(file.base64)}
 			], {cancelable: true});
 
 

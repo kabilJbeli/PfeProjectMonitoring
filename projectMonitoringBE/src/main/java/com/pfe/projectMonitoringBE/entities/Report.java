@@ -43,7 +43,7 @@ public class Report implements Serializable {
 	private byte[] pdfAsBytes;
 	
 	@ManyToOne
-	@JsonBackReference
+	@JsonBackReference(value="member-report")
 	public Member getMember() {
 		return member;
 	}
