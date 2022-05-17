@@ -64,7 +64,6 @@ const reportScreenComponent = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				console.log('MEMBER ======>',response.data);
 				_storeData('connectedMemberInfo', JSON.stringify(response.data));
 				setMember(response.data);
 			})
@@ -93,7 +92,7 @@ const reportScreenComponent = (props: any) => {
 	}
 
 	return (
-		<View>
+		<SafeAreaView>
 			<View style={{
 				height: 150, width: '100%', justifyContent: 'center', alignItems: 'center',
 				backgroundColor: '#262626'
@@ -128,7 +127,7 @@ const reportScreenComponent = (props: any) => {
 				{isFocused ? <ReportList   {...props}
 				/> : <Text>''</Text>}
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 }
 
