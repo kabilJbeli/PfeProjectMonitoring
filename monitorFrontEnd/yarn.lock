@@ -2158,6 +2158,11 @@
   resolved "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.4.tgz"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
+"@types/react-native-fetch-blob@^0.10.7":
+  version "0.10.7"
+  resolved "http://10.1.144.249:8081/repository/frontend-group/@types/react-native-fetch-blob/-/react-native-fetch-blob-0.10.7.tgz#48cf0281750a8889599b37e7225b91ca5ca5e094"
+  integrity sha512-9UTvmUvArimShiENeR3xnRO71NcZjpTi7AcFAIbhdTIfqQOO2OK/I/DpUPXcZF/erffLxOoRkoXrZOxyBBWKRQ==
+
 "@types/react-native-html-to-pdf@^0.8.1":
   version "0.8.1"
   resolved "http://10.1.144.249:8081/repository/frontend-group/@types/react-native-html-to-pdf/-/react-native-html-to-pdf-0.8.1.tgz#bc07abc31f29f84b227125a6e4e19bb2c23a1664"
