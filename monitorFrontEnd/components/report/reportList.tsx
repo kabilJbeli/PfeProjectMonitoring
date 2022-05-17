@@ -8,7 +8,7 @@ import Environment from "../../Environment";
 import IconAnt from "react-native-vector-icons/AntDesign";
 
 import {useEffect, useState} from "react";
-import {_storeData} from "../../utils";
+import {_retrieveData, _storeData} from "../../utils";
 import {useNavigation} from "@react-navigation/native";
 import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -19,7 +19,7 @@ const ReportList = (props: any) => {
 	const getReports = (email: string) => {
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/report/all`,
+			url: `${Environment.API_URL}/api/report/findByMember?email=${email}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -47,38 +47,35 @@ const ReportList = (props: any) => {
 	};
 
 	const viewReport = async (reportInformation: any) => {
-		await _storeData('pdfBas64',reportInformation.pdfAsBytes);
+		await _storeData('pdfBas64', reportInformation.pdfAsBytes);
 		// @ts-ignore
 		navigation.navigate('viewPDF');
 	}
-
-	const gotToDashboard = ()=>{
-		// @ts-ignore
-		navigation.navigate('Dashboard');
-	}
-
 
 	const downloadReport = async (reportInformation: any) => {
 		const date: Date = new Date();
 		let filePath = RNFetchBlob.fs.dirs.DownloadDir + '/report-' + date.getTime();
 
 		RNFetchBlob.fs.writeFile(filePath, reportInformation.pdfAsBytes, 'base64')
-			.then((response:any) => {
+			.then((response: any) => {
 				console.log('Success Log: ', response);
 				Alert.alert('Successfully Downloaded', 'Path:' + filePath || '', [
-					{text: "OK", onPress: () => gotToDashboard()},
+					{text: "Cancel", onPress: () => console.log('Cancel pressed')},
 					{text: "Open", onPress: () => viewReport(reportInformation)}
 				], {cancelable: true});
 			})
-			.catch((errors:any) => {
+			.catch((errors: any) => {
 				console.error(" Error Log: ", errors);
 			})
 
 	}
 
 	useEffect(() => {
-		getReports('');
+		_retrieveData('connectedMemberInfo').then((member: any) => {
+			getReports(JSON.parse(member).email);
+		});
 	}, [props]);
+
 	return (<View>
 
 		<FlatList

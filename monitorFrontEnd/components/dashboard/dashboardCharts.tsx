@@ -277,6 +277,8 @@ export const DashboardCharts = (props: any) => {
 			params: {},
 		})
 			.then(response => {
+				_storeData('connectedMemberInfo', JSON.stringify(response.data));
+
 				setMemberInfo(response.data);
 				if (response.data.role === 'ADMINISTRATOR') {
 					getAdministratorProjectStatus();
