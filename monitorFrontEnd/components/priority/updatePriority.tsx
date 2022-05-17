@@ -39,7 +39,6 @@ export const updatePriorityComponent = (props: any) => {
 
 	useEffect(()=>{
 		_retrieveData('priorityID').then((priorityID: any) => {
-			console.log(priorityID);
 			getPriorityInfo(priorityID);
 		});
 	},[props]);
@@ -48,7 +47,6 @@ const getPriorityInfo = (priorityID:any)=>{
 	axios
 		.get(`${Environment.API_URL}/api/priority/${priorityID}`)
 		.then((res: any) => {
-			console.log(res.data)
 			showToastWithGravity('Priority Information Successfully Retrieved');
 
 			setPriority((prevState: any) => {

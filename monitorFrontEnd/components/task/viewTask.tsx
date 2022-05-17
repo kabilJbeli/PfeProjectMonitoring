@@ -312,7 +312,6 @@ const ViewTask = (props: any) => {
 	}
 
 	const updateTask = (task: any) => {
-		console.log(task)
 		axios({
 			method: 'PUT',
 			url: `${Environment.API_URL}/api/task/update`,

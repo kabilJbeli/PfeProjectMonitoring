@@ -215,7 +215,9 @@ const GenerateReport = (props: any) => {
 			html: html,
 			fileName: 'report-' + date.getTime(),
 			directory: 'Download',
-			base64: true
+			base64: true,
+			width:595,
+			height:842
 		};
 
 		const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);

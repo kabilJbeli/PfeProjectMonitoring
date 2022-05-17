@@ -11,6 +11,7 @@ import {Text} from "react-native-elements";
 import jwt_decode from "jwt-decode";
 import Icon from 'react-native-vector-icons/Feather';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import axios from "axios";
 
 const KeycloakLogin = () => {
 	const {keycloak, initialized} = useKeycloak();
@@ -31,7 +32,6 @@ const KeycloakLogin = () => {
 			}
 			if (token === null) {
 				setToken(keycloak?.token);
-				console.log(keycloak?.token)
 			}
 
 			_storeData('token', JSON.stringify(keycloak?.token));
@@ -97,6 +97,23 @@ const KeycloakLogin = () => {
 				getUserInfo();
 			}
 
+			if(token){
+				axios.interceptors.request.use(
+				request=>{
+					if(request.url?.includes('/api/') && request.headers !== undefined){
+						request.headers['Content-Type']='application/json';
+						/*request.headers['Authorization'] ='Bearer '+token;*/
+					}
+					console.log(request);
+					return request
+
+				},
+					error=>{
+					return Promise.reject(error)
+					}
+				);
+			}
+
 			returnedValue = (
 				<Provider store={Store}>
 					<PaperProvider theme={theme}>
@@ -114,7 +131,7 @@ const KeycloakLogin = () => {
 						</NavigationContainer>
 					</PaperProvider>
 				</Provider>
-			)
+			);
 
 		}
 		return returnedValue;

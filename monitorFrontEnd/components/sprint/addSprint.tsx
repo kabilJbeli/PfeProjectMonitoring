@@ -276,7 +276,6 @@ const CreateSprint = (props: any) => {
 								let sprint = Object.assign({}, prevState.sprint);
 								sprint.project = value;
 								getLastSprintEndDate(value.projectID).then((data: any) => {
-									console.log(data);
 									setMaxDate(new Date(data));
 									setSprint((prevState: any) => {
 										let sprint = Object.assign({}, prevState.sprint);
@@ -342,9 +341,7 @@ const CreateSprint = (props: any) => {
 								setSprint((prevState: any) => {
 									let sprint = Object.assign({}, prevState.sprint);
 									sprint.sprintTitle = text;
-									console.log(sprint)
 									return {sprint};
-
 								})
 							}
 							value={sprint.sprint.sprintTitle}
@@ -418,7 +415,6 @@ const CreateSprint = (props: any) => {
 								setSprint((prevState: any) => {
 									let sprint = Object.assign({}, prevState.sprint);
 									sprint.sprintEndDate = endDate;
-									console.log(sprint)
 									return {sprint};
 								})
 							}}

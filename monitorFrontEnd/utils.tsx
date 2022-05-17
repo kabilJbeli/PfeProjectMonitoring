@@ -34,8 +34,7 @@ export const _storeData = async (key:string,value:string) => {
 		);
 	} catch (error) {
 		// Error saving data
-		console.log(error);
-
+		console.error(error);
 	}
 };
 
@@ -47,11 +46,10 @@ export const  _retrieveData = async (key:string) => {
 		if (value !== null) {
 			// We have data!!
 			response = value;
-			console.log(value);
 		}
 	} catch (error) {
 		// Error retrieving data
-		console.log(error);
+		console.error(error);
 	}
 	return response;
 };

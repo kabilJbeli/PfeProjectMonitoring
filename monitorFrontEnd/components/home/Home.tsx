@@ -53,7 +53,6 @@ const Home = (props: any) => {
 	}
 
 	const gotTo = (page: string) => {
-		console.log(page);
 // @ts-ignore
 		navigation.navigate(page);
 	}

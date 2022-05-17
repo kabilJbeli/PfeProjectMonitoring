@@ -45,7 +45,6 @@ export const updateCategoryComponent = (props: any) => {
 
 	useEffect(()=>{
 		_retrieveData('categoryID').then((categoryID: any) => {
-			console.log(categoryID);
 			getCategoryInfo(categoryID);
 		});
 	},[props]);
@@ -54,7 +53,6 @@ const	getCategoryInfo = (categoryID:any)=>{
 	axios
 		.get(`${Environment.API_URL}/api/category/${categoryID}`)
 		.then((res: any) => {
-			console.log(res.data)
 			showToastWithGravity('Category Information Successfully Retrieved');
 
 			setState((prevState: any) => {
