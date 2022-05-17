@@ -4,6 +4,8 @@ import {DashboardCharts} from "./dashboardCharts";
 import {useIsFocused} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
 import ViewTask from "../task/viewTask";
+import ViewPDF from "../report/viewPDF";
+import reportScreenComponent from "../report/reportScreen";
 
 
 
@@ -29,6 +31,26 @@ export const MainDashboardStack = (props: any) => {
 						  }}
 
 			/>
+			<Stack.Screen name="generateReport" component={reportScreenComponent}
+						  {...props}
+						  options={{
+							  title: 'Condult/Generate a Report New Sprint',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+
+			<Stack.Screen name="viewPDF" component={ViewPDF}
+						  {...props}
+						  options={{
+							  title: 'View PDF Content',
+							  presentation: 'card',
+							  headerShown: false
+						  }}
+
+			/>
+
 		</Stack.Navigator>
 	);
 }

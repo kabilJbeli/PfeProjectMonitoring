@@ -445,6 +445,26 @@ export const DashboardCharts = (props: any) => {
 	}
 	return (
 		<View style={{paddingBottom: 30}}>
+			<View style={{width: '100%',marginBottom:15, height: 50}}>
+				<Pressable
+					style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, {
+						backgroundColor: '#45b1b1',
+						padding: 15,
+						marginBottom: 5,
+						flexDirection: 'row',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '100%'
+					}]}
+					onPress={() => {
+						// @ts-ignore
+						navigation.navigate('generateReport')
+					}}>
+					<Text style={{color: '#fff', textAlign: 'center', fontWeight: 'bold', paddingRight: 15}}>Consult
+						Consult/Generate Reports</Text>
+					<IconAnt name={'arrowright'} color={'#fff'} size={25}/>
+				</Pressable>
+			</View>
 			<View>
 				<Text style={{paddingBottom: 10}}>Projects by status:</Text>
 				{getProjectByStatus()}

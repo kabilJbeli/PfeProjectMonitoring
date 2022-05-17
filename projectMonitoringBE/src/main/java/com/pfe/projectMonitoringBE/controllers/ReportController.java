@@ -1,5 +1,6 @@
 package com.pfe.projectMonitoringBE.controllers;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.entities.Report;
 import com.pfe.projectMonitoringBE.interfaces.IReport;
+import com.pfe.projectMonitoringBE.models.ReportModel;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -43,7 +45,16 @@ public class ReportController {
 	}
 
 	@PostMapping("/add")
-	public void addReport(@RequestBody Report report) {
+	public void addReport(@RequestBody ReportModel reportModel) {
+		
+		byte[] pdfBytes = reportModel.getBase64StringReport().getBytes(StandardCharsets.US_ASCII);
+		
+		Report report= new Report();
+		report.setProject(reportModel.getProject());
+		report.setReportTtile(reportModel.getReportTtile());
+		report.setMember(reportModel.getMember());
+		report.setPdfAsBytes(pdfBytes);
+		
 		service.createOrUpdateReport(report);
 	}
 

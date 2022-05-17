@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -32,6 +36,30 @@ public class Report implements Serializable {
 	@Column(name = "CREATIONDATE")
 	private LocalDateTime CreationDate= LocalDateTime.now();
 	
+	@Column(name = "Member")
+	private Member member;
+	
+	@Lob
+	private byte[] pdfAsBytes;
+	
+	@ManyToOne
+	@JsonBackReference
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public byte[] getPdfAsBytes() {
+		return pdfAsBytes;
+	}
+
+	public void setPdfAsBytes(byte[] pdfAsBytes) {
+		this.pdfAsBytes = pdfAsBytes;
+	}
+
 	public String getReportTtile() {
 		return reportTtile;
 	}
@@ -49,6 +77,7 @@ public class Report implements Serializable {
 	}
 
 	@ManyToOne
+	@JsonBackReference
 	public Project getProject() {
 		return project;
 	}
