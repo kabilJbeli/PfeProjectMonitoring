@@ -92,7 +92,12 @@ public class TaskService implements ITask {
 		}
 
 		for (Task task : tasks) {
-			int estimation = task.getTaskEstimation();
+			int estimation;
+			try {
+				estimation = task.getTaskEstimation();
+			}catch(NullPointerException  e) {
+				estimation=0;				
+			}
 			LocalDateTime creationdate = task.getCreationDate();
 			LocalDateTime estimateddeadline = task.getCreationDate();
 			estimateddeadline.plusHours(estimation);

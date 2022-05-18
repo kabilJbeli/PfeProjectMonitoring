@@ -193,6 +193,7 @@ const ProjectsList = (props: any) => {
 			setProjects(searchedProject);
 		}
 	}
+
 	const getListHeader = () => {
 		return (
 			<View style={{width: '100%', backgroundColor: '#fff'}}>
@@ -219,6 +220,7 @@ const ProjectsList = (props: any) => {
 			/>
 		);
 	};
+
 	const getCurrentProjectStatus = (project: any): any => {
 		let projectStatus: any = project.item.projectStatus;
 		let returnedValue: any;

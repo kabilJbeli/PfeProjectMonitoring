@@ -102,9 +102,9 @@ const KeycloakLogin = () => {
 				request=>{
 					if(request.url?.includes('/api/') && request.headers !== undefined){
 						request.headers['Content-Type']='application/json';
-						/*request.headers['Authorization'] ='Bearer '+token;*/
+						request.headers['Authorization'] ='Bearer '+token;
 					}
-					console.log(request);
+					console.info(request);
 					return request
 
 				},

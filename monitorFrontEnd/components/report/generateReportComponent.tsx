@@ -251,8 +251,6 @@ const GenerateReport = (props: any) => {
 					console.log(" Error Log: ", errors);
 				})
 
-
-
 		} else {
 			await requestStoragePermission();
 			console.log("WRITE_EXTERNAL_STORAGE permission denied")

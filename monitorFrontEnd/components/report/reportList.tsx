@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {
-	Text, View, Pressable, FlatList, Dimensions, StyleSheet, Linking, Alert
+	Text, View, Pressable, FlatList, Dimensions, StyleSheet, Linking, Alert, ActivityIndicator
 } from 'react-native';
 import axios from "axios";
 import Environment from "../../Environment";
@@ -14,6 +14,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 
 const ReportList = (props: any) => {
 	const [reports, setReports] = useState<any[]>([]);
+	const [loading,setLoading]= useState<boolean>(true);
 	const navigation = useNavigation();
 
 	const getReports = (email: string) => {
@@ -28,6 +29,8 @@ const ReportList = (props: any) => {
 		})
 			.then(response => {
 				setReports(response.data);
+				setLoading(false);
+
 			})
 			.catch((err: Error) => {
 				console.error('/api/reports/all', err.message)
@@ -70,83 +73,97 @@ const ReportList = (props: any) => {
 	}
 
 	useEffect(() => {
+		setLoading(true);
 		_retrieveData('connectedMemberInfo').then((member: any) => {
 			getReports(JSON.parse(member).email);
 		});
 	}, [props]);
 
-	return (<View>
-
-		<FlatList
-			style={{height:props.project !== null ?  Dimensions.get('screen').height - 460:Dimensions.get('screen').height - 390}}
-			keyExtractor={(item, index) => index.toString()}
-			data={reports}
-			ItemSeparatorComponent={FlatListItemSeparator}
-			initialNumToRender={reports.length}
-			renderItem={({item}) => (
-				<View style={styles.project}>
-					<View style={[
-						{
-							flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
-							paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
-						}
-					]}>
-						<Text style={styles.text}>
-							{item.reportTtile}
-						</Text>
-
-					</View>
-
-					<View style={[
-						{
-							flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15,
-							paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
-						}
-					]}>
-						<Text style={styles.text}>
-							{item.creationDate}
-						</Text>
-
-					</View>
-					<View style={styles.buttonWrapper}>
-
-						<Pressable
-							style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.view]}
-							onPress={() => {
-								viewReport(item);
-							}}>
-							<Text
-								style={{
-									textAlign: 'center',
-									color: '#fff',
-									fontWeight: '500',
-									paddingRight: 15
-								}}>
-								View
-							</Text>
-							<IconAnt name={'eyeo'} color={'#ffff'} size={18}/>
-						</Pressable>
-						<Pressable
-							style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.update]}
-							onPress={() => {
-								downloadReport(item);
-							}}>
-							<Text
-								style={{
-									textAlign: 'center',
-									color: '#fff',
-									fontWeight: '500',
-									paddingRight: 15
-								}}>
-								Download
-							</Text>
-							<IconAnt name={'download'} color={'#ffff'} size={18}/>
-						</Pressable>
-					</View>
+	const displayReportList = ():any=>{
+		if (loading) {
+			return (
+				<View style={styles.loadingContainer}>
+					<ActivityIndicator size="large" color="#d81e05"/>
 				</View>
-			)}
-		/>
-	</View>);
+			);
+		}else {
+			return (<View>
+
+				<FlatList
+					style={{height:props.project !== null ?  Dimensions.get('screen').height - 460:Dimensions.get('screen').height - 390}}
+					keyExtractor={(item, index) => index.toString()}
+					data={reports}
+					ItemSeparatorComponent={FlatListItemSeparator}
+					initialNumToRender={reports.length}
+					renderItem={({item}) => (
+						<View style={styles.project}>
+							<View style={[
+								{
+									flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5,
+									paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+								}
+							]}>
+								<Text style={styles.text}>
+									{item.reportTtile}
+								</Text>
+
+							</View>
+
+							<View style={[
+								{
+									flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15,
+									paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+								}
+							]}>
+								<Text style={styles.text}>
+									{item.creationDate}
+								</Text>
+
+							</View>
+							<View style={styles.buttonWrapper}>
+
+								<Pressable
+									style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.view]}
+									onPress={() => {
+										viewReport(item);
+									}}>
+									<Text
+										style={{
+											textAlign: 'center',
+											color: '#fff',
+											fontWeight: '500',
+											paddingRight: 15
+										}}>
+										View
+									</Text>
+									<IconAnt name={'eyeo'} color={'#ffff'} size={18}/>
+								</Pressable>
+								<Pressable
+									style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.button, styles.borderButton, styles.update]}
+									onPress={() => {
+										downloadReport(item);
+									}}>
+									<Text
+										style={{
+											textAlign: 'center',
+											color: '#fff',
+											fontWeight: '500',
+											paddingRight: 15
+										}}>
+										Download
+									</Text>
+									<IconAnt name={'download'} color={'#ffff'} size={18}/>
+								</Pressable>
+							</View>
+						</View>
+					)}
+				/>
+			</View>)
+
+		}
+	}
+
+	return displayReportList();
 }
 export default ReportList;
 
