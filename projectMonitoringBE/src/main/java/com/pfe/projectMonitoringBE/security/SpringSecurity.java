@@ -50,7 +50,8 @@ public class SpringSecurity extends KeycloakWebSecurityConfigurerAdapter {
 
 		super.configure(http);
 
-		http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
-
+		http.authorizeRequests().anyRequest().authenticated();
+		http.cors().disable();
+		http.csrf().disable();
 	}
 }
