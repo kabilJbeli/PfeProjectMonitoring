@@ -49,6 +49,29 @@ public class Task implements Serializable {
 	private Member client;
 	
 	private Boolean isClientTaskValidated=false;
+	
+
+	@Column(name = "TASKTITLE")
+	private String taskTitle;
+
+	@Column(name = "TASKDESCRIPTION")
+	private String taskDescription;
+
+	@Column(name = "CREATIONDATE")
+	private LocalDateTime creationDate = LocalDateTime.now();
+
+	@Column(name = "TASKDURATION")
+	private Set<TaskDuration> taskDuration;
+
+	
+	@Column(name = "TASKESTIMATION")
+	private Integer taskEstimation;
+
+	
+	private Set<TaskComment> taskComment;
+	
+	private Set<File> files;
+	
 		
 	@Column(columnDefinition="Boolean default false")
 	public Boolean getIsClientTaskValidated() {
@@ -86,26 +109,6 @@ public class Task implements Serializable {
 		this.reporter = reporter;
 	}
 
-	@Column(name = "TASKTITLE")
-	private String taskTitle;
-
-	@Column(name = "TASKDESCRIPTION")
-	private String taskDescription;
-
-	@Column(name = "CREATIONDATE")
-	private LocalDateTime creationDate = LocalDateTime.now();
-
-	@Column(name = "TASKDURATION")
-	private Set<TaskDuration> taskDuration;
-
-	
-	@Column(name = "TASKESTIMATION")
-	private Integer taskEstimation;
-
-	
-	private Set<TaskComment> taskComment;
-	
-		
 	@OneToMany(mappedBy="task")
 	public Set<TaskComment> getTaskComment() {
 		return taskComment;
@@ -219,5 +222,17 @@ public class Task implements Serializable {
 	public void setTaskID(Integer taskID) {
 		this.taskID = taskID;
 	}
+
+	@OneToMany(mappedBy="task")
+	public Set<File> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Set<File> files) {
+		this.files = files;
+	}
+	
+	
+	
 
 }

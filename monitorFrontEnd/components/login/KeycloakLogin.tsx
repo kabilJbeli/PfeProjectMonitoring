@@ -101,8 +101,11 @@ const KeycloakLogin = () => {
 				axios.interceptors.request.use(
 				request=>{
 					if(request.url?.includes('/api/') && request.headers !== undefined){
+						/**
+						 * To Enable the security please uncomment the code below
+						 */
 						request.headers['Content-Type']='application/json';
-						request.headers['Authorization'] ='Bearer '+token;
+						//request.headers['Authorization'] ='Bearer '+token;
 					}
 					console.info(request);
 					return request
