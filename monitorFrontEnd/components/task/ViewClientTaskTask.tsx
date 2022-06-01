@@ -95,7 +95,7 @@ export const ViewClientTaskComponent = (props: any) => {
 		const localMemberData: any[] = [];
 		axios({
 			method: 'GET',
-			url: `${Environment.API_URL}/api/member/getMemberByEmail?projectId=${projectId}`,
+			url: `${Environment.API_URL}/api/project/findProjectMembers?projectId=${projectId}`,
 			headers: {
 				'Content-Type': 'application/json',
 				useQueryString: false,
@@ -189,6 +189,7 @@ export const ViewClientTaskComponent = (props: any) => {
 			let parsedInfo = JSON.parse(info)
 			getTaskTypes();
 			setUserInfo(JSON.parse(info));
+			console.log(JSON.parse(info).email);
 			getMemberInformation(JSON.parse(info).email);
 			getUserSpecificProjects(parsedInfo);
 

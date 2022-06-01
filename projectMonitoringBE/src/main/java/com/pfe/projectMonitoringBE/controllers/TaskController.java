@@ -118,8 +118,8 @@ public class TaskController {
 	}
 
 	@PostMapping("/add")
-	public void addTask(@RequestBody Task task) {
-		service.createOrUpdateTask(task);
+	public Task addTask(@RequestBody Task task) {
+		Task createdTask = service.createOrUpdateTask(task);
 		if (task.getIsCreatedByClient()) {
 			emailService.sendSimpleMessage(task.getProject().getProjectManager().getEmail(), "Client Task",
 					task.getProject().getProjectTitle()
@@ -132,6 +132,7 @@ public class TaskController {
 								+ " project, Task Summary: " + task.getTaskTitle());
 			}
 		}
+		return createdTask;
 	}
 
 	@PutMapping("/update")

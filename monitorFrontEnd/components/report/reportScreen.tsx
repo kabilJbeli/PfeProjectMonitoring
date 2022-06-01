@@ -27,26 +27,94 @@ const reportScreenComponent = (props: any) => {
 		// Update the document title using the broconwser API
 		const localProject: any = [];
 
-		axios({
-			method: 'POST',
-			url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
-			headers: {
-				'Content-Type': 'application/json',
-				useQueryString: false,
-			},
-			params: {},
-			data: {}
-		})
-			.then(response => {
-				response.data.map((item: any) => {
-					localProject.push({
-						label: item.projectTitle, value: item
-					});
-				});
-				setProjects(localProject);
+
+		if(userInfoParam.roles.includes('MANAGER')) {
+			axios({
+				method: 'POST',
+				url: `${Environment.API_URL}/api/project/getProjectsByProjectManager?email=${userInfoParam.email}`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+				data: {}
 			})
-			.catch((err: any) => {
-			});
+				.then(response => {
+					response.data.map((item: any) => {
+						localProject.push({
+							label: item.projectTitle, value: item
+						});
+					});
+					setProjects(localProject);
+				})
+				.catch((err: any) => {
+				});
+		} else if(userInfoParam.roles.includes('EMPLOYEE')) {
+			axios({
+				method: 'GET',
+				url: `${Environment.API_URL}/api/project/findByMember?email=${userInfoParam.email}`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+				data: {}
+			})
+				.then(response => {
+					response.data.map((item: any) => {
+						localProject.push({
+							label: item.projectTitle, value: item
+						});
+					});
+					setProjects(localProject);
+				})
+				.catch((err: any) => {
+				});
+		}else if(userInfoParam.roles.includes('ADMINISTRATOR')) {
+			axios({
+				method: 'GET',
+				url: `${Environment.API_URL}/api/project/all`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+				data: {}
+			})
+				.then(response => {
+					response.data.map((item: any) => {
+						localProject.push({
+							label: item.projectTitle, value: item
+						});
+					});
+					setProjects(localProject);
+				})
+				.catch((err: any) => {
+				});
+		}else if(userInfoParam.roles.includes('CLIENT')) {
+			axios({
+				method: 'GET',
+				url: `${Environment.API_URL}/api/project/getProjectsByClient?email=${userInfoParam.email}`,
+				headers: {
+					'Content-Type': 'application/json',
+					useQueryString: false,
+				},
+				params: {},
+				data: {}
+			})
+				.then(response => {
+					response.data.map((item: any) => {
+						localProject.push({
+							label: item.projectTitle, value: item
+						});
+					});
+					setProjects(localProject);
+				})
+				.catch((err: any) => {
+				});
+		}
+
+
 	};
 
 	const getMember = (email: string) => {

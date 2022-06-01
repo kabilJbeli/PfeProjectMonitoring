@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {Button, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from "react";
 import {Input} from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -10,6 +9,16 @@ import axios from "axios";
 import Environment from "../../Environment";
 import {_retrieveData, showToastWithGravity} from "../../utils";
 import {useNavigation} from "@react-navigation/native";
+
+import RNFetchBlob from 'react-native-fetch-blob';
+
+import DocumentPicker, {
+	DirectoryPickerResponse,
+	DocumentPickerResponse,
+	isInProgress,
+	types,
+} from 'react-native-document-picker';
+
 
 // @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
@@ -29,10 +38,12 @@ const AddTask = (props: any) => {
 			taskDescription: null,
 			taskEstimation: null,
 			isCreatedByClient: false,
-			isClientTaskValidated:false,
+			isClientTaskValidated: false,
 			client: null
 		}
 	};
+
+	const [member, setMember] = useState<any>(null);
 	const [userInfo, setUserInfo] = useState<any>(null);
 	const [task, setTask] = useState<any>(defaultTask);
 	const [projects, setProjects] = useState<any[]>([]);
@@ -42,6 +53,8 @@ const AddTask = (props: any) => {
 	const [members, setMembers] = useState<any[]>([]);
 	const [priorities, setPriorities] = useState<any[]>([]);
 
+	const [files, setFiles] = useState<any[]>([]);
+	const [result, setResult] = React.useState<Array<DocumentPickerResponse> | DirectoryPickerResponse | undefined | null>();
 	const navigation = useNavigation();
 	const getPriorities = () => {
 		// Update the document title using the browser API
@@ -62,7 +75,7 @@ const AddTask = (props: any) => {
 				setPriorities(priorityLocal);
 			})
 			.catch((err: any) => {
-				console.error('api/priority/all',err);
+				console.error('api/priority/all', err);
 
 			});
 	};
@@ -85,6 +98,21 @@ const AddTask = (props: any) => {
 		getPriorities();
 	}, [props]);
 
+	useEffect(() => {
+		console.log(JSON.stringify(result, null, 2))
+	}, [result]);
+
+
+	const handleError = (err: unknown) => {
+		if (DocumentPicker.isCancel(err)) {
+			console.warn('cancelled')
+			// User cancelled the picker, exit any dialogs or menus and move on
+		} else if (isInProgress(err)) {
+			console.warn('multiple pickers were opened, only the last will be considered')
+		} else {
+			throw err
+		}
+	}
 
 	const createTask = () => {
 		axios
@@ -92,19 +120,40 @@ const AddTask = (props: any) => {
 			.then((res: any) => {
 				showToastWithGravity('Task Successfully Created');
 				setTask(defaultTask);
-				if(userInfo && userInfo.roles && userInfo.roles.includes('CLIENT')){
+				files.map(file => {
+					file.task = res.data;
+				});
+
+				addFiles(files);
+
+				if (userInfo && userInfo.roles && userInfo.roles.includes('CLIENT')) {
 					// @ts-ignore
 					navigation.navigate('myPendingTasks');
-				}else{
+				} else {
 					// @ts-ignore
 					navigation.navigate('Task');
 				}
 
+
 			}).catch((error: any) => {
 			showToastWithGravity('An Error Has Occurred!!!');
-			console.error('api/task/add',error);
+			console.error('api/task/add', error);
 		});
 	}
+
+
+	const addFiles = (filesInfo: any[]) => {
+		axios
+			.post(`${Environment.API_URL}/api/file/add`, filesInfo)
+			.then((res: any) => {
+
+
+			}).catch((error: any) => {
+			showToastWithGravity('An Error Has Occurred!!!');
+			console.error('api/file/add', error);
+		});
+	}
+
 	const cancelTask = () => {
 		setTask(defaultTask);
 		// @ts-ignore
@@ -175,22 +224,23 @@ const AddTask = (props: any) => {
 			params: {},
 		})
 			.then(response => {
-				if (response.data.role ==='CLIENT') {
+				if (response.data.role === 'CLIENT') {
 					setTask((prevState: any) => {
 						let task = Object.assign({}, prevState.task);
 						task.client = response.data;
-						task.isCreatedByClient=true;
-						task.isClientTaskValidated=false;
+						task.isCreatedByClient = true;
+						task.isClientTaskValidated = false;
 						return {task};
 					});
 				}
-				if (response.data.role ==='MANAGER') {
+				if (response.data.role === 'MANAGER') {
 					setTask((prevState: any) => {
 						let task = Object.assign({}, prevState.task);
 						task.reporter = response.data;
 						return {task};
 					});
 				}
+				setMember(response.data);
 			})
 			.catch((err: any) => {
 			});
@@ -279,8 +329,8 @@ const AddTask = (props: any) => {
 		return returnedDropDown;
 	}
 
-	const getSprintsByProject = (projectID:number)=>{
-		const localSprintData:any[]=[];
+	const getSprintsByProject = (projectID: number) => {
+		const localSprintData: any[] = [];
 		axios({
 			method: 'GET',
 			url: `${Environment.API_URL}/api/sprint/getProjectSprints?projectID=${projectID}`,
@@ -322,28 +372,29 @@ const AddTask = (props: any) => {
 		}
 		return returnedDropDown;
 	}
-	const getEstimatedtTime = ():any=>{
+	const getEstimatedtTime = (): any => {
 		let returnedDropDown: any = (<View></View>);
 		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER')) {
 			returnedDropDown = (<View style={{width: '100%'}}>
-			<Text>Estimated Time in hours</Text>
-			<Input
-				leftIcon={<Ionicons name="time" size={20} color={'#000'}/>}
-				inputContainerStyle={styles.InputContainerStyle}
-				leftIconContainerStyle={styles.LeftIconContainerStyle}
-				errorStyle={styles.ErrorStyle}
-				onChangeText={(text: string) =>
-					setTask((prevState: any) => {
-						let task = Object.assign({}, prevState.task);
-						task.taskEstimation = text;
-						return {task};
-					})
-				}
-				value={task.task?.taskEstimation}
-				keyboardType="numeric"
-				autoCompleteType={false}
-			/>
-		</View>);}
+				<Text>Estimated Time in hours</Text>
+				<Input
+					leftIcon={<Ionicons name="time" size={20} color={'#000'}/>}
+					inputContainerStyle={styles.InputContainerStyle}
+					leftIconContainerStyle={styles.LeftIconContainerStyle}
+					errorStyle={styles.ErrorStyle}
+					onChangeText={(text: string) =>
+						setTask((prevState: any) => {
+							let task = Object.assign({}, prevState.task);
+							task.taskEstimation = text;
+							return {task};
+						})
+					}
+					value={task.task?.taskEstimation}
+					keyboardType="numeric"
+					autoCompleteType={false}
+				/>
+			</View>);
+		}
 		return returnedDropDown;
 	}
 	return (
@@ -447,6 +498,53 @@ const AddTask = (props: any) => {
 
 					{getEstimatedtTime()}
 
+
+					<View style={{width: '100%',marginBottom:15}}>
+						<TouchableOpacity
+							style={[styles.buttonCreate, {opacity: 1, backgroundColor: '#3e8ed0'}]}
+							onPress={() => {
+								DocumentPicker.pick({
+									allowMultiSelection: true,
+									type: [types.doc, types.docx, types.pdf, types.ppt, types.pptx, types.images, types.xls, types.xlsx],
+								})
+									.then((result: DocumentPickerResponse[]) => {
+										const files: any[] = [];
+										result.map((item: DocumentPickerResponse) => {
+
+
+											RNFetchBlob.fs.readFile(item.uri, 'base64').then(base => {
+
+												const file = {
+													fileTitle: item.name,
+													fileBytes: base,
+													fileType: item.type,
+													addedBy: member,
+													task: null
+												}
+
+												console.log(base);
+												files.push(file);
+
+											});
+										});
+
+										setFiles(files);
+										setResult(result);
+									})
+									.catch(handleError)
+							}}
+						>
+							<Text style={{
+								textAlign: 'center',
+								color: '#fff',
+								fontWeight: '500',
+							}}>Upload Files {"\n"} <Text style={{
+								marginTop:15,
+								fontSize:12
+							}}>PDF, DOC, XLS, PPT, IMAGE</Text></Text>
+						</TouchableOpacity>
+
+					</View>
 					<View style={{width: '100%'}}>
 						<TouchableOpacity
 							style={[styles.buttonCreate, {opacity: getButtonStatus() ? 0.5 : 1}]}
@@ -493,13 +591,13 @@ const styles = StyleSheet.create({
 		height: "100%"
 	},
 	title: {
-		fontSize: 22,
+		fontSize: 22
 	},
 	buttonCreate: {
 		borderRadius: 0,
 		padding: 10,
 		elevation: 2,
-		backgroundColor: '#1f9683',
+		backgroundColor: '#1f9683'
 	},
 	buttonCancel: {
 		borderRadius: 0,
@@ -511,19 +609,19 @@ const styles = StyleSheet.create({
 	textStyle: {
 		color: 'white',
 		fontWeight: 'bold',
-		textAlign: 'center',
+		textAlign: 'center'
 	},
 	modalText: {
 		marginBottom: 15,
-		textAlign: 'center',
+		textAlign: 'center'
 	},
 	InputContainerStyle: {
 		width: '100%',
 		borderStyle: 'solid',
 		borderColor: '#000',
 		display: 'flex',
-		justifyContent: 'center',
+		justifyContent: 'center'
 	},
 	LeftIconContainerStyle: {},
-	ErrorStyle: {},
+	ErrorStyle: {}
 });

@@ -55,6 +55,10 @@ public class Member implements Serializable {
 	private Set<Report> reports;
 	
 	
+	private Set<File> files;
+	
+	
+	
 	@OneToMany(mappedBy="member")	
 	@JsonManagedReference(value="member-report")
 	@JsonIgnore
@@ -216,6 +220,16 @@ public class Member implements Serializable {
 
 	public void setManagedproject(Project managedproject) {
 		this.managedproject = managedproject;
+	}
+	
+	@OneToMany(mappedBy="addedBy")
+	@JsonIgnore
+	public Set<File> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Set<File> files) {
+		this.files = files;
 	}
 	
 	
