@@ -1,5 +1,15 @@
 import * as React from 'react';
-import {ActivityIndicator, Dimensions, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+	ActivityIndicator, Alert,
+	Dimensions,
+	FlatList,
+	Pressable,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text, TouchableOpacity,
+	View
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {_retrieveData, _storeData, showToastWithGravity} from "../../utils";
 import {useEffect, useState} from "react";
@@ -13,6 +23,14 @@ import {Input} from "react-native-elements";
 
 // @ts-ignore
 import {Dropdown} from 'react-native-material-dropdown-v2';
+import IconAnt from "react-native-vector-icons/AntDesign";
+import RNFetchBlob from "react-native-fetch-blob";
+import DocumentPicker, {
+	DirectoryPickerResponse,
+	DocumentPickerResponse,
+	isInProgress,
+	types,
+} from 'react-native-document-picker';
 
 const ViewTask = (props: any) => {
 	const navigation = useNavigation();
@@ -32,7 +50,8 @@ const ViewTask = (props: any) => {
 	const [state, setState] = useState<any>({
 		activeSections: [],
 	});
-
+	const [files, setFiles] = useState<any[]>([]);
+	const [result, setResult] = React.useState<Array<DocumentPickerResponse> | DirectoryPickerResponse | undefined | null>();
 	const [getLoggedInTime, setLoggedIntTimeArray] = useState<any[]>([]);
 
 	const defaultLoggedInTime = {
@@ -76,6 +95,16 @@ const ViewTask = (props: any) => {
 		]
 	});
 
+	const handleError = (err: unknown) => {
+		if (DocumentPicker.isCancel(err)) {
+			console.warn('cancelled')
+			// User cancelled the picker, exit any dialogs or menus and move on
+		} else if (isInProgress(err)) {
+			console.warn('multiple pickers were opened, only the last will be considered')
+		} else {
+			throw err
+		}
+	}
 
 	const getDisplayButtonOfChangeTaskStatus = (taskInformation: any): any => {
 		let returnedValue: any = (<View></View>);
@@ -152,6 +181,19 @@ const ViewTask = (props: any) => {
 		return returnedValue;
 	}
 
+	const FlatListItemSeparator = () => {
+		return (
+			<View
+				style={{
+					height: 1,
+					width: '100%',
+					backgroundColor: 'transparent',
+				}}
+			/>
+		);
+	};
+
+
 	const getTaskDuration = (task: any) => {
 		axios({
 			method: 'GET',
@@ -226,7 +268,7 @@ const ViewTask = (props: any) => {
 
 			})
 			.catch((err: any) => {
-				console.error('api/taskDuration/findTaskDurationByTasks',err);
+				console.error('api/taskDuration/findTaskDurationByTasks', err);
 			});
 
 	}
@@ -283,9 +325,23 @@ const ViewTask = (props: any) => {
 				});
 			})
 			.catch((err: any) => {
-				console.error('api/member/getMemberByEmail',err);
+				console.error('api/member/getMemberByEmail', err);
 			});
 
+	}
+
+
+	const addFiles = (filesInfo: any[]) => {
+		axios
+			.post(`${Environment.API_URL}/api/file/add`, filesInfo)
+			.then((res: any) => {
+				getTaskInformationWs(taskInfo);
+				setFiles([]);
+				setResult(null);
+			}).catch((error: any) => {
+			showToastWithGravity('An Error Has Occurred!!!');
+			console.error('api/file/add', error);
+		});
 	}
 
 
@@ -325,7 +381,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Task Successfully Updated');
 			})
 			.catch((err: any) => {
-				console.error('api/task/update',err)
+				console.error('api/task/update', err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -354,7 +410,7 @@ const ViewTask = (props: any) => {
 				getSelectedProjectMembers(response.data.project.projectID);
 			})
 			.catch((err: any) => {
-				console.error('api/task',err)
+				console.error('api/task', err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -448,7 +504,7 @@ const ViewTask = (props: any) => {
 				setComment('');
 			})
 			.catch((err: any) => {
-				console.error('api/taskComment/add',err);
+				console.error('api/taskComment/add', err);
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -530,7 +586,6 @@ const ViewTask = (props: any) => {
 	}
 
 	const setLogInTime = () => {
-		console.log('loggedInTime.loggedInTime =======================> ', loggedInTime.loggedInTime)
 		axios({
 			method: 'POST',
 			url: `${Environment.API_URL}/api/taskDuration/add`,
@@ -555,7 +610,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Log In Duration Successfully');
 			})
 			.catch((err: any) => {
-				console.error('api/taskDuration/add`',err)
+				console.error('api/taskDuration/add`', err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -585,7 +640,7 @@ const ViewTask = (props: any) => {
 				showToastWithGravity('Status Successfully Updated');
 			})
 			.catch((err: any) => {
-				console.error('api/task/changeTaskStatus',err)
+				console.error('api/task/changeTaskStatus', err)
 				showToastWithGravity('An Error Occurred!!!');
 			});
 	}
@@ -598,6 +653,20 @@ const ViewTask = (props: any) => {
 		return returnedValue;
 	}
 
+	const downloadReport = (file: any): void => {
+
+		let filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + file.fileTitle;
+
+		RNFetchBlob.fs.writeFile(filePath, file.fileBytes, 'base64')
+			.then((response: any) => {
+				Alert.alert('Successfully Downloaded', 'Path:' + filePath || '', [
+					{text: "Ok", onPress: () => console.log('Ok pressed')},
+				], {cancelable: true});
+			})
+			.catch((errors: any) => {
+				console.error(" Error Log: ", errors);
+			})
+	}
 	const getTaskInformation = (): any => {
 		if (taskInfo !== undefined && taskInfo.taskID) {
 			return (<ScrollView style={[styles.containerView, {height: Dimensions.get('screen').height - 255}]}>
@@ -688,6 +757,108 @@ const ViewTask = (props: any) => {
 					}}>Estimated Time:</Text> {taskInfo?.taskEstimation}/H</Text>
 				</View>
 
+
+				<View>
+					<View style={{marginTop: 15}}>
+						<Text style={{
+							fontWeight: 'bold'
+						}}>Attached Files:</Text>
+					</View>
+
+					<FlatList
+						style={{
+							maxHeight: Dimensions.get('screen').height - 460,
+							width: Dimensions.get('screen').width
+						}}
+						keyExtractor={(item, index) => index.toString()}
+						data={taskInfo.files}
+						ItemSeparatorComponent={FlatListItemSeparator}
+						initialNumToRender={taskInfo.length}
+						renderItem={({item}) => (
+							<View style={styles.project}>
+								<View style={[
+									{
+										flexDirection: 'row', justifyContent: 'space-between', marginBottom: 0,
+										paddingRight: 15, paddingLeft: 15, alignItems: 'center', height: 'auto'
+									}
+								]}>
+									<Text style={styles.text}>
+										{item.fileTitle}
+									</Text>
+
+									<View style={styles.buttonWrapper}>
+
+										<Pressable
+											style={({pressed}) => [{opacity: pressed ? 0.8 : 1}, styles.custombutton, styles.borderButton, styles.update]}
+											onPress={() => {
+												downloadReport(item);
+											}}>
+
+											<IconAnt name={'download'} color={'#ffff'} size={18}/>
+										</Pressable>
+									</View>
+								</View>
+
+
+							</View>
+						)}
+					/>
+
+				</View>
+
+
+				<View style={{width: '100%'}}>
+					<TouchableOpacity
+						style={[styles.buttonCreate, {opacity: 1, backgroundColor: '#3e8ed0'}]}
+						onPress={() => {
+							DocumentPicker.pick({
+								allowMultiSelection: true,
+								type: [types.doc, types.docx, types.pdf, types.ppt, types.pptx, types.images, types.xls, types.xlsx],
+							})
+								.then((result: DocumentPickerResponse[]) => {
+									const localFiles: any[] = [];
+									result.map((item: DocumentPickerResponse,index) => {
+										console.log(item.uri);
+										const filePath = item.uri.split('raw%3A')[1].replace(/\%2F/gm, '/');
+										RNFetchBlob.fs.readFile(filePath, 'base64').then(base => {
+											const file = {
+												fileTitle: item.name,
+												fileBytes: base,
+												fileType: item.type,
+												addedBy: member,
+												task: taskInfo
+											}
+
+											localFiles.push(file);
+											console.log(1);
+											if(result.length-1 ===index ){
+												setFiles(localFiles);
+												setResult(result);
+												addFiles(localFiles);
+												console.log(3);
+											}
+										});
+										console.log(2);
+									});
+
+
+
+							$
+								})
+								.catch(handleError)
+						}}
+					>
+						<Text style={{
+							textAlign: 'center',
+							color: '#fff',
+							fontWeight: '500',
+						}}>Upload Files {"\n"} <Text style={{
+							marginTop: 15,
+							fontSize: 12
+						}}>PDF, DOC, XLS, PPT, IMAGE</Text></Text>
+					</TouchableOpacity>
+
+				</View>
 				<View style={{marginTop: 15}}>
 					<Text style={{
 						fontWeight: 'bold'
@@ -802,5 +973,76 @@ const styles = StyleSheet.create({
 		backgroundColor: '#00a3cc',
 		padding: 10,
 		textAlign: 'center',
+	},
+	project: {
+		backgroundColor: '#fff',
+		padding: 20,
+		paddingBottom: 0,
+		paddingRight: 0,
+		paddingTop: 0,
+		paddingLeft: 0,
+		margin: 15,
+		marginLeft: 0,
+		marginTop: 10,
+		shadowColor: '#171717',
+		shadowOffset: {width: -2, height: 4},
+		shadowOpacity: 0.2,
+		shadowRadius: 3,
+	},
+	text: {
+		color: '#000',
+		textTransform: 'none',
+		width: 'auto',
+		paddingTop: 0
+	},
+	titleWrapper: {
+		paddingLeft: 15,
+		paddingRight: 15,
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		width: '100%',
+
+	},
+	buttonWrapper: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+
+	custombutton: {
+		backgroundColor: '#fff',
+		width: 'auto',
+		padding: 10,
+		textAlign: 'center',
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		minWidth: 50,
+		alignItems: 'center'
+	},
+	borderButton: {
+		borderStyle: 'solid',
+		borderLeftColor: '#fff',
+		borderWidth: 1,
+		borderBottomColor: 'transparent',
+		borderTopColor: 'transparent',
+		borderRightColor: 'transparent',
+	},
+	delete: {
+		backgroundColor: '#c8003f',
+	},
+	view: {
+		backgroundColor: '#3b436b',
+	},
+	update: {
+		backgroundColor: '#1f9683',
+	},
+	buttonCreate: {
+		borderRadius: 0,
+		padding: 10,
+		elevation: 2,
+		backgroundColor: '#1f9683'
 	},
 })

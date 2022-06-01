@@ -24,8 +24,8 @@ public class TaskService implements ITask {
 	private TaskRepository repository;
 
 	@Override
-	public void createOrUpdateTask(Task task) {
-		repository.save(task);
+	public Task createOrUpdateTask(Task task) {
+		return repository.save(task);
 	}
 
 	@Override

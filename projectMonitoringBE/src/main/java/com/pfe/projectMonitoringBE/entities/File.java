@@ -1,5 +1,7 @@
 package com.pfe.projectMonitoringBE.entities;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,38 +10,36 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.pfe.projectMonitoringBE.Enums.FileType;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
 public class File {
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2834950868118018638L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer fileID;
 
 	private String fileTitle;
 
+	private LocalDateTime creationDate = LocalDateTime.now();
+
+	private String fileType;
+
+	private Member addedBy;
+
+	private Task task;
+
 	@Lob
 	private byte[] fileBytes;
 
-	private LocalDateTime creationDate = LocalDateTime.now();
-
-	private FileType fileType;
-	
-	private Member addedBy; 
-		
-	private Task task;
-	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getFileID() {
 		return fileID;
 	}
@@ -72,15 +72,15 @@ public class File {
 		this.creationDate = creationDate;
 	}
 
-	public FileType getFileType() {
+	public String getFileType() {
 		return fileType;
 	}
 
-	public void setFileType(FileType fileType) {
+	public void setFileType(String fileType) {
 		this.fileType = fileType;
 	}
-
-	@OneToOne	
+	
+	@OneToOne
 	public Member getAddedBy() {
 		return addedBy;
 	}
@@ -89,7 +89,7 @@ public class File {
 		this.addedBy = addedBy;
 	}
 
-	public File(Integer fileID, String fileTitle, byte[] fileBytes, LocalDateTime creationDate, FileType fileType,
+	public File(Integer fileID, String fileTitle, byte[] fileBytes, LocalDateTime creationDate, String fileType,
 			Member addedBy) {
 		super();
 		this.fileID = fileID;
@@ -114,8 +114,5 @@ public class File {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	
-	
-	
 
 }

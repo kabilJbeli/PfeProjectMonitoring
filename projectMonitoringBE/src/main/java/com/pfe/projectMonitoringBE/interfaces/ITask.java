@@ -7,7 +7,7 @@ import com.pfe.projectMonitoringBE.Enums.TaskStatus;
 import com.pfe.projectMonitoringBE.entities.Task;
 
 public interface ITask {
-	public void createOrUpdateTask(Task task);
+	public Task createOrUpdateTask(Task task);
 
 	public Task findTask(int idTask);
 
