@@ -841,9 +841,6 @@ const ViewTask = (props: any) => {
 										console.log(2);
 									});
 
-
-
-							$
 								})
 								.catch(handleError)
 						}}
