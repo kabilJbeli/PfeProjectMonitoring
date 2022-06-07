@@ -1,0 +1,1 @@
+mvn jasypt:encrypt -Djasypt.encryptor.password=javatechie
