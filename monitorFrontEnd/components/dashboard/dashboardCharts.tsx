@@ -374,12 +374,19 @@ export const DashboardCharts = (props: any) => {
 	const getRiskyTasks = ():any=>{
 
 		let returnedValue: any;
-		if (loadingRiskyTasks) {
-			returnedValue = (<View style={styles.loadingContainer}>
-				<ActivityIndicator size="large" color="#d81e05"/>
-			</View>);
-		} else {
+		if (loadingRiskyTasks && memberInfo.role !=="ADMINISTRATOR") {
 			returnedValue = (
+				<View>
+					<Text style={{paddingBottom: 10}}>Risky tasks:</Text>
+					<View style={styles.loadingContainer}>
+						<ActivityIndicator size="large" color="#d81e05"/>
+					</View>
+				</View>
+				);
+		} else if(memberInfo.role !=="ADMINISTRATOR") {
+			returnedValue = (
+				<View>
+					<Text style={{paddingBottom: 10}}>Risky tasks:</Text>
 				<FlatList
 					keyExtractor={(item, index) => index.toString()}
 					data={riskyTasks || []}
@@ -414,7 +421,14 @@ export const DashboardCharts = (props: any) => {
 
 					)}
 
-				/>)
+				/>
+				</View>
+				)
+		}else if(memberInfo.role ==="ADMINISTRATOR") {
+			returnedValue = (
+				<View>
+
+			</View>);
 		}
 
 		return returnedValue
@@ -484,7 +498,7 @@ export const DashboardCharts = (props: any) => {
 				</View>
 			</View>
 			<View>
-				<Text style={{paddingBottom: 10}}>Risky tasks:</Text>
+
 				{getRiskyTasks()}
 			</View>
 		</View>

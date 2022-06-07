@@ -172,3 +172,4 @@
 2022-06-07 13:14:47,581 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: Keycloak 16.1.1 (WildFly Core 18.0.4.Final) started in 24203ms - Started 573 of 851 services (576 services are lazy, passive or on-demand)
 2022-06-07 13:14:47,595 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management
 2022-06-07 13:14:47,596 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990
+2022-06-07 16:49:18,545 WARN  [org.keycloak.events] (default task-1) type=LOGIN_ERROR, realmId=projectMonitoring, clientId=null, userId=null, ipAddress=127.0.0.1, error=expired_code, restart_after_timeout=true, authSessionParentId=9ef1dbea-c81e-4143-822f-d668fbb8e437, authSessionTabId=ZXxN4OeYhlc

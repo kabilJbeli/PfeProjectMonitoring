@@ -82,16 +82,11 @@ const CustomDrawerContent = (props: any) => {
 						{newGroup ? (
 							<View key={route.key + 'Group'} style={styles.sectionContainer}>
 
-								<Text key={drawerLabel + 'Label'} style={{marginLeft: 16}}>
-
-									{drawerIcon(true, 15)} {'   '} {drawerLabel}
-								</Text>
-								<View key={route.key + 'GroupView'} style={styles.sectionLine}/>
 							</View>
 						) : null}
 						<DrawerItem
 							key={route.key}
-							label={({color}) => <Text style={{color}}>{drawerLabel}</Text>}
+							label={({color}) =>  <Text style={{color,display:"flex",justifyContent:"center"}}> <View style={{minWidth:15}}>{drawerIcon(true, 15)}</View> {'   '} <Text style={{paddingLeft:15}}>{drawerLabel}</Text></Text> }
 							focused={
 								state.routes.findIndex((e: any) => e.name === route.name) ===
 								state.index
@@ -640,8 +635,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		marginTop: 0,
-		paddingTop: 15,
-		paddingBottom: 15,
+		paddingTop: 0,
+		paddingBottom: 0,
 		height: '90%'
 	},
 	profile: {
