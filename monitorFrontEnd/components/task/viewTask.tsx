@@ -53,6 +53,7 @@ const ViewTask = (props: any) => {
 	const [files, setFiles] = useState<any[]>([]);
 	const [result, setResult] = React.useState<Array<DocumentPickerResponse> | DirectoryPickerResponse | undefined | null>();
 	const [getLoggedInTime, setLoggedIntTimeArray] = useState<any[]>([]);
+	const [sprints, setSprints] = useState<any[]>([]);
 
 	const defaultLoggedInTime = {
 		loggedTime: {
@@ -291,6 +292,7 @@ const ViewTask = (props: any) => {
 				}
 			});
 			getTaskDuration(JSON.parse(task));
+			getSprintsByProject(JSON.parse(task).project.projectID)
 		});
 
 	}, [props]);
@@ -645,6 +647,49 @@ const ViewTask = (props: any) => {
 			});
 	}
 
+	const getSprintsByProject = (projectID: number) => {
+		const localSprintData: any[] = [];
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/sprint/getProjectSprints?projectID=${projectID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				response.data.map((item: any) => {
+					localSprintData.push({label: item.sprintTitle, value: item});
+				})
+				setSprints(localSprintData);
+			})
+			.catch((err: any) => {
+			});
+
+	}
+	const getSprintDropdown = (): any => {
+		let returnedDropDown: any = (<View></View>);
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER') && !taskInfo.sprint ) {
+			returnedDropDown = (<View style={{width: '100%', marginBottom: 15}}>
+				<Dropdown
+					style={{width: '100%'}}
+					disabled={sprints.length === 0 ? true : false}
+					label={'Assign To Sprint (optional)'}
+					data={sprints}
+					onChangeText={(value: any) => setTaskInfo((prevState: any) => {
+						let task = Object.assign({}, prevState);
+						task.sprint = value;
+						return {task};
+					})}
+					value={taskInfo?.sprint || null}
+				/>
+			</View>);
+
+		}
+		return returnedDropDown;
+	}
+
 	const getAssigneeName = (): string => {
 		let returnedValue: string = '';
 		if (taskInfo?.assignee?.name && taskInfo?.assignee?.lastName) {
@@ -669,7 +714,7 @@ const ViewTask = (props: any) => {
 	}
 	const getTaskInformation = (): any => {
 		if (taskInfo !== undefined && taskInfo.taskID) {
-			return (<ScrollView style={[styles.containerView, {height: Dimensions.get('screen').height - 255}]}>
+			return (<ScrollView style={[styles.containerView, {height: Dimensions.get('screen').height - 285}]}>
 				<View>
 					<Pressable
 						style={{width: 80, flexDirection: 'row'}}
@@ -758,6 +803,7 @@ const ViewTask = (props: any) => {
 				</View>
 
 
+
 				<View>
 					<View style={{marginTop: 15}}>
 						<Text style={{
@@ -806,7 +852,6 @@ const ViewTask = (props: any) => {
 
 				</View>
 
-
 				<View style={{width: '100%'}}>
 					<TouchableOpacity
 						style={[styles.buttonCreate, {opacity: 1, backgroundColor: '#3e8ed0'}]}
@@ -828,17 +873,13 @@ const ViewTask = (props: any) => {
 												addedBy: member,
 												task: taskInfo
 											}
-
 											localFiles.push(file);
-											console.log(1);
 											if(result.length-1 ===index ){
 												setFiles(localFiles);
 												setResult(result);
 												addFiles(localFiles);
-												console.log(3);
 											}
 										});
-										console.log(2);
 									});
 
 								})
@@ -856,17 +897,16 @@ const ViewTask = (props: any) => {
 					</TouchableOpacity>
 
 				</View>
+
 				<View style={{marginTop: 15}}>
 					<Text style={{
 						fontWeight: 'bold'
 					}}>Logged In Time</Text>
 					<View style={styles.viewWrapper}>
-
 						<Text>{getLoggedTime?.loggedTime.Week} Week</Text>
 						<Text>{getLoggedTime?.loggedTime.Day} Day</Text>
 						<Text>{getLoggedTime?.loggedTime.Hour} Hour</Text>
 						<Text>{getLoggedTime?.loggedTime.Minute} Minutes</Text>
-
 					</View>
 				</View>
 
@@ -881,7 +921,7 @@ const ViewTask = (props: any) => {
 						{loggedIn(props)}
 					</View>
 				</View>
-
+				{getSprintDropdown()}
 				<View>
 					<Text style={{
 						fontWeight: 'bold',
