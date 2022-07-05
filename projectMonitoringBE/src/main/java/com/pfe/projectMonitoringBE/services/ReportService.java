@@ -9,6 +9,7 @@ import com.pfe.projectMonitoringBE.entities.Member;
 import com.pfe.projectMonitoringBE.entities.Report;
 import com.pfe.projectMonitoringBE.interfaces.IMember;
 import com.pfe.projectMonitoringBE.interfaces.IReport;
+import com.pfe.projectMonitoringBE.models.ReportModel;
 import com.pfe.projectMonitoringBE.repositories.ReportRepository;
 
 @Service
@@ -44,4 +45,17 @@ public class ReportService implements IReport {
 	public void deleteReport(Report report) {
 		repository.delete(report);
 	}
+	@Override
+	public Report transformReportModelToReport(ReportModel reportModel, byte[] pdfBytes) {
+		
+		Report report= new Report();
+		report.setProject(reportModel.getProject());
+		report.setReportTtile(reportModel.getReportTtile());
+		report.setMember(reportModel.getMember());
+		report.setPdfAsBytes(pdfBytes);
+		return  report;
+		
+	}
+	
+	
 }

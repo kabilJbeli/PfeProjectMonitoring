@@ -56,17 +56,12 @@ public class ReportController {
 	}
 
 	@PostMapping("/add")
-	public void addReport(@RequestBody ReportModel reportModel) {
+	public void generateReport(@RequestBody ReportModel reportModel) {
 		
 		byte[] pdfBytes = reportModel.getBase64StringReport().getBytes(StandardCharsets.US_ASCII);
+
 		
-		Report report= new Report();
-		report.setProject(reportModel.getProject());
-		report.setReportTtile(reportModel.getReportTtile());
-		report.setMember(reportModel.getMember());
-		report.setPdfAsBytes(pdfBytes);
-		
-		service.createOrUpdateReport(report);
+		service.createOrUpdateReport(service.transformReportModelToReport(reportModel, pdfBytes));
 	}
 
 	@PutMapping("/update/{id}")

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -105,7 +106,7 @@ public class Sprint implements Serializable {
 		this.sprintTypes = sprintTypes;
 	}
 
-	@OneToMany(mappedBy = "sprint")
+	@OneToMany(mappedBy = "sprint",fetch = FetchType.EAGER)
 	@JsonManagedReference
 	public Set<Task> getTask() {
 		return task;

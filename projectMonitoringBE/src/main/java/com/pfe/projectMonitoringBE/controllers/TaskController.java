@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.projectMonitoringBE.Enums.Roles;
 import com.pfe.projectMonitoringBE.Enums.TaskStatus;
+import com.pfe.projectMonitoringBE.entities.Sprint;
 import com.pfe.projectMonitoringBE.entities.Task;
 import com.pfe.projectMonitoringBE.interfaces.IEmail;
 import com.pfe.projectMonitoringBE.interfaces.ITask;
@@ -114,6 +115,22 @@ public class TaskController {
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Task>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	
+	@GetMapping("/getAttachedSprint/{id}")
+	public ResponseEntity<Sprint> getAttachedSprint(@PathVariable Integer id) {
+		try {
+			Task task = service.findTask(id);
+			if(task.getSprint() != null) {
+				return new ResponseEntity<Sprint>(task.getSprint(), HttpStatus.OK);
+
+			}else {
+				return new ResponseEntity<Sprint>(HttpStatus.NOT_FOUND);
+			}
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Sprint>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -214,5 +231,8 @@ public class TaskController {
 	public List<Task> getProjectBacklog(@RequestParam Integer projectID) {
 		return service.getProjectBacklog(projectID);
 	}
+	
+	
+	
 
 }

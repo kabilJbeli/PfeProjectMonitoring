@@ -55,6 +55,8 @@ const ViewTask = (props: any) => {
 	const [getLoggedInTime, setLoggedIntTimeArray] = useState<any[]>([]);
 	const [sprints, setSprints] = useState<any[]>([]);
 
+	const [sprint, setSprint] = useState<any>(null);
+
 	const defaultLoggedInTime = {
 		loggedTime: {
 			'Week': 0,
@@ -292,7 +294,8 @@ const ViewTask = (props: any) => {
 				}
 			});
 			getTaskDuration(JSON.parse(task));
-			getSprintsByProject(JSON.parse(task).project.projectID)
+			getSprintsByProject(JSON.parse(task).project.projectID);
+			getTaskSprint(JSON.parse(task).taskID);
 		});
 
 	}, [props]);
@@ -381,6 +384,7 @@ const ViewTask = (props: any) => {
 		})
 			.then(response => {
 				showToastWithGravity('Task Successfully Updated');
+				getTaskInformationWs(task);
 			})
 			.catch((err: any) => {
 				console.error('api/task/update', err)
@@ -647,6 +651,27 @@ const ViewTask = (props: any) => {
 			});
 	}
 
+	const getTaskSprint = (taskID:number):void =>{
+		axios({
+			method: 'GET',
+			url: `${Environment.API_URL}/api/task/getAttachedSprint/${taskID}`,
+			headers: {
+				'Content-Type': 'application/json',
+				useQueryString: false,
+			},
+			params: {},
+		})
+			.then(response => {
+				setSprint(response.data);
+			})
+			.catch((err: any) => {
+				console.error(`/api/task/getAttachedSprint/${taskID}`, err);
+
+				setSprint(null);
+			});
+
+	}
+
 	const getSprintsByProject = (projectID: number) => {
 		const localSprintData: any[] = [];
 		axios({
@@ -670,17 +695,19 @@ const ViewTask = (props: any) => {
 	}
 	const getSprintDropdown = (): any => {
 		let returnedDropDown: any = (<View></View>);
-		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER') && !taskInfo.sprint ) {
+		if (userInfo && userInfo.roles && userInfo.roles.includes('MANAGER') && sprint === null ) {
 			returnedDropDown = (<View style={{width: '100%', marginBottom: 15}}>
 				<Dropdown
 					style={{width: '100%'}}
 					disabled={sprints.length === 0 ? true : false}
-					label={'Assign To Sprint (optional)'}
+					label={'Assign To Sprint'}
 					data={sprints}
 					onChangeText={(value: any) => setTaskInfo((prevState: any) => {
-						let task = Object.assign({}, prevState);
-						task.sprint = value;
-						return {task};
+						let taskInfo = Object.assign({}, prevState);
+						taskInfo.sprint = value;
+						setSprint(value);
+						updateTask(taskInfo);
+						return {taskInfo};
 					})}
 					value={taskInfo?.sprint || null}
 				/>

@@ -96,19 +96,10 @@ public class SprintController {
 	}
 
 	@PostMapping("/add")
-	public void addSprint(@RequestBody Sprint sprint) {
+	public void addSprint(@RequestBody Sprint sprint) {	
 
-		Period period = Period.between(sprint.getSprintStartDate().toLocalDate(),
-				sprint.getSprintEndDate().toLocalDate());
-
-		sprint.setPeriod(period.getDays());
-
-		service.createOrUpdateSprint(sprint);
-
-		sprint.getTask().forEach(task -> {
-			task.setSprint(sprint);
-			serviceTask.createOrUpdateTask(task);
-		});
+		service.createOrUpdateSprint(service.updateSprintPeriod(sprint));	
+		attachTasksToSprint(sprint);
 
 	}
 
@@ -195,32 +186,14 @@ public class SprintController {
 	}
 
 	@GetMapping("/getCurrentSprintStats")
-	public List<SprintStats> getCurrentSprintStats(@RequestParam Integer sprintID) {
+	public List<SprintStats> getSprintStats(@RequestParam Integer sprintID) {
 		List<Task> tasks = service.getTasksBySprintId(sprintID);
-		List<SprintStats> sprintStats = new ArrayList<SprintStats>();
-
-		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ToDo, sprintID), TaskStatus.ToDo));
-
-		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Done, sprintID), TaskStatus.Done));
-
-		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.InProgress, sprintID),
-				TaskStatus.InProgress));
-
-		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ReadyForRelease, sprintID),
-				TaskStatus.ReadyForRelease));
-
-		sprintStats.add(
-				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Released, sprintID), TaskStatus.Released));
-
-		sprintStats.add(
-				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Testing, sprintID), TaskStatus.Testing));
-
-		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Validating, sprintID),
-				TaskStatus.Validating));
-
-		return sprintStats;
+	
+		return transformSprintStats(tasks,sprintID);
 
 	}
+	
+
 
 	@GetMapping("/getCurrentSprintByProject")
 	public List<Sprint> getProjectCurrentSprint(@RequestParam Integer projectID) {
@@ -286,5 +259,41 @@ public class SprintController {
         }
         return "Success";
     }
+    
+    
+ 
+    
+	private List<SprintStats>  transformSprintStats(List<Task> tasks,Integer sprintID) {
+		
+		List<SprintStats> sprintStats = new ArrayList<SprintStats>();
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ToDo, sprintID), TaskStatus.ToDo));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Done, sprintID), TaskStatus.Done));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.InProgress, sprintID),
+				TaskStatus.InProgress));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.ReadyForRelease, sprintID),
+				TaskStatus.ReadyForRelease));
+
+		sprintStats.add(
+				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Released, sprintID), TaskStatus.Released));
+
+		sprintStats.add(
+				service.calculation(serviceTask.findByTaskStatus(TaskStatus.Testing, sprintID), TaskStatus.Testing));
+
+		sprintStats.add(service.calculation(serviceTask.findByTaskStatus(TaskStatus.Validating, sprintID),
+				TaskStatus.Validating));
+		return sprintStats;
+
+	}
+	
+	private void attachTasksToSprint(Sprint sprint) {
+		sprint.getTask().forEach(task -> {
+			task.setSprint(sprint);
+			serviceTask.createOrUpdateTask(task);
+		});
+	}
 
 }

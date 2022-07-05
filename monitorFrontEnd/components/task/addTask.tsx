@@ -510,9 +510,8 @@ const AddTask = (props: any) => {
 									.then((result: DocumentPickerResponse[]) => {
 										const files: any[] = [];
 										result.map((item: DocumentPickerResponse) => {
-
-
-											RNFetchBlob.fs.readFile(item.uri, 'base64').then(base => {
+											const filePath = item.uri.split('raw%3A')[1].replace(/\%2F/gm, '/');
+											RNFetchBlob.fs.readFile(filePath, 'base64').then(base => {
 
 												const file = {
 													fileTitle: item.name,
