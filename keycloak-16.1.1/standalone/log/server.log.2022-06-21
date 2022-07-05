@@ -1,0 +1,1 @@
+2022-06-21 14:49:25,176 WARN  [org.keycloak.events] (default task-1) type=REFRESH_TOKEN_ERROR, realmId=projectMonitoring, clientId=projectMonitoringFE, userId=null, ipAddress=127.0.0.1, error=invalid_token, grant_type=refresh_token, client_auth_method=client-secret

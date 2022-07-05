@@ -253,5 +253,14 @@ public class SprintService implements ISprint {
 		// TODO Auto-generated method stub
 		return repository.findEmployeeSprintByStatus(email, status);
 	}
+	
+	   public Sprint updateSprintPeriod(Sprint sprint) {
+	    	
+	    	Period period = Period.between(sprint.getSprintStartDate().toLocalDate(),
+					sprint.getSprintEndDate().toLocalDate());
+
+			sprint.setPeriod(period.getDays());
+			return sprint;
+	    }
 
 }

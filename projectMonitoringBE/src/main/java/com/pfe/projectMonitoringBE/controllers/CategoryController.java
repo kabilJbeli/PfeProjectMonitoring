@@ -28,7 +28,7 @@ public class CategoryController {
 	private ICategory service;
 
 	@GetMapping("/all")
-	public List<Category> getAll() {
+	public List<Category> getAllCategories() {
 		return service.getAllCategory();
 	}
 
@@ -43,7 +43,7 @@ public class CategoryController {
 	}
 
 	@PostMapping("/add")
-	public void addMajor(@RequestBody Category category) {
+	public void addCategory(@RequestBody Category category) {
 		service.createOrUpdateCategory(category);
 	}
 

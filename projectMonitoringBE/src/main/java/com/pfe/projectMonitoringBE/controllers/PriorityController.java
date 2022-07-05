@@ -28,7 +28,7 @@ public class PriorityController {
 	private IPriority service;
 
 	@GetMapping("/all")
-	public List<Priority> getAll() {
+	public List<Priority> getAllPriorities() {
 		return service.getAllPriority();
 	}
 
@@ -49,11 +49,8 @@ public class PriorityController {
 
 	@PutMapping("/update/{id}")
 	public void updatePriority(@RequestBody Priority priority) {
-		try {
-			Priority searchedPriority = service.findPriority(priority.getPriorityID());
-			if (searchedPriority.getPriorityID() != null) {
-				service.createOrUpdatePriority(priority);
-			}
+		try {		
+				service.createOrUpdatePriority(priority);			
 		} catch (NoSuchElementException e) {
 
 		}

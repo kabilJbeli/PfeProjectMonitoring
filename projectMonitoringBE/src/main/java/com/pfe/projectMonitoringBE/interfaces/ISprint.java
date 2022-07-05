@@ -48,4 +48,5 @@ public interface ISprint {
 	public List<Sprint> findClientSprintByStatus(String email, SprintStatus status);
 
 	public List<Sprint> findEmployeeSprintByStatus(String email, SprintStatus status);
+	public Sprint	updateSprintPeriod(Sprint sprint);
 }

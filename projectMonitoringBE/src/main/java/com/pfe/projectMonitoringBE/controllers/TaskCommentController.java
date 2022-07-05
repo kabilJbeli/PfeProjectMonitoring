@@ -43,7 +43,7 @@ public class TaskCommentController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<TaskComment> getTaskById(@PathVariable Integer id) {
+	public ResponseEntity<TaskComment> getTasCommentkById(@PathVariable Integer id) {
 		try {
 			TaskComment task = service.findTaskComment(id);
 			return new ResponseEntity<TaskComment>(task, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class TaskCommentController {
 	}
 
 	@PostMapping("/add")
-	public void addTask(@RequestBody TaskComment task) {
+	public void addTaskComment(@RequestBody TaskComment task) {
 		service.createOrUpdateTaskComment(task);
 		if (task.getTask().getAssignee() != null) {
 			emailService.sendSimpleMessage(task.getTask().getAssignee().getEmail(), "New Comment",
@@ -73,7 +73,7 @@ public class TaskCommentController {
 	}
 
 	@PutMapping("/update")
-	public void updateTask(@RequestBody TaskComment task) {
+	public void updateTaskComment(@RequestBody TaskComment task) {
 		try {
 			service.createOrUpdateTaskComment(task);
 
@@ -83,7 +83,7 @@ public class TaskCommentController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public void deleteTask(@PathVariable Integer id) {
+	public void deleteTaskComment(@PathVariable Integer id) {
 		try {
 			TaskComment task = service.findTaskComment(id);
 			if (task.getCommentID() != null) {
